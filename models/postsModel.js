@@ -1,46 +1,46 @@
-const mongoose = require('mongoose');
-const postsSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: [true, '貼文姓名未填寫']
-  },
-  tags: [
-    {
+// models/PostsModel.js
+const mongoose = require('mongoose')
+
+// 建立 Schema
+const postsSchema = new mongoose.Schema(
+  {
+    editor: {
+      type: mongoose.Schema.ObjectId,
+      ref: 'User',
+      required: [true, '請填寫創作者 ID'],
+    },
+    content: {
       type: String,
-      required: [true, '貼文標籤 tags 未填寫']
-    }
-  ],
-  type: {
-    type: String,
-    enum:['group','person'],
-    required: [true, '貼文類型 type 未填寫']
+      required: [true, '請填寫貼文內容'],
+    },
+    image: {
+      type: [String],
+    },
+    // 設計稿 8.我按讚的貼文
+    likes: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: 'User',
+      },
+    ],
+    // 留言
+    comments: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: 'User',
+      },
+    ],
+    createdAt: {
+      type: Date,
+      default: Date.now,
+    },
   },
-  image: {
-    type: String,
-    default: ""
-  },
-  createAt: {
-    type: Date,
-    default: Date.now,
-    select: false
-  },
-  content: {
-    type: String,
-    required: [true, 'Content 未填寫'],
-  },
-  likes: {
-    type: Number,
-    default: 0
-  },
-  comments:{
-    type: Number,
-    default: 0
-  },
-});
+  {
+    versionKey: false,
+  }
+)
 
-const posts = mongoose.model(
-  'posts',
-  postsSchema
-);
+// 建立 Model
+const Post = mongoose.model('Post', postsSchema)
 
-module.exports = posts;
+module.exports = Post
