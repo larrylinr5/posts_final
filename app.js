@@ -23,8 +23,8 @@ const passport = require('passport')
 const session = require('express-session')
 app.use(session({
     secret: process.env.SESSIONSECRET || 'dev',
-    resave: 'true',
-    saveUninitialized: 'true'
+    resave: 'false',
+    saveUninitialized: 'false'
 }))
 app.use(passport.initialize())
 app.use(passport.session())

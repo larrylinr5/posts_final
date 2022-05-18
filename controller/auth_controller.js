@@ -3,17 +3,14 @@ const passport = require('passport')
 
 const authController = {
     google: {
-        auth: (req, res, next) => {
+        auth: async (req, res, next) => {
             /* passport authenticate is a middleware */
             passport.authenticate('google', { 
                 scope: ['profile', 'email']
             })(req, res, next)
         },
-        execCallback: (req, res, next) => {
-            passport.authenticate('google', {
-                successRedirect: '/oauth',
-                failureRedirect: '/',
-            })(req, res, next)
+        execCallback: async (req, res, next) => {
+            passport.authenticate('google')(req, res, next)
         }
     }
 }
