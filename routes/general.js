@@ -9,7 +9,7 @@ router.get('/', (req, res, next) => {
     res.render('index', { title: 'Express' });
 })
 
-/* temp callback */
+/* callback */
 router.get('/oauth', (req, res, next) => {
     /**
     *  #swagger.tags = ['Generals']
@@ -17,6 +17,9 @@ router.get('/oauth', (req, res, next) => {
     res.status(200)
         .json({
             status: 'success',
+            data: {
+                user: req.user
+            },
             message: 'Login via google successfully'
         })
 })

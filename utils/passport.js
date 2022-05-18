@@ -4,23 +4,21 @@ const User = require('../models/userModel')
 
 module.exports = (passport) =>{
     passport.serializeUser(function (user, done) {
-        done(null, user._id);
-    });
+        done(null, user._id)
+    })
 
-    passport.deserializeUser(function (user, done) {
-        User.findById(id, function (err, user) {
-            done(err, user);
-        });
-    });
+    passport.deserializeUser(function (userId, done) {
+        User.findById(userId, function (err, user) {
+            done(err, user)
+        })
+    })
     /* register google strategy */
     passport.use(new GoogleStrategy(
         {
             clientID: process.env.GOOGLE_ID,
             clientSecret: process.env.GOOGLE_SECRET,
-            callbackURL: process.env.GOOGLE_CALLBACK,
-            passReqToCallback: true
-        }, async (req, accessToken, refreshToken, profile, done) => {
-            console.log('profile', profile)
+            callbackURL: process.env.GOOGLE_CALLBACK
+        }, async (accessToken, refreshToken, profile, done) => {
             const user = await User.findOne({email: profile._json.email})
 
             if(!user){
@@ -34,18 +32,13 @@ module.exports = (passport) =>{
                         })
 
                         if(newUser){
-                            req.user = user
                             return done(null, user)
                         }
                     })
                 )
             }else{
-                req.user = user
                 return done(null, user)
             }
-
         })
     )
-
-    
 }

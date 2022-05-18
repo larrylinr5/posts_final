@@ -26,24 +26,14 @@ app.use(session({
     resave: 'true',
     saveUninitialized: 'true'
 }))
-
 app.use(passport.initialize())
 app.use(passport.session())
-
-
+require('./utils/passport')(passport)
 
 /* 連線 */
 require('./connections');
 require('./routes')(app)
 
-
-app.use((req, res, next) => {
-    // console.log('in app.js', req.session)
-    app.locals.user = req.user
-    next()
-})
-
-require('./utils/passport')(passport)
 /* 錯誤處理 */
 const { errorHandlerMainProcess } = require('./utils/errorHandler')
 app.use(errorHandlerMainProcess)
