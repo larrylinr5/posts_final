@@ -20,6 +20,7 @@
     "passport": "^0.5.3",
     "passport-google-oauth2": "^0.2.0",
     "passport-google-oidc": "^0.1.0",
+    "nodemon": "^2.0.16",
     "swagger-autogen": "^2.5.10",
     "swagger-ui-express": "^4.3.0",
     "validator": "^13.7.0"
