@@ -1,10 +1,15 @@
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-var app = express();
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
+const app = express();
+
 /** 跨網域套件 */
-var cors =require('cors')
+const cors =require('cors')
+/** 載入 全域變數套件 */
+const dotenv = require('dotenv');
+// 全域變數套件設定
+dotenv.config({ path: "./config.env" })
 
 app.use(cors())
 app.use(logger('dev'));
@@ -13,9 +18,21 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+/* 啟用 Passport */
+const passport = require('passport')
+const session = require('express-session')
+app.use(session({
+    secret: process.env.SESSIONSECRET || 'dev',
+    resave: 'false',
+    saveUninitialized: 'false'
+}))
+app.use(passport.initialize())
+app.use(passport.session())
+require('./utils/passport')(passport)
+
 /* 連線 */
-require('./routes')(app)
 require('./connections');
+require('./routes')(app)
 
 /* 錯誤處理 */
 const { errorHandlerMainProcess } = require('./utils/errorHandler')
