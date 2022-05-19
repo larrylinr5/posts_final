@@ -11,7 +11,7 @@ router.get('/google/callback', handleErrorAsync(authController.google.execCallba
 
         if(token){
             res.cookie('x-token', token)
-            res.redirect(`http://localhost:8080/section7/7-2/test.html?token=${token}`)
+            res.redirect(`${process.env.FRONTEND_REDIRECT_URL}?token=${token}`)
         }else{
             return next(appError('401','','No permission to generate token', next))
         }
