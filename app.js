@@ -31,5 +31,5 @@ process.on('uncaughtException', (err) => {
 process.on('unhandledRejection', (err, promise) => {
     console.error('未捕捉到的 rejection：', promise, '原因：', err)
 })
-
-module.exports = app;
+console.log('test')
+module.exports = app
