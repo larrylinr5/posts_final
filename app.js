@@ -9,7 +9,11 @@ const cors =require('cors')
 /** 載入 全域變數套件 */
 const dotenv = require('dotenv');
 // 全域變數套件設定
-dotenv.config({ path: "./config.env" })
+if (process.env.NODE_ENV === 'dev') {
+    dotenv.config({ path: "./local.env" })
+}else{
+    dotenv.config({ path: "./config.env" })
+}
 
 app.use(cors())
 app.use(logger('dev'));
