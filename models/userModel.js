@@ -1,4 +1,5 @@
-const mongoose = require('mongoose');
+// models/UsersModel.js
+const mongoose = require('mongoose')
 
 // 建立 Schema
 const usersSchema = new mongoose.Schema(
