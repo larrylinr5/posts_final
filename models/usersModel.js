@@ -12,7 +12,7 @@ const usersSchema = new mongoose.Schema(
             // 男性存 0，女性存 1，跨性別存 2
             type: Number,
             default: 0,
-            enum:[0, 1, 2]
+            enum: [0, 1, 2]
         },
         avatar: {
             type: String,
@@ -30,19 +30,19 @@ const usersSchema = new mongoose.Schema(
             minlength: 8,
             select: false
         },
-        // 設計稿 4.追蹤名單
-        follower: { // 別人 -> 自己
-            type: mongoose.Schema.ObjectId,
-            ref: "User"
-        },
-        following: { // 自己 -> 別人
-            type: mongoose.Schema.ObjectId,
-            ref: "User"
-        },
         createdAt: {
             type: Date,
             default: Date.now,
             select: false
+        },
+        updatedAt: {
+            type: Date,
+            default: Date.now,
+            select: false,
+        },
+        logicDeleteFlag: {
+            type: Boolean,
+            default: false,
         },
     },
     {
