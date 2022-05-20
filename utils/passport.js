@@ -1,6 +1,6 @@
 const GoogleStrategy = require('passport-google-oauth2').Strategy
 const bcrypt = require('bcryptjs')
-const User = require('../models/userModel')
+const User = require('../models/usersModel')
 
 module.exports = (passport) =>{
     passport.serializeUser(function (user, done) {

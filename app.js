@@ -2,18 +2,19 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
-const app = express();
-
 /** 跨網域套件 */
-const cors =require('cors')
+const cors = require('cors')
+
 /** 載入 全域變數套件 */
 const dotenv = require('dotenv');
 // 全域變數套件設定
 if (process.env.NODE_ENV === 'dev') {
     dotenv.config({ path: "./local.env" })
-}else{
+} else {
     dotenv.config({ path: "./config.env" })
 }
+
+const app = express();
 
 app.use(cors())
 app.use(logger('dev'));
@@ -39,18 +40,8 @@ require('./connections');
 require('./routes')(app)
 
 /* 錯誤處理 */
+require('./utils/process');
 const { errorHandlerMainProcess } = require('./utils/errorHandler')
 app.use(errorHandlerMainProcess)
-
-// 程式出現重大錯誤
-process.on('uncaughtException', (err) => {
-    console.error('UnCaught Exception！')
-    console.error(err)
-    process.exit(1)
-})
-// 未捕捉到的 catch
-process.on('unhandledRejection', (err, promise) => {
-    console.error('未捕捉到的 rejection：', promise, '原因：', err)
-})
 
 module.exports = app;

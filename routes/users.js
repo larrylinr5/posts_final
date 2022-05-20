@@ -3,7 +3,7 @@ const router = express.Router()
 const Validator = require('../utils/validator')
 const appError = require('../utils/errorHandler')
 const bcrypt = require('bcryptjs/dist/bcrypt')
-const User = require('../models/userModel')
+const User = require('../models/usersModel')
 /* GET users listing. */
 router.get('/', function (req, res, next) {
   res.send('respond with a resource')
@@ -31,7 +31,6 @@ router.post('/sign_up', async function (req, res, next) {
     })
   }
 
-  console.log('newUser', newUser?._id)
   res.json({
     status: 'success',
     user: {
