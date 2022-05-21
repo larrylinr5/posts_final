@@ -1,4 +1,11 @@
 // 自定義 error
+/**
+ * @description - 負責將所以API的錯誤統一並回傳統一error格式
+ * @param {Number} statusCode
+ * @param {String} errName
+ * @param {String} errMessage
+ * @param {Next} next
+ */
 const appError = (statusCode, errName, errMessage, next) => {
     const error = new Error(errMessage)
     error.name = errName
