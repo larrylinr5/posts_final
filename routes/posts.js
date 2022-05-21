@@ -22,7 +22,7 @@ router.post('/', isAuth, (req, res, next) => {
 
 // 張貼個人動態 - 修改貼文
 router.patch('/:postId', isAuth, (req, res, next) => {
-    PostController.patchOnePost(req, res, next);
+  PostController.patchOnePost(req, res, next);
 });
 
 // 取得個人按讚列表
