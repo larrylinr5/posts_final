@@ -5,8 +5,8 @@ const bcrypt = require('bcryptjs');
 const validator = require('validator');
 const { generateJwtToken } = require('../middleware/auth');
 
-const User = require('../models/usersModel');
-const Follow = require('../models/followsModel');
+const User = require('../models/userModel);
+const Follow = require('../models/followModel);
 
 const users = {}
 
