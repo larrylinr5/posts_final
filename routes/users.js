@@ -10,5 +10,8 @@ router.get('/', function (req, res, next) {
 router.post('/sign_up', (req, res, next) => {
   userController.signUp(req, res, next)
 })
+router.post('/sign_in', (req, res, next) => {
+  userController.signIn(req, res, next)
+})
 
 module.exports = router
