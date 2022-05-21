@@ -38,7 +38,6 @@ const usersSchema = new mongoose.Schema(
         updatedAt: {
             type: Date,
             default: Date.now,
-            select: false,
         },
         logicDeleteFlag: {
             type: Boolean,
