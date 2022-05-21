@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const authController = require('../controller/auth_controller')
+const authController = require('../controller/authController')
 const { appError, handleErrorAsync } = require('../utils/errorHandler')
 const { isAuth, generateJwtToken } = require('../middleware/auth')
 
