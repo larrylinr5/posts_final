@@ -13,7 +13,6 @@ const posts = {
     const { user, body: { content, image } } = req;
 
     // 判斷圖片開頭是否為 http
-    let ary = [];
     if (image && image.length > 0) {
       image.forEach(function (item, index, array) {
         let result = item.split(":");
@@ -22,9 +21,6 @@ const posts = {
         }
       });
     }
-    const isHttp = ary.some(function (item, index, array) {
-      return item === 1
-    });
 
     if (!content)
       return next(appError(400, '格式錯誤', '欄位未填寫正確!'));
