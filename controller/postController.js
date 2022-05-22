@@ -16,6 +16,7 @@ const posts = {
     if (image && image.length > 0) {
       image.forEach(function (item, index, array) {
         let result = item.split(":");
+        
         if (!validator.equals(result[0], 'https')) {
           return next(appError(400, '格式錯誤', '圖片格式不正確!'));
         }
