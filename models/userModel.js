@@ -42,6 +42,7 @@ const usersSchema = new mongoose.Schema(
         logicDeleteFlag: {
             type: Boolean,
             default: false,
+            select: false,
         },
     },
     {

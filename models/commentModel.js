@@ -21,8 +21,9 @@ const commentSchema = new mongoose.Schema(
       default: Date.now,
     },
     logicDeleteFlag: {
-        type: Boolean,
-        default: false,
+      type: Boolean,
+      default: false,
+      select: false,
     },
   },
   {
