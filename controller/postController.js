@@ -17,10 +17,8 @@ const posts = {
     if (image && image.length > 0) {
       image.forEach(function (item, index, array) {
         let result = item.split(":");
-        if (result[0] === "http") {
-          ary.push(1);
-        } else {
-          ary.push(0);
+        if (!validator.equals(result[0], 'https')) {
+          return next(appError(400, '格式錯誤', '圖片格式不正確!'));
         }
       });
     }
@@ -30,15 +28,9 @@ const posts = {
 
     if (!content)
       return next(appError(400, '格式錯誤', '欄位未填寫正確!'));
-    if (image && isHttp) {
-      return next(appError(400, '格式錯誤', '圖片格式不正確!'));
-    }
 
-    const newPost = await Post.create({
-      editor: user,
-      content,
-      image
-    });
+    await Post.create({ editor: user, content, image });
+    const newPost = await Post.find({}).sort({_id:-1}).limit(1).select('-logicDeleteFlag');
 
     res.status(201).json(getHttpResponse(newPost));
   }),
