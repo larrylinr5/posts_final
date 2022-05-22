@@ -14,14 +14,16 @@ const posts = {
 
     // 判斷圖片開頭是否為 http
     let ary = [];
-    image.forEach(function (item, index, array) {
-      let result = item.split(":");
-      if (result[0] === "http") {
-        ary.push(1);
-      } else {
-        ary.push(0);
-      }
-    });
+    if (image && image.length > 0) {
+      image.forEach(function (item, index, array) {
+        let result = item.split(":");
+        if (result[0] === "http") {
+          ary.push(1);
+        } else {
+          ary.push(0);
+        }
+      });
+    }
     const isHttp = ary.some(function (item, index, array) {
       return item === 1
     });

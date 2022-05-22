@@ -1,4 +1,5 @@
 const { appError, handleErrorAsync } = require('../utils/errorHandler')
+const getHttpResponse = require('../utils/successHandler');
 
 const bcrypt = require('bcryptjs')
 const { generateJwtToken } = require('../middleware/auth')
@@ -67,6 +68,20 @@ const users = {
       status: 'success',
       token,
     });
+  },
+  // 更新會員密碼
+  async updatePassword(req, res, next) {
+    const {
+      user,
+      body: { password, confirm_password: confirmPassword },
+    } = req;
+    const validatorResult = Validator.updatePw({password, confirmPassword})
+    if (!validatorResult.status) {
+      return next(appError(400, '格式錯誤', validatorResult.msg, next))
+    }
+    const newPassword = await bcrypt.hash(req.body.password, 12)
+    await User.updateOne({ _id: user._id }, { password: newPassword });
+    res.status(201).json(getHttpResponse({"message":"更新密碼成功"}));
   },
 }
 
