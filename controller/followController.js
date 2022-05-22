@@ -14,27 +14,31 @@ const follows = {
     // 時間排序
     const timeSort = sort === 'asc' ? 'createdAt' : '-createdAt'
 
-    // 建立搜尋條件：關鍵字搜尋
-    const filter = q !== undefined ? { "content": new RegExp(q) } : {};
+    // 建立搜尋條件：名稱的關鍵字搜尋
+    // TODO: 尚無法用關鍵字搜尋 nickName
+    // const keyword = q !== undefined ? { "nickName": new RegExp(q) } : {};
 
-    // 建立搜尋條件：editor 為自己的資料
-    filter.editor = req.user.id
+    // 建立搜尋條件：editor 為自己的資料、已刪除的資料不顯示
+    const filter = {
+      editor: req.user.id,
+      logicDeleteFlag: false
+    }
 
     /* 頁碼處理 */
     // 取得總筆數
-    const total = await Follow.find(filter).count()
+    const totalDatas = await Follow.find(filter).count()
 
     // 以一頁 10 筆為基礎，算出總頁數
-    const totalPage = Math.ceil(total / 10)
+    const totalPages = Math.ceil(totalDatas / 10)
 
     // 若頁碼不為整數
     if (!page || !validator.isInt(page.toString())) {
-      return next(appError('400', '資料內容有誤', `請輸入正確頁碼，共有${totalPage}頁`, next))
+      return next(appError('400', '資料內容有誤', `請輸入正確頁碼，共有${totalPages}頁`, next))
     }
 
     // 若總頁數 >0 且 page 大於最大頁數
-    if (totalPage > 0 && page > totalPage) {
-      return next(appError('400', '資料內容有誤', `請輸入正確頁碼，共有${totalPage}頁`, next))
+    if (totalPages > 0 && page > totalPages) {
+      return next(appError('400', '資料內容有誤', `請輸入正確頁碼，共有${totalPages}頁`, next))
     }
 
     // 要跳過的筆數
@@ -48,7 +52,17 @@ const follows = {
     // 回傳結果
     res.json({
       status: 'success',
-      data: list
+      data: {
+        page: {
+          totalPages: totalPages, // 總頁數
+          currentPage: page, // 當前頁數
+          perPage: 10, // 一頁顯示資料筆數
+          totalDatas: totalDatas, // 資料總筆數
+          has_pre: page > 1, // 是否有前一頁
+          has_next: page < totalPages // 是否有下一頁
+        },
+        list: list
+      }
     });
   })
 }
