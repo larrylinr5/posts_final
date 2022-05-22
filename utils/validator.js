@@ -61,4 +61,28 @@ module.exports = class Validator {
       msg: 'success',
     }
   }
+  static updatePw({ password, confirmPassword }) {
+    if (!password || !confirmPassword) {
+      return {
+        status: false,
+        msg: '請填寫新密碼或確認密碼!',
+      }
+    }
+    if (password !== confirmPassword) {
+      return {
+        status: false,
+        msg: '新密碼和確認密碼不一致!',
+      }
+    }
+    if (!validator.isLength(password, { min: 8 })) {
+      return {
+        status: false,
+        msg: '密碼少於8位數!',
+      }
+    }
+    return {
+      status: true,
+      msg: 'success',
+    }
+  }
 }
