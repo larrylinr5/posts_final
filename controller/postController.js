@@ -29,9 +29,9 @@ const posts = {
     });
 
     if (!content)
-      return next(appError(400, '格式錯誤', '欄位未填寫正確!', next));
+      return next(appError(400, '格式錯誤', '欄位未填寫正確!'));
     if (image && isHttp) {
-      return next(appError(400, '格式錯誤', '圖片格式不正確!', next));
+      return next(appError(400, '格式錯誤', '圖片格式不正確!'));
     }
 
     const newPost = await Post.create({
