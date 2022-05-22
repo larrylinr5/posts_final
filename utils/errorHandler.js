@@ -11,14 +11,14 @@ const appError = (statusCode, errName, errMessage, next) => {
     error.name = errName
     error.statusCode = statusCode
     error.isOperational = true
-    next(error)
+    return error
 }
 
 // async func catch
 /**
  *
  * @description - 用來擷取系統錯誤
- * @param {Function} func - controller function 
+ * @param {Function} func - controller function
  * @return {Next} - 回傳express Next
  */
 const handleErrorAsync = function (func) {
@@ -31,7 +31,7 @@ const handleErrorAsync = function (func) {
     }
 }
 
-// Dev 環境下的錯誤 
+// Dev 環境下的錯誤
 const resErrorDev = (err, res) => {
     res.status(err.statusCode)
         .json({
@@ -44,7 +44,7 @@ const resErrorDev = (err, res) => {
 /**
  * @description - 用來切換是系統錯誤還是自定義錯誤的status值
  * @param {Error} {statusCode} - error response 用的 statusCode
- * @return {'false'|'error'} - 回傳值 'false' or 'error' 
+ * @return {'false'|'error'} - 回傳值 'false' or 'error'
  */
 const resErrorStatus = ({statusCode}) => {
     if(statusCode===500){
@@ -54,7 +54,7 @@ const resErrorStatus = ({statusCode}) => {
 }
 
 
-// Prod 環境下，自己設定的 err 錯誤 
+// Prod 環境下，自己設定的 err 錯誤
 const resErrorProd = (err, res) => {
     const resErrorData = {
         status:'',

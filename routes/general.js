@@ -13,7 +13,7 @@ router.get('*', (req, res, next) => {
     /**
     *  #swagger.tags = ['Generals']
     */
-    next(appError(404, "", 'Invalid Route', next))
+    next(appError(404, "", 'Invalid Route'))
 })
 
 module.exports = router
