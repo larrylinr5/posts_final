@@ -1,4 +1,4 @@
-const { handleErrorAsync } = require('../utils/errorHandler');
+const { appError, handleErrorAsync } = require('../utils/errorHandler');
 const getHttpResponse = require('../utils/successHandler');
 const Post = require('../models/postModel')
 
@@ -13,7 +13,7 @@ const like = {
         // 搜尋條件
         const filter = {
             "$in": user._id,
-            'likes.0': {$exists: true},
+            'likes.0': { $exists: true },
             $or: [
                 { content: { $regex: keyword } },
             ],
@@ -37,6 +37,22 @@ const like = {
 
         res.status(201).json(getHttpResponse(resData));
     }),
+
+    addPostLike: handleErrorAsync(async (req, res, next) => {
+        const { user, params: { postId } } = req
+        
+        await Post.findOneAndUpdate({ postId }, { $addToSet: { likes: user._id } })
+        
+        res.status(201).json(getHttpResponse('加入按讚成功'));
+    }),
+
+    delPostLike: handleErrorAsync(async (req, res, next) => {
+        const { user, params: { postId } } = req
+
+        await Post.findOneAndUpdate({ postId }, { $pull: { likes: user._id } })
+
+        res.status(201).json(getHttpResponse('移除按讚成功'));
+    })
 }
 
 module.exports = like
