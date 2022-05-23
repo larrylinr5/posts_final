@@ -38,11 +38,6 @@ router.put('/likes/:postId', isAuth, (req, res, next) => {
 // 取消一則貼文的讚
 router.delete('/likes/:postId', isAuth, (req, res, next) => {
   LikesControllers.delPostLike(req, res, next)
-)}
-
-/* 取得個人所有追蹤列表 */
-router.get('/follows', isAuth, (req, res, next) => {
-  FollowController.getFollowList(req, res, next)
 })
 
 module.exports = router;
