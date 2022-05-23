@@ -2,8 +2,9 @@ const express = require('express')
 const router = express.Router()
 const authController = require('../controller/authController')
 const { appError, handleErrorAsync } = require('../utils/errorHandler')
-const { isAuth, generateJwtToken } = require('../middleware/auth')
+const { generateJwtToken } = require('../middleware/auth')
 
+// Google Strategy
 router.get('/google', handleErrorAsync(authController.google.auth))
 router.get('/google/callback', handleErrorAsync(authController.google.execCallback), handleErrorAsync (async (req, res, next) => {
     if(req.user){
