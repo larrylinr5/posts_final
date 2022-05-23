@@ -28,6 +28,7 @@ module.exports = (passport) =>{
                         const newUser = await User.create({
                             nickName: profile._json.name,
                             email: profile._json.email,
+                            avatar: profile._json.picture || '',
                             password: hash
                         })
 
