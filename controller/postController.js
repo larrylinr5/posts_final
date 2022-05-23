@@ -28,7 +28,7 @@ const posts = {
     }
 
     // 向 DB 取得貼文資料
-    const allPosts = await Post.find(queryString, { 'comments': false }).populate({
+    const allPosts = await Post.find(queryString).populate({
       path: 'editor',
       select: 'nickName avatar'
     }).skip((currentPage - 1) * perPage).limit(perPage).sort({ 'createdAt': timeSort })
