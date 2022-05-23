@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const { appError, handleErrorAsync } = require('../utils/errorHandler');
 const getHttpResponse = require('../utils/successHandler');
 
@@ -35,6 +36,9 @@ const posts = {
   patchOnePost: handleErrorAsync(async (req, res, next) => {
     const { user, body: { content, image }, params: { postId } } = req;
 
+    if (!(postId && mongoose.Types.ObjectId.isValid(postId)))
+      return next(appError(400, '資料錯誤', '請傳入特定貼文'));
+
     // 判斷圖片開頭是否為 http
     if (image && image.length > 0) {
       image.forEach(function (item, index, array) {
@@ -55,9 +59,8 @@ const posts = {
     if (ExistPost.editor.toString() !== user._id.toString())
       return next(appError(400, '資料錯誤', '您無權限編輯此貼文'));
       
-    await Post.findByIdAndUpdate(postId, { editor: user, content, image });
-    const editPost = await Post.find({}).sort({_id:-1}).limit(1).select('-logicDeleteFlag');
-
+    await Post.findByIdAndUpdate(postId, { content, image });
+    const editPost = await Post.findOne({_id: postId}).limit(1).select('-logicDeleteFlag');
     res.status(201).json(getHttpResponse(editPost));
   })
 }
