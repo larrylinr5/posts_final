@@ -12,9 +12,11 @@ const postsSchema = new mongoose.Schema(
     content: {
       type: String,
       required: [true, '請填寫貼文內容'],
+      trim: true
     },
     image: {
       type: [String],
+      trim: true
     },
     // 設計稿 8.我按讚的貼文
     likes: [
