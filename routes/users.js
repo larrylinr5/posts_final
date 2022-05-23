@@ -34,6 +34,10 @@ router.get('/follows', isAuth, (req, res, next) => {
 router.post('/follows/:id', isAuth, checkUserId, followController.postFollow);
 
 router.delete('/follows/:id', isAuth, checkUserId, followController.deleteFollow);
+/* 取得個人所有追蹤列表 */
+router.get('/follows', isAuth, (req, res, next) => {
+  followController.getFollowList(req, res, next)
+})
 
 
 module.exports = router
