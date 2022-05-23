@@ -10,6 +10,10 @@ router.get('/', function (req, res, next) {
   res.send('respond with a resource')
 })
 
+router.post('/sign_up_check', handleErrorAsync(async (req, res, next) => {
+  userController.signUpCheck(req, res, next)
+}))
+
 router.post('/sign_up', handleErrorAsync(async (req, res, next) => {
   userController.signUp(req, res, next)
 }))
