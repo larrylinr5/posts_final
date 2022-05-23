@@ -6,12 +6,12 @@ const { isAuth } = require('../middleware/auth')
 
 // 搜尋所有貼文
 router.get('/', isAuth, (req, res, next) => {
-    PostController.getAllPosts(req, res, next);
+  PostController.getAllPosts(req, res, next);
 });
 
 // 搜尋個人的全部貼文
 router.get('/:userId', isAuth, (req, res, next) => {
-    PostController.getAllPosts(req, res, next);
+  PostController.getAllPosts(req, res, next);
 });
 
 // 張貼個人動態 - 新增貼文
