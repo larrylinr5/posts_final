@@ -27,24 +27,25 @@ const posts = {
       queryString.editor = userId
     }
 
-    // 向 DB 取得貼文資料
-    const allPosts = await Post.find(queryString).populate({
+    // 向 DB 取得目標貼文資料
+    const targetPosts = await Post.find(queryString).populate({
       path: 'editor',
       select: 'nickName avatar'
-    }).skip((currentPage - 1) * perPage).limit(perPage).sort({ 'createdAt': timeSort })
+    }).skip((currentPage - 1) * perPage).limit(perPage).sort({ 'createdAt': timeSort, '_id': -1 })
 
-    const total = allPosts.length
-    const totalPages = Math.ceil(allPosts.length / perPage)
+    const total = await Post.find(queryString).countDocuments()
+    const totalPages = Math.ceil(total / perPage)
+
     const resData = {
-      message: allPosts.length === 0 ? '搜尋無資料' : '成功取得搜尋貼文',
-      list: allPosts,
+      message: targetPosts.length === 0 ? '搜尋無資料' : '成功取得搜尋貼文',
+      list: targetPosts,
       page: {
         totalPages,
         currentPage,
         perPage,
         totalDatas: total,
-        has_pre: allPosts.length === 0 ?  false : currentPage > 1,
-        has_next: allPosts.length === 0 ?  false : currentPage < totalPages
+        has_pre: total === 0 ?  false : currentPage > 1,
+        has_next: total === 0 ?  false : currentPage < totalPages
       }
     }
 
