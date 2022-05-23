@@ -13,18 +13,15 @@ const posts = {
     const { user, body: { content, image } } = req;
 
     // 判斷圖片開頭是否為 http
-    let ary = [];
     if (image && image.length > 0) {
       image.forEach(function (item, index, array) {
         let result = item.split(":");
+        
         if (!validator.equals(result[0], 'https')) {
           return next(appError(400, '格式錯誤', '圖片格式不正確!'));
         }
       });
     }
-    const isHttp = ary.some(function (item, index, array) {
-      return item === 1
-    });
 
     if (!content)
       return next(appError(400, '格式錯誤', '欄位未填寫正確!'));
