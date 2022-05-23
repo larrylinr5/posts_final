@@ -7,7 +7,9 @@
     "dev": "cross-env NODE_ENV=dev nodemon ./bin/www",
     "prod": "cross-env NODE_ENV=production nodemon ./bin/www",
     "format": "eslint . --fix",
-    "swagger": "node ./swagger.js"
+    "swagger": "node ./swagger.js",
+    "seed-up": "node seeds/userSeeder.js up && node seeds/postSeeder.js up",
+    "seed-down": "node seeds/userSeeder.js down && node seeds/postSeeder.js down"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
