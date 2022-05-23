@@ -22,13 +22,15 @@ const usersSchema = new mongoose.Schema(
             required: [true, "請填寫 Email"],
             unique: true,
             lowercase: true,
-            select: false
+            select: false,
+            trim: true
         },
         password: {
             type: String,
             required: [true, "請填寫密碼"],
             minlength: 8,
-            select: false
+            select: false,
+            trim: true
         },
         createdAt: {
             type: Date,
