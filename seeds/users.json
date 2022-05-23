@@ -1,0 +1,26 @@
+[
+  {
+      "_id":"627fb4ac4fd518e80ccdeba1",
+      "nickName": "John",
+      "gender": 0,
+      "avatar": "https://thumb.fakeface.rest/thumb_male_10_8c02e4e9bdc0e103530691acfca605f18caf1766.jpg",
+      "email": "yy342@gmail.com",
+      "password": "$2a$12$5N.M/4ztahpbk1GMEMBSLO3qblRAx4FrTpe81YIPbR/WmfDFcHTnC"
+  },
+  {
+      "_id":"627fb5c64fd518e80ccdeba2",
+      "nickName": "Mary",
+      "gender": 1,
+      "avatar": "https://thumb.fakeface.rest/thumb_female_30_8ab46617938c195cadf80bc11a96ce906a47c110.jpg",
+      "email": "mary0512@gmail.com",
+      "password": "$2a$12$5N.M/4ztahpbk1GMEMBSLO3qblRAx4FrTpe81YIPbR/WmfDFcHTnC"
+  },
+  {
+      "_id":"627fb6024fd518e80ccdeba3",
+      "nickName": "Ada",
+      "gender": 1,
+      "avatar": "https://thumb.fakeface.rest/thumb_female_27_5a94a297efb15caf0e3d769ce1694953e8bf33e2.jpg",
+      "email": "AdaWang@gmail.com",
+      "password": "$2a$12$5N.M/4ztahpbk1GMEMBSLO3qblRAx4FrTpe81YIPbR/WmfDFcHTnC"
+  }
+]
