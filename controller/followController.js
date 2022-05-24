@@ -152,14 +152,14 @@ const follows = {
   postFollow: handleErrorAsync(async (req, res, next) => {
     const { user } = req;
     const otherUser = req.params.id;
-    if(otherUser === user.id) {
+    if (otherUser === user.id) {
       return next(appError(400, '無法追蹤自己', '無法追蹤自己', next));
     }
     const existedFollowing = await Follow.findOne({
       editor: user.id,
       following: otherUser
     })
-    if(existedFollowing) {
+    if (existedFollowing) {
       return next(appError(400, '已追蹤該用戶', '已追蹤該用戶', next));
     }
     await Follow.create({
@@ -172,16 +172,16 @@ const follows = {
     });
   }),
   deleteFollow: handleErrorAsync(async (req, res, next) => {
-    const {user} = req;
+    const { user } = req;
     const otherUser = req.params.id;
-    if(otherUser === user.id) {
+    if (otherUser === user.id) {
       return next(appError(400, '無法取消追蹤自己', '無法取消追蹤自己', next));
     }
     const existedFollowing = await Follow.findOne({
       editor: user.id,
       following: otherUser
     });
-    if(!existedFollowing) {
+    if (!existedFollowing) {
       return next(appError(400, '尚未追蹤該用戶', '尚未追蹤該用戶', next));
     }
     await Follow.deleteOne({
