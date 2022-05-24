@@ -35,6 +35,4 @@ router.post('/follows/:id', isAuth, checkUserId, followController.postFollow);
 
 router.delete('/follows/:id', isAuth, checkUserId, followController.deleteFollow);
 
-
-
 module.exports = router
