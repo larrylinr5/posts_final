@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const PostController = require('../controller/postController');
 const LikesControllers = require('../controller/likeController');
+const CommentController = require('../controller/commentController');
 const { isAuth } = require('../middleware/auth')
 
 // 搜尋所有貼文
@@ -38,5 +39,10 @@ router.put('/likes/:postId', isAuth, (req, res, next) => {
 router.delete('/likes/:postId', isAuth, (req, res, next) => {
   LikesControllers.delPostLike(req, res, next)
 })
+
+// 新增一則貼文的留言
+router.post('/comment/:postId', isAuth, (req, res, next) => {
+  CommentController.postPostComment(req, res, next);
+});
 
 module.exports = router;
