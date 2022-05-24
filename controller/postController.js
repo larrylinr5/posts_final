@@ -9,7 +9,7 @@ const posts = {
   getAllPosts: handleErrorAsync(async (req, res, next) => {
     const { query, params: { userId } } = req
     const timeSort = query.sort === "asc" ? 1 : query.sort === 'desc' ? -1 : 'asc'
-    const currentPage = query.page ? Number(query.page) : 1
+    const currentPage = query.currentPage ? Math.max(0, Number(query.currentPage - 1)) : 1
     const perPage = query.perPage ? Number(query.perPage) : 10
     const queryString = query.q !== undefined
       ? {
