@@ -30,7 +30,7 @@ const postsSchema = new mongoose.Schema(
     comments: [
       {
         type: mongoose.Schema.ObjectId,
-        ref: 'User',
+        ref: 'Comment',
       },
     ],
     createdAt: {
