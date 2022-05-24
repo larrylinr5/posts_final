@@ -8,6 +8,23 @@ const User = require('../models/userModel')
 const Follow = require('../models/followModel')
 const Validator = require('../utils/validator')
 const users = {
+  async signUpCheck(req, res, next) {
+    const validatorResult = Validator.signUpCheck(req.body)
+    if (!validatorResult.status) {
+      return next(appError('400', '格式錯誤', validatorResult.msg))
+    }
+    const { nickName, email } = req.body
+    const user = await User.find({
+        email
+      })
+    if(user.length > 0){
+      return  next(appError('400', '資料內容', '已註冊此用戶'))
+    }
+    res.json({
+      status: 'success',
+      message:"驗證成功"
+    });
+  },
   async signUp(req, res, next) {
     const validatorResult = Validator.signUp(req.body)
     if (!validatorResult.status) {
@@ -44,7 +61,6 @@ const users = {
     if (!validatorResult.status) {
       return next(appError('400', '格式錯誤', validatorResult.msg))
     }
-    // password = await bcrypt.hash(req.body.password, 12)
     const { email,password } = req.body
     const user = await User.findOne({
         email

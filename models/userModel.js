@@ -6,16 +6,18 @@ const usersSchema = new mongoose.Schema(
     {
         nickName: {
             type: String,
-            required: [true, '請填寫暱稱']
+            required: [true, '請填寫暱稱'],
+            trim: true
         },
         gender: {
             // 男性存 0，女性存 1，跨性別存 2
             type: Number,
             default: 0,
-            enum: [0, 1, 2]
+            enum: [0, 1, 2],
         },
         avatar: {
             type: String,
+            trim: true
         },
         email: {
             type: String,

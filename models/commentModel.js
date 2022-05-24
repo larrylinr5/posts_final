@@ -12,6 +12,7 @@ const commentSchema = new mongoose.Schema(
       type: String,
       trim: true,
       required: [true, '請填寫留言內容'],
+      trim: true
     },
     createdAt: {
       type: Date,

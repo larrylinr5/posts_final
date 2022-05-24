@@ -19,6 +19,11 @@ router.post('/', isAuth, (req, res, next) => {
     PostController.postOnePost(req, res, next);
 });
 
+// 張貼個人動態 - 修改貼文
+router.patch('/:postId', isAuth, (req, res, next) => {
+    PostController.patchOnePost(req, res, next);
+});
+
 // 取得個人按讚列表
 router.get('/likes', isAuth, (req, res, next) => {
     LikesControllers.getUserLikeList(req, res, next)
