@@ -1,44 +1,52 @@
 const express = require('express')
 const router = express.Router()
-const Validator = require('../utils/validator')
-const appError = require('../utils/errorHandler')
-const bcrypt = require('bcryptjs/dist/bcrypt')
-const User = require('../models/usersModel')
+const userController = require('../controller/userController')
+const followController = require('../controller/followController');
+const { handleErrorAsync } = require('../utils/errorHandler');
+const { checkUserId } = require('../middleware/checkId');
+const { isAuth } = require('../middleware/auth');
+
 /* GET users listing. */
 router.get('/', function (req, res, next) {
   res.send('respond with a resource')
 })
 
-router.post('/sign_up', async function (req, res, next) {
-  const validatorResult = Validator.signUp(req.body)
-  if (!validatorResult.status) {
-    return next(appError('400', validatorResult.status, next))
-  }
-  password = await bcrypt.hash(req.body.password, 12)
-  const { nickName, email } = req.body
-  let newUser
-  try {
-    newUser = await User.create({
-      nickName,
-      email,
-      password,
-    })
-  } catch (error) {
-    console.log(error)
-    return res.status(400).json({
-      status: 'false',
-      msg: '已註冊此用戶',
-    })
-  }
+router.post('/sign_up_check', handleErrorAsync(async (req, res, next) => {
+  userController.signUpCheck(req, res, next)
+}))
 
-  res.json({
-    status: 'success',
-    user: {
-      token: '',
-      nickName: '',
-      id: '',
-    },
-  })
+router.post('/sign_up', handleErrorAsync(async (req, res, next) => {
+  userController.signUp(req, res, next)
+}))
+
+router.post('/sign_in', handleErrorAsync(async (req, res, next) => {
+  userController.signIn(req, res, next)
+}))
+
+router.patch('/updatePassword', isAuth, handleErrorAsync(async (req, res, next) => {
+  userController.updatePassword(req, res, next)
+}))
+
+/* 取得個人所有追蹤列表 */
+router.get('/follows', isAuth, (req, res, next) => {
+  followController.getFollowList(req, res, next)
 })
+router.post('/follows/:id', isAuth, checkUserId, followController.postFollow);
 
+router.delete('/follows/:id', isAuth, checkUserId, followController.deleteFollow);
+
+// 取得個人資料(自己)
+router.get('/profile', isAuth, handleErrorAsync(async (req, res, next) => {
+  userController.getMyProfile(req, res, next)
+}))
+
+// 取得個人資料(自己)
+router.get('/profile/:userId', isAuth, handleErrorAsync(async (req, res, next) => {
+  userController.getOtherProfile(req, res, next)
+}))
+
+// 更新個人資料
+router.patch('/profile/:userId', isAuth, handleErrorAsync(async (req, res, next) => {
+  userController.updateProfile(req, res, next)
+}))
 module.exports = router

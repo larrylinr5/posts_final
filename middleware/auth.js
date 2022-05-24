@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken')
 const { handleErrorAsync, appError } = require('../utils/errorHandler')
-const User = require('../models/usersModel')
+const User = require('../models/userModel')
 
 const generateJwtToken = async function (userId = "") {
     let token = ""
@@ -20,7 +20,7 @@ const isAuth = handleErrorAsync(async (req, res, next) => {
     }
 
     if (!token) {
-        return next(appError(401, 'Authorization Error', 'You have not logged in.', next))
+        return next(appError(401, 'Authorization Error', 'You have not logged in.'))
     }
 
     const decoded = await new Promise((resolve, reject) => {
@@ -34,7 +34,7 @@ const isAuth = handleErrorAsync(async (req, res, next) => {
         req.user = currentUser
         next()
     } else {
-        return next(appError(400, 'System Error', 'The user is not existed.', next))
+        return next(appError(400, 'System Error', 'The user is not existed.'))
     }
 })
 

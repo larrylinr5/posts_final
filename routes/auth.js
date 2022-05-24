@@ -1,9 +1,10 @@
 const express = require('express')
 const router = express.Router()
-const authController = require('../controller/auth_controller')
+const authController = require('../controller/authController')
 const { appError, handleErrorAsync } = require('../utils/errorHandler')
-const { isAuth, generateJwtToken } = require('../middleware/auth')
+const { generateJwtToken } = require('../middleware/auth')
 
+// Google Strategy
 router.get('/google', handleErrorAsync(authController.google.auth))
 router.get('/google/callback', handleErrorAsync(authController.google.execCallback), handleErrorAsync (async (req, res, next) => {
     if(req.user){
@@ -13,7 +14,7 @@ router.get('/google/callback', handleErrorAsync(authController.google.execCallba
             res.cookie('x-token', token)
             res.redirect(`${process.env.FRONTEND_REDIRECT_URL}?token=${token}`)
         }else{
-            return next(appError('401','','No permission to generate token', next))
+            return next(appError('401','','No permission to generate token'))
         }
 
     }else{

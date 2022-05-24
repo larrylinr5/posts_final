@@ -11,10 +11,13 @@ const postsSchema = new mongoose.Schema(
     },
     content: {
       type: String,
+      trim: true,
       required: [true, '請填寫貼文內容'],
+      trim: true
     },
     image: {
       type: [String],
+      trim: true
     },
     // 設計稿 8.我按讚的貼文
     likes: [
@@ -33,6 +36,15 @@ const postsSchema = new mongoose.Schema(
     createdAt: {
       type: Date,
       default: Date.now,
+    },
+    updatedAt: {
+      type: Date,
+      default: Date.now,
+    },
+    logicDeleteFlag: {
+      type: Boolean,
+      default: false,
+      select: false,
     },
   },
   {
