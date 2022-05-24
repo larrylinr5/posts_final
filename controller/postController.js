@@ -5,6 +5,50 @@ const validator = require('validator');
 const Post = require('../models/postModel');
 
 const posts = {
+  // 取得全部貼文或個人全部貼文
+  getAllPosts: handleErrorAsync(async (req, res, next) => {
+    const { query, params: { userId } } = req
+    const timeSort = query.sort === "asc" ? 1 : query.sort === 'desc' ? -1 : 'asc'
+    const currentPage = query.currentPage ? Math.max(0, Number(query.currentPage - 1)) : 0
+    const perPage = query.perPage ? Number(query.perPage) : 10
+    const queryString = query.q !== undefined
+      ? {
+        $or: [
+          { "content": new RegExp(query.q.trim()) }
+        ],
+        'logicDeleteFlag': false
+      }
+      : {}
+
+    if(userId){
+      queryString.editor = userId
+    }
+
+    // 向 DB 取得目標貼文資料
+    const targetPosts = await Post.find(queryString).populate({
+      path: 'editor',
+      select: 'nickName avatar'
+    }).skip(currentPage  * perPage).limit(perPage).sort({ 'createdAt': timeSort, '_id': -1 })
+
+    const total = await Post.find(queryString).countDocuments()
+    const totalPages = Math.ceil(total / perPage)
+
+    const resData = {
+      message: targetPosts.length === 0 ? '搜尋無資料' : '成功取得搜尋貼文',
+      list: targetPosts,
+      page: {
+        totalPages,
+        currentPage: currentPage + 1,
+        perPage,
+        totalDatas: total,
+        has_pre: total === 0 ?  false : currentPage + 1 > 1,
+        has_next: total === 0 ?  false : currentPage + 1 < totalPages
+      }
+    }
+
+    res.status(200).json(getHttpResponse(resData));
+  }),
+
   // 新增貼文
   postOnePost: handleErrorAsync(async (req, res, next) => {
     const { user, body: { content, image } } = req;
