@@ -9,14 +9,14 @@ const posts = {
   getAllPosts: handleErrorAsync(async (req, res, next) => {
     const { query, params: { userId } } = req
     const timeSort = query.sort === "asc" ? 1 : query.sort === 'desc' ? -1 : 'asc'
-    const currentPage = Number(query.page)
+    const currentPage = query.page ? Number(query.page) : 1
     const perPage = query.perPage ? Number(query.perPage) : 10
     const queryString = query.q !== undefined
       ? {
         $or: [
           { "content": new RegExp(query.q.trim()) }
         ],
-        'logicDeleteFlag': false,
+        'logicDeleteFlag': false
       }
       : {}
 
