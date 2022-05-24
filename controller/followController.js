@@ -9,7 +9,6 @@ const Follow = require('../models/followModel');
 const follows = {
   // 取得個人所有追蹤列表
   getFollowList: handleErrorAsync(async (req, res, next) => {
-
     const { sort, q, currentPage, perPage } = req.query
     // 時間排序
     const timeSort = sort === 'asc' ? 1 : -1
@@ -47,6 +46,23 @@ const follows = {
       }
     ])
 
+    if (totalDatas.length === 0) {
+      res.json({
+        status: 'success',
+        data: {
+          page: {
+            totalPages: 0, // 總頁數
+            currentPage: 1, // 當前頁數
+            perPage: perPage, // 一頁顯示資料筆數
+            totalDatas: 0, // 資料總筆數
+            has_pre: false, // 是否有前一頁
+            has_next: false // 是否有下一頁
+          },
+          list: []
+        }
+      });
+    }
+
     // 算出總頁數
     const totalPages = Math.ceil(totalDatas[0].totalDatas / perPage)
 
@@ -62,7 +78,6 @@ const follows = {
 
     // 要跳過的筆數
     const skip = (currentPage - 1) * perPage
-
     const list = await Follow.aggregate([
       {
         $lookup: {
@@ -81,8 +96,12 @@ const follows = {
             { editor: new mongoose.Types.ObjectId(req.user.id) },
             { logicDeleteFlag: false },
             { 'following.nickName': { '$regex': new RegExp(q) } }
-
           ]
+        }
+      },
+      {
+        $project: {
+          "logicDeleteFlag": 0,
         }
       },
       {
