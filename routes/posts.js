@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const PostController = require('../controller/postController');
 const LikesControllers = require('../controller/likeController');
-const FollowController = require('../controller/followController');
 const { isAuth } = require('../middleware/auth')
 
 // 搜尋所有貼文
