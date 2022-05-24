@@ -55,6 +55,9 @@ const follows = {
   getFollowList: handleErrorAsync(async (req, res, next) => {
     let { sort, q, currentPage, perPage } = req.query
 
+    // 關鍵字處理
+    const keyword = q ? new RegExp(q) : ''
+
     // 時間排序
     const timeSort = sort === 'asc' ? 1 : -1
 
@@ -76,7 +79,7 @@ const follows = {
           "$and": [
             { editor: new mongoose.Types.ObjectId(req.user.id) },
             { logicDeleteFlag: false },
-            { 'following.nickName': { '$regex': new RegExp(q) } }
+            { 'following.nickName': { '$regex': keyword } }
           ]
         }
       },
@@ -152,7 +155,7 @@ const follows = {
           $and: [
             { editor: new mongoose.Types.ObjectId(req.user.id) },
             { logicDeleteFlag: false },
-            { 'following.nickName': { '$regex': new RegExp(q) } }
+            { 'following.nickName': { '$regex': keyword } }
           ]
         }
       },
