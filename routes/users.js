@@ -35,4 +35,18 @@ router.post('/follows/:id', isAuth, checkUserId, followController.postFollow);
 
 router.delete('/follows/:id', isAuth, checkUserId, followController.deleteFollow);
 
+// 取得個人資料(自己)
+router.get('/profile', isAuth, handleErrorAsync(async (req, res, next) => {
+  userController.getMyProfile(req, res, next)
+}))
+
+// 取得個人資料(自己)
+router.get('/profile/:userId', isAuth, handleErrorAsync(async (req, res, next) => {
+  userController.getOtherProfile(req, res, next)
+}))
+
+// 更新個人資料
+router.patch('/profile/:userId', isAuth, handleErrorAsync(async (req, res, next) => {
+  userController.updateProfile(req, res, next)
+}))
 module.exports = router
