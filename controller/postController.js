@@ -9,7 +9,7 @@ const posts = {
   getAllPosts: handleErrorAsync(async (req, res, next) => {
     const { query, params: { userId } } = req
     const timeSort = query.sort === "asc" ? 1 : query.sort === 'desc' ? -1 : 'asc'
-    const currentPage = query.currentPage ? Math.max(0, Number(query.currentPage - 1)) : 1
+    const currentPage = query.currentPage ? Math.max(0, Number(query.currentPage - 1)) : 0
     const perPage = query.perPage ? Number(query.perPage) : 10
     const queryString = query.q !== undefined
       ? {
@@ -28,7 +28,7 @@ const posts = {
     const targetPosts = await Post.find(queryString).populate({
       path: 'editor',
       select: 'nickName avatar'
-    }).skip((currentPage - 1) * perPage).limit(perPage).sort({ 'createdAt': timeSort, '_id': -1 })
+    }).skip(currentPage  * perPage).limit(perPage).sort({ 'createdAt': timeSort, '_id': -1 })
 
     const total = await Post.find(queryString).countDocuments()
     const totalPages = Math.ceil(total / perPage)
@@ -38,11 +38,11 @@ const posts = {
       list: targetPosts,
       page: {
         totalPages,
-        currentPage,
+        currentPage: currentPage + 1,
         perPage,
         totalDatas: total,
-        has_pre: total === 0 ?  false : currentPage > 1,
-        has_next: total === 0 ?  false : currentPage < totalPages
+        has_pre: total === 0 ?  false : currentPage + 1 > 1,
+        has_next: total === 0 ?  false : currentPage + 1 < totalPages
       }
     }
 
