@@ -1,9 +1,10 @@
 const express = require('express')
 const router = express.Router()
 const userController = require('../controller/userController')
+const followController = require('../controller/followController');
 const { handleErrorAsync } = require('../utils/errorHandler');
-const { isAuth } = require('../middleware/auth')
-
+const { checkUserId } = require('../middleware/checkId');
+const { isAuth } = require('../middleware/auth');
 
 /* GET users listing. */
 router.get('/', function (req, res, next) {
@@ -26,4 +27,26 @@ router.patch('/updatePassword', isAuth, handleErrorAsync(async (req, res, next) 
   userController.updatePassword(req, res, next)
 }))
 
+/* 取得個人所有追蹤列表 */
+router.get('/follows', isAuth, (req, res, next) => {
+  followController.getFollowList(req, res, next)
+})
+router.post('/follows/:id', isAuth, checkUserId, followController.postFollow);
+
+router.delete('/follows/:id', isAuth, checkUserId, followController.deleteFollow);
+
+// 取得個人資料(自己)
+router.get('/profile', isAuth, handleErrorAsync(async (req, res, next) => {
+  userController.getMyProfile(req, res, next)
+}))
+
+// 取得個人資料(自己)
+router.get('/profile/:userId', isAuth, handleErrorAsync(async (req, res, next) => {
+  userController.getOtherProfile(req, res, next)
+}))
+
+// 更新個人資料
+router.patch('/profile/:userId', isAuth, handleErrorAsync(async (req, res, next) => {
+  userController.updateProfile(req, res, next)
+}))
 module.exports = router
