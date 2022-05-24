@@ -1,10 +1,10 @@
 const express = require('express')
 const router = express.Router()
 const userController = require('../controller/userController')
+const followController = require('../controller/followController');
 const { handleErrorAsync } = require('../utils/errorHandler');
-const { isAuth } = require('../middleware/auth')
-
-
+const { checkUserId } = require('../middleware/checkId');
+const { isAuth } = require('../middleware/auth');
 /* GET users listing. */
 router.get('/', function (req, res, next) {
   res.send('respond with a resource')
@@ -25,5 +25,9 @@ router.post('/sign_in', handleErrorAsync(async (req, res, next) => {
 router.patch('/updatePassword', isAuth, handleErrorAsync(async (req, res, next) => {
   userController.updatePassword(req, res, next)
 }))
+
+router.post('/follows/:id', isAuth, checkUserId, followController.postFollow);
+
+router.delete('/follows/:id', isAuth, checkUserId, followController.deleteFollow);
 
 module.exports = router
