@@ -4,6 +4,10 @@ const getHttpResponse = require('../utils/successHandler');
 const validator = require('validator');
 const Post = require('../models/postModel');
 const Comment = require('../models/commentModel');
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
 
 const posts = {
   // 取得全部貼文或個人全部貼文
@@ -125,6 +129,9 @@ const posts = {
       $set: {'logicDeleteFlag': true}
     });
 
+
+    //1) post model 裡面的 comments 是 array，     取出存在array 的 comments id
+    //2) comment model 刪除 這些特定id
     //順便刪除底下留言comments
     // const commentfilter = {
     //   //'editor': user._id,
