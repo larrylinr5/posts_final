@@ -4,10 +4,6 @@ const getHttpResponse = require('../utils/successHandler');
 const validator = require('validator');
 const Post = require('../models/postModel');
 const Comment = require('../models/commentModel');
-<<<<<<< Updated upstream
-=======
-
->>>>>>> Stashed changes
 
 const posts = {
   // 取得全部貼文或個人全部貼文
