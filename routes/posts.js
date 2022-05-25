@@ -50,4 +50,9 @@ router.post('/comment/:postId', isAuth, (req, res, next) => {
   CommentController.postPostComment(req, res, next);
 });
 
+// 修改一則貼文的留言
+router.patch('/comment/:postId/:commentId', isAuth, (req, res, next) => {
+  CommentController.patchPostComment(req, res, next);
+});
+
 module.exports = router;

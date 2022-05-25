@@ -26,6 +26,29 @@ const comments = {
 
     res.status(201).json(getHttpResponse({ comment: newComment }));
   }),
+  // 修改一則貼文的留言
+  patchPostComment: handleErrorAsync(async (req, res, next) => {
+    const { body: { comment }, params: { postId, commentId } } = req;
+
+    if (!(commentId && mongoose.Types.ObjectId.isValid(commentId)))
+      return next(appError(400, '資料錯誤', '請傳入特定留言'));
+
+    if (!comment)
+      return next(appError(400, '格式錯誤', '請填寫留言內容!'));
+
+    const ExistPost = await Post.findById(postId).exec();
+    if (!ExistPost)
+      return next(appError(400, '資料錯誤', '尚未發布貼文!'));
+
+    const ExistComment = await Comment.findById(commentId).exec();
+    if (!ExistComment)
+      return next(appError(400, '資料錯誤', '尚未發布留言!'));
+
+    const editComment = await Comment.findByIdAndUpdate(commentId, { comment });
+    const patchComment = await Comment.findById(editComment._id).populate({ path: "editor", select: "nickName avatar" })
+
+    res.status(201).json(getHttpResponse({ comment: patchComment }));
+  }),
 };
 
 module.exports = comments;
