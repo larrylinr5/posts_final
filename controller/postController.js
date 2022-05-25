@@ -5,6 +5,7 @@ const validator = require('validator');
 const Post = require('../models/postModel');
 const Comment = require('../models/commentModel')
 
+
 const posts = {
   // 取得全部貼文或個人全部貼文
   getAllPosts: handleErrorAsync(async (req, res, next) => {
@@ -72,7 +73,6 @@ const posts = {
     if (image && image.length > 0) {
       image.forEach(function (item, index, array) {
         let result = item.split(":");
-        
         if (!validator.equals(result[0], 'https')) {
           return next(appError(400, '格式錯誤', '圖片格式不正確!'));
         }
@@ -98,7 +98,6 @@ const posts = {
     if (image && image.length > 0) {
       image.forEach(function (item, index, array) {
         let result = item.split(":");
-        
         if (!validator.equals(result[0], 'https')) {
           return next(appError(400, '格式錯誤', '圖片格式不正確!'));
         }
@@ -113,10 +112,45 @@ const posts = {
       return next(appError(400, '資料錯誤', '尚未發布貼文!'));
     if (ExistPost.editor.toString() !== user._id.toString())
       return next(appError(400, '資料錯誤', '您無權限編輯此貼文'));
-      
+
     await Post.findByIdAndUpdate(postId, { content, image });
     const editPost = await Post.findOne({_id: postId}).limit(1).select('-logicDeleteFlag');
     res.status(201).json(getHttpResponse(editPost));
+  }),
+  // 刪除一筆貼文
+  deleteOnePost: handleErrorAsync(async (req, res, next) => {
+    const { user, params: { postId } } = req;
+
+    if (!(postId && mongoose.Types.ObjectId.isValid(postId)))
+      return next(appError(400, '資料錯誤', '請傳入特定貼文'));
+
+    const filter = {
+      '_id': postId,
+      'logicDeleteFlag': 0
+    }
+    const existPost = await Post.findOne(filter);
+    if (!existPost)
+        return next(appError(400, '資料錯誤', '無此貼文!'));
+
+    if (existPost.editor.toString() !== user._id.toString())
+      return next(appError(400, '資料錯誤', '您無權限編輯此貼文'));
+
+    //執行刪除Post，把logicDeleteFlag設為true
+    await Post.findOneAndUpdate({'_id': postId}, {
+      $set: {'logicDeleteFlag': true}
+    });
+
+    //執行刪除Comments，把logicDeleteFlag設為true
+    await Comment.updateMany(
+      {
+        _id: { $in: existPost.comments }
+      },
+      {
+        $set: {'logicDeleteFlag': true }
+      }
+    )
+
+    res.status(200).json(getHttpResponse({ "message" : "刪除貼文成功!" }))
   })
 }
 
