@@ -15,12 +15,14 @@ const posts = {
     const perPage = query.perPage ? Number(query.perPage) : 10
     const queryString = query.q !== undefined
       ? {
+        'logicDeleteFlag': false,
         $or: [
           { "content": new RegExp(query.q.trim()) }
-        ],
+        ]
+      }
+      : {
         'logicDeleteFlag': false
       }
-      : {}
 
     if(userId){
       queryString.editor = userId
@@ -41,7 +43,8 @@ const posts = {
         }
       }
     ]
-    const targetPosts = await Post.find(queryString).populate(populateQuery).skip(currentPage  * perPage).limit(perPage).sort({ 'createdAt': timeSort, '_id': -1 })
+    
+    const targetPosts = await Post.find(queryString).populate(populateQuery).skip(currentPage * perPage).limit(perPage).sort({ 'createdAt': timeSort, '_id': -1 })
 
     const total = await Post.find(queryString).countDocuments()
     const totalPages = Math.ceil(total / perPage)

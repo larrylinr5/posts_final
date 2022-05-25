@@ -9,12 +9,12 @@ const { isAuth } = require('../middleware/auth')
 const { upload } = require('../utils/upload')
 
 // 搜尋所有貼文
-router.get('/', isAuth, handleErrorAsync((req, res, next) => {
+router.get('/', isAuth, handleErrorAsync(async(req, res, next) => {
   PostController.getAllPosts(req, res, next);
 }));
 
 // 搜尋個人的全部貼文
-router.get('/:userId', isAuth, handleErrorAsync((req, res, next) => {
+router.get('/:userId', isAuth, handleErrorAsync(async(req, res, next) => {
   PostController.getAllPosts(req, res, next);
 }));
 
