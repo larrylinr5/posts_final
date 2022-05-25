@@ -41,7 +41,10 @@ require('./routes')(app)
 
 /* 錯誤處理 */
 require('./utils/process');
-const { errorHandlerMainProcess } = require('./utils/errorHandler')
+const { appError, errorHandlerMainProcess } = require('./utils/errorHandler')
+app.use((req, res, next) => {
+    next(appError(404, '路由錯誤', '無此路由資訊'));
+});
 app.use(errorHandlerMainProcess)
 
 module.exports = app;
