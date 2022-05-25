@@ -55,4 +55,9 @@ router.patch('/comment/:postId/:commentId', isAuth, (req, res, next) => {
   CommentController.patchPostComment(req, res, next);
 });
 
+// 刪除一則貼文的留言
+router.delete('/comment/:postId/:commentId', isAuth, (req, res, next) => {
+  CommentController.deletePostComment(req, res, next);
+});
+
 module.exports = router;

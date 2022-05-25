@@ -49,6 +49,25 @@ const comments = {
 
     res.status(201).json(getHttpResponse({ comment: patchComment }));
   }),
+  // 刪除一則貼文的留言
+  deletePostComment: handleErrorAsync(async (req, res, next) => {
+    const { params: { postId, commentId } } = req;
+
+    if (!(commentId && mongoose.Types.ObjectId.isValid(commentId)))
+      return next(appError(400, '資料錯誤', '請傳入特定留言'));
+
+    const ExistPost = await Post.findById(postId).exec();
+    if (!ExistPost)
+      return next(appError(400, '資料錯誤', '尚未發布貼文!'));
+
+    const ExistComment = await Comment.findById(commentId).exec();
+    if (!ExistComment)
+      return next(appError(400, '資料錯誤', '尚未發布留言!'));
+
+    // 執行刪除，其實是把 Comment 的 logicDeleteFlag 設為 true
+    await Comment.findOneAndUpdate({ '_id': commentId }, { $set: { 'logicDeleteFlag': true } });
+    res.status(200).json(getHttpResponse({ "message": "刪除留言成功！" }))
+  })
 };
 
 module.exports = comments;
