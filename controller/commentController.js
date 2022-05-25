@@ -21,11 +21,10 @@ const comments = {
     if (!ExistPost)
       return next(appError(400, '資料錯誤', '尚未發布貼文!'));
 
-    const newComment = await Comment.create({ editor: user._id, comment });
+    const newComment = await Comment.create({ editor: user, comment });
     await Post.updateOne({ _id: postId }, { comments: [...ExistPost.comments, newComment._id] });
-    const postComment = await Comment.findById(newComment._id).populate({ path: "editor", select: "nickName avatar" })
 
-    res.status(201).json(getHttpResponse(postComment));
+    res.status(201).json(getHttpResponse({ comment: newComment }));
   }),
 };
 
