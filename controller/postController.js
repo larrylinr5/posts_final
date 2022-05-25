@@ -120,25 +120,22 @@ const posts = {
     if (existPost.editor.toString() !== user._id.toString())
       return next(appError(400, '資料錯誤', '您無權限編輯此貼文'));
 
-    //執行刪除，把logicDeleteFlag設為true
+    //執行刪除Post，把logicDeleteFlag設為true
     await Post.findOneAndUpdate({'_id': postId}, {
       $set: {'logicDeleteFlag': true}
     });
 
+    //執行刪除Comments，把logicDeleteFlag設為true
+    await Comment.updateMany(
+      {
+        _id: { $in: existPost.comments }
+      },
+      {
+        $set: {'logicDeleteFlag': true }
+      }
+    )
 
-    //1) post model 裡面的 comments 是 array，     取出存在array 的 comments id
-    //2) comment model 刪除 這些特定id
-    //順便刪除底下留言comments
-    // const commentfilter = {
-    //   //'editor': user._id,
-    //   postId,
-    //   'logicDeleteFlag': 0
-    // }
-    // await Comment.updateMany({commentfilter}, {
-    //   $set: {'logicDeleteFlag': true}
-    // })
-
-    res.status(200).json(getHttpResponse({"message":"刪除貼文成功!"}))
+    res.status(200).json(getHttpResponse({ "message" : "刪除貼文成功!" }))
   })
 }
 
