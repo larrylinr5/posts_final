@@ -3,6 +3,7 @@ const { appError, handleErrorAsync } = require('../utils/errorHandler');
 const getHttpResponse = require('../utils/successHandler');
 const validator = require('validator');
 const Post = require('../models/postModel');
+const Comment = require('../models/commentModel')
 
 const posts = {
   // 取得全部貼文或個人全部貼文
@@ -25,10 +26,21 @@ const posts = {
     }
 
     // 向 DB 取得目標貼文資料
-    const targetPosts = await Post.find(queryString).populate({
-      path: 'editor',
-      select: 'nickName avatar'
-    }).skip(currentPage  * perPage).limit(perPage).sort({ 'createdAt': timeSort, '_id': -1 })
+    const populateQuery = [
+      {
+        path: 'editor',
+        select: 'nickName avatar'
+      },
+      {
+        path: 'comments',
+        select: 'editor comment',
+        populate: {
+          path: 'editor',
+          select: 'nickName avatar'
+        }
+      }
+    ]
+    const targetPosts = await Post.find(queryString).populate(populateQuery).skip(currentPage  * perPage).limit(perPage).sort({ 'createdAt': timeSort, '_id': -1 })
 
     const total = await Post.find(queryString).countDocuments()
     const totalPages = Math.ceil(total / perPage)
