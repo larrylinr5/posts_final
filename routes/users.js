@@ -2,9 +2,11 @@ const express = require('express')
 const router = express.Router()
 const userController = require('../controller/userController')
 const followController = require('../controller/followController');
+const FileController = require('../controller/fileController')
 const { handleErrorAsync } = require('../utils/errorHandler');
 const { checkUserId } = require('../middleware/checkId');
 const { isAuth } = require('../middleware/auth');
+const { upload } = require('../utils/upload')
 
 /* GET users listing. */
 router.get('/', function (req, res, next) {
@@ -49,4 +51,10 @@ router.get('/profile/:userId', isAuth, handleErrorAsync(async (req, res, next) =
 router.patch('/profile/:userId', isAuth, handleErrorAsync(async (req, res, next) => {
   userController.updateProfile(req, res, next)
 }))
+
+// 上傳會員頭像
+router.post('/avatar', isAuth, upload, handleErrorAsync(async (req, res, next) => {
+  FileController.uploadOneImage(req, res, next);
+}));
+
 module.exports = router
