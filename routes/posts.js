@@ -29,9 +29,9 @@ router.patch('/:postId', isAuth, handleErrorAsync(async (req, res, next) => {
 }));
 
 // 個人動態 - 刪除一筆貼文
-router.delete('/:postId', isAuth, (req, res, next) => {
+router.delete('/:postId', isAuth, handleErrorAsync(async(req, res, next) => {
   PostController.deleteOnePost(req, res, next);
-});
+}));
 
 // 取得個人按讚列表
 router.get('/likes', isAuth, handleErrorAsync(async (req, res, next) => {
@@ -64,8 +64,8 @@ router.post('/image', isAuth, upload, handleErrorAsync(async (req, res, next) =>
 }));
 
 // 刪除一則貼文的留言
-router.delete('/comment/:postId/:commentId', isAuth, (req, res, next) => {
+router.delete('/comment/:postId/:commentId', isAuth, handleErrorAsync(async (req, res, next) => {
   CommentController.deletePostComment(req, res, next);
-});
+}));
 
 module.exports = router;
