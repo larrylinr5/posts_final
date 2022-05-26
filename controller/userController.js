@@ -20,11 +20,12 @@ const users = {
     if (user.length > 0) {
       return next(appError('400', '資料內容', '已註冊此用戶'))
     }
-    res.json({
+    res.status(201).json({
       status: 'success',
       message: "驗證成功"
     });
   }),
+
   signUp: handleErrorAsync(async (req, res, next) => {
     const validatorResult = Validator.signUp(req.body)
     if (!validatorResult.status) {
@@ -51,11 +52,12 @@ const users = {
     if (token.length === 0) {
       return next(appError('400', '資料內容', 'token建立失敗'))
     }
-    res.json({
+    res.status(201)({
       status: 'success',
       token,
     });
   }),
+
   signIn: handleErrorAsync(async (req, res, next) => {
     const validatorResult = Validator.signIn(req.body)
     if (!validatorResult.status) {
@@ -80,7 +82,7 @@ const users = {
         msg: 'token建立失敗',
       })
     }
-    res.json({
+    res.status(201).json({
       status: 'success',
       token,
     });
@@ -105,7 +107,7 @@ const users = {
 
     const profile = await User.findById(user._id).select('-logicDeleteFlag')
 
-    res.status(201).json(getHttpResponse(profile))
+    res.status(200).json(getHttpResponse(profile))
   }),
 
   getOtherProfile: handleErrorAsync(async (req, res, next) => {
@@ -113,7 +115,7 @@ const users = {
 
     const profile = await User.findById(userId).select('-logicDeleteFlag')
 
-    res.status(201).json(getHttpResponse(profile))
+    res.status(200).json(getHttpResponse(profile))
   }),
 
   updateProfile: handleErrorAsync(async (req, res, next) => {

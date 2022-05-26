@@ -8,11 +8,8 @@ module.exports = (app) => {
   app.use('/users', userRouter),
   app.use('/posts', postRouter),
   app.use('/auth', authRouter),
-  app.use('/check', isAuth,(req,res,next)=>{
-    res.json(getHttpResponse({ message: "驗證成功" }))
+  app.use('/check', isAuth, (req, res, next) => {
+    res(getHttpResponse({ message: "驗證成功" }))
   })
   app.use('/', generalRouter)
-
-
-  
 }
