@@ -33,9 +33,16 @@ router.patch('/updatePassword', isAuth, handleErrorAsync(async (req, res, next) 
 router.get('/follows', isAuth, (req, res, next) => {
   followController.getFollowList(req, res, next)
 })
-router.post('/follows/:id', isAuth, checkUserId, followController.postFollow);
 
-router.delete('/follows/:id', isAuth, checkUserId, followController.deleteFollow);
+// 追蹤
+router.post('/follows/:userId', isAuth, checkUserId, handleErrorAsync(async (req, res, next) => {
+  followController.postFollow(req, res, next)
+}));
+
+// 取消追蹤
+router.delete('/follows/:userId', isAuth, checkUserId, handleErrorAsync(async (req, res, next) => {
+  followController.deleteFollow(req, res, next)
+}));
 
 // 取得個人資料(自己)
 router.get('/profile', isAuth, handleErrorAsync(async (req, res, next) => {

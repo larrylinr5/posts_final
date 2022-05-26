@@ -69,17 +69,24 @@ const follows = {
 
     /*
       當前頁碼處理
+        若有輸入參數，則進一步判定，否則回傳預設值 0
         若輸入參數不為整數，則回傳預設值 0
     */
-    currentPage = validator.isInt(currentPage.toString())
-      ? Math.max(0, Number(currentPage - 1))
+    currentPage = currentPage
+      ? validator.isInt(currentPage.toString())
+        ? Math.max(0, Number(currentPage - 1))
+        : 0
       : 0
 
+
     /* 單頁筆數處理
+        若有輸入參數，則進一步判定，否則回傳預設值 10
         若輸入參數不為整數，且<0 ，則回傳預設值 10
     */
-    perPage = validator.isInt(perPage.toString()) && Number(perPage) > 0
-      ? Number(perPage)
+    perPage = perPage
+      ? validator.isInt(perPage.toString()) && Number(perPage) > 0
+        ? Number(perPage)
+        : 10
       : 10
 
     // 算出總頁數
@@ -151,7 +158,7 @@ const follows = {
   }),
   postFollow: handleErrorAsync(async (req, res, next) => {
     const { user } = req;
-    const otherUser = req.params.id;
+    const otherUser = req.params.userId;
     if (otherUser === user.id) {
       return next(appError(400, '無法追蹤自己', '無法追蹤自己', next));
     }
@@ -160,7 +167,7 @@ const follows = {
       following: otherUser
     })
     if (existedFollowing) {
-      return next(appError(400, '已追蹤該用戶', '已追蹤該用戶', next));
+      return next(appError(400, '已經追蹤', '已經追蹤', next));
     }
     await Follow.create({
       editor: user.id,
@@ -173,7 +180,7 @@ const follows = {
   }),
   deleteFollow: handleErrorAsync(async (req, res, next) => {
     const { user } = req;
-    const otherUser = req.params.id;
+    const otherUser = req.params.userId;
     if (otherUser === user.id) {
       return next(appError(400, '無法取消追蹤自己', '無法取消追蹤自己', next));
     }
@@ -182,13 +189,13 @@ const follows = {
       following: otherUser
     });
     if (!existedFollowing) {
-      return next(appError(400, '尚未追蹤該用戶', '尚未追蹤該用戶', next));
+      return next(appError(400, '尚未追蹤', '尚未追蹤', next));
     }
     await Follow.deleteOne({
       editor: user.id,
       following: otherUser
     });
-    res.status(200).json({
+    res.status(201).json({
       status: 'success',
       message: '取消追蹤成功'
     });
