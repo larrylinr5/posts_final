@@ -37,6 +37,7 @@ const posts = {
       {
         path: 'comments',
         select: 'editor comment',
+        match: { logicDeleteFlag: false },
         populate: {
           path: 'editor',
           select: 'nickName avatar'
