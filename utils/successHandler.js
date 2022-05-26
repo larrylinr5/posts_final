@@ -3,9 +3,10 @@
  * @param {string|array} data 回傳的內容
  * @returns {object} http 回傳的內容
  */
-const getHttpResponse = (data) => {
+const getHttpResponse = ({data, message}) => {
   const result = { status: 'success' };
   if (data) result.data = data;
+  if (message) result.message = message;
   return result;
 };
 
