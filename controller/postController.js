@@ -43,7 +43,7 @@ const posts = {
         }
       }
     ]
-    
+
     const targetPosts = await Post.find(queryString).populate(populateQuery).skip(currentPage * perPage).limit(perPage).sort({ 'createdAt': timeSort, '_id': -1 })
 
     const total = await Post.find(queryString).countDocuments()
@@ -150,7 +150,7 @@ const posts = {
       }
     )
 
-    res.status(200).json(getHttpResponse({ "message" : "刪除貼文成功!" }))
+    res.status(201).json(getHttpResponse({ "message" : "刪除貼文成功!" }))
   })
 }
 
