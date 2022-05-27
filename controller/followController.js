@@ -51,8 +51,8 @@ const follows = {
 
     // 若沒有資料，則回傳空陣列
     if (totalDatas.length === 0) {
-      res.status(200).json({
-        status: 'success',
+      res.status(200).json(getHttpResponse({
+        message: '取得資料成功',
         data: {
           page: {
             totalPages: 0, // 總頁數
@@ -64,7 +64,7 @@ const follows = {
           },
           list: []
         }
-      });
+      }));
     }
 
     /*
@@ -141,8 +141,8 @@ const follows = {
     ])
 
     // 回傳結果
-    res.status(200).json({
-      status: 'success',
+    res.status(200).json(getHttpResponse({
+      message: '取得資料成功',
       data: {
         page: {
           totalPages: totalPages, // 總頁數
@@ -154,7 +154,7 @@ const follows = {
         },
         list: list
       }
-    })
+    }));
   }),
   postFollow: handleErrorAsync(async (req, res, next) => {
     const { user } = req;
