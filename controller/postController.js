@@ -50,8 +50,8 @@ const posts = {
     const total = await Post.find(queryString).countDocuments()
     const totalPages = Math.ceil(total / perPage)
 
+    const message = targetPosts.length === 0 ? '搜尋無資料' : '成功取得搜尋貼文';
     const resData = {
-      message: targetPosts.length === 0 ? '搜尋無資料' : '成功取得搜尋貼文',
       list: targetPosts,
       page: {
         totalPages,
@@ -63,7 +63,7 @@ const posts = {
       }
     }
 
-    res.status(200).json(getHttpResponse(resData));
+    res.status(200).json(getHttpResponse({data: resData, message}));
   }),
 
   // 新增貼文
@@ -86,7 +86,7 @@ const posts = {
     await Post.create({ editor: user, content, image });
     const newPost = await Post.find({}).sort({_id:-1}).limit(1).select('-logicDeleteFlag');
 
-    res.status(201).json(getHttpResponse(newPost));
+    res.status(201).json(getHttpResponse({"data": newPost}));
   }),
   // 修改貼文
   patchOnePost: handleErrorAsync(async (req, res, next) => {
@@ -116,8 +116,9 @@ const posts = {
 
     await Post.findByIdAndUpdate(postId, { content, image });
     const editPost = await Post.findOne({_id: postId}).limit(1).select('-logicDeleteFlag');
-    res.status(201).json(getHttpResponse(editPost));
+    res.status(201).json(getHttpResponse({"data": editPost}));
   }),
+
   // 刪除一筆貼文
   deleteOnePost: handleErrorAsync(async (req, res, next) => {
     const { user, params: { postId } } = req;
@@ -150,8 +151,7 @@ const posts = {
         $set: {'logicDeleteFlag': true }
       }
     )
-
-    res.status(201).json(getHttpResponse({ "message" : "刪除貼文成功!" }))
+    res.status(201).json(getHttpResponse({"message" : "刪除貼文成功!"}))
   })
 }
 
