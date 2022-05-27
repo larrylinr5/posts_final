@@ -52,7 +52,8 @@ const users = {
       return next(appError('400', '資料內容', 'token建立失敗'))
     }
     const data = {
-      token
+      token,
+      "id":_id
     }
     res.status(201).json(getHttpResponse({data}));
   }),
@@ -82,7 +83,8 @@ const users = {
       })
     }
     const data = {
-      token
+      token,
+      "id":_id
     }
     res.status(201).json(getHttpResponse({data}));
   }),
