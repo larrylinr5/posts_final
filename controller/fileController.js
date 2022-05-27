@@ -25,7 +25,7 @@ const files = {
         }
 
         if (success) {
-            res.status(200).json(getHttpResponse(resData));
+            res.status(201).json(getHttpResponse(resData));
         } else {
             return next(appError(status, "", "發生錯誤，請稍後再試", next))
         }

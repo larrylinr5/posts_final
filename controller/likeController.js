@@ -40,7 +40,7 @@ const like = {
             },
         }
 
-        res.status(201).json(getHttpResponse(resData));
+        res.status(200).json(getHttpResponse(resData));
     }),
 
     addPostLike: handleErrorAsync(async (req, res, next) => {

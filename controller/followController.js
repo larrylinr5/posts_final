@@ -51,7 +51,7 @@ const follows = {
 
     // 若沒有資料，則回傳空陣列
     if (totalDatas.length === 0) {
-      res.json({
+      res.status(200).json({
         status: 'success',
         data: {
           page: {
@@ -141,7 +141,7 @@ const follows = {
     ])
 
     // 回傳結果
-    res.json({
+    res.status(200).json({
       status: 'success',
       data: {
         page: {

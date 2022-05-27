@@ -30,9 +30,9 @@ router.patch('/updatePassword', isAuth, handleErrorAsync(async (req, res, next) 
 }))
 
 /* 取得個人所有追蹤列表 */
-router.get('/follows', isAuth, (req, res, next) => {
+router.get('/follows', isAuth, handleErrorAsync(async (req, res, next) => {
   followController.getFollowList(req, res, next)
-})
+}))
 
 // 追蹤
 router.post('/follows/:userId', isAuth, checkUserId, handleErrorAsync(async (req, res, next) => {
