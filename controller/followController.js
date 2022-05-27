@@ -173,10 +173,7 @@ const follows = {
       editor: user.id,
       following: otherUser
     });
-    res.status(201).json({
-      status: 'success',
-      message: '追蹤成功'
-    });
+    res.status(201).json(getHttpResponse({message: '追蹤成功'}));
   }),
   deleteFollow: handleErrorAsync(async (req, res, next) => {
     const { user } = req;
@@ -195,10 +192,7 @@ const follows = {
       editor: user.id,
       following: otherUser
     });
-    res.status(201).json({
-      status: 'success',
-      message: '取消追蹤成功'
-    });
+    res.status(201).json(getHttpResponse({message: '取消追蹤成功'}));
   })
 }
 
