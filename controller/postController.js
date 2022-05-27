@@ -10,7 +10,6 @@ const posts = {
   // 取得全部貼文或個人全部貼文
   getAllPosts: handleErrorAsync(async (req, res, next) => {
     const { query, params: { userId } } = req
-    const timeSort = query.sort === "asc" ? 1 : query.sort === 'desc' ? -1 : 'asc'
     const currentPage = query.currentPage ? Math.max(0, Number(query.currentPage - 1)) : 0
     const perPage = query.perPage ? Number(query.perPage) : 10
     const queryString = query.q !== undefined
@@ -26,6 +25,26 @@ const posts = {
 
     if(userId){
       queryString.editor = userId
+    }
+
+    // 排序條件，先後順序有差
+    const selectedSortRule = {}
+
+    if (query.sort){
+      if (query.sort === 'asc' || query.sort === 'desc'){
+        selectedSortRule.createdAt = query.sort === "asc" ? 1 : query.sort === 'desc' ? -1 : 'desc'
+      }
+
+      if (query.sort === 'hot'){
+        selectedSortRule.likes = -1
+      }
+    }else{
+      selectedSortRule.createdAt = 'desc'
+    }
+
+    const sortRule = {
+      ...selectedSortRule,
+      'id': -1  // 確保當 perPage 為 1 時，能找到正確值
     }
 
     // 向 DB 取得目標貼文資料
@@ -44,8 +63,8 @@ const posts = {
         }
       }
     ]
-
-    const targetPosts = await Post.find(queryString).populate(populateQuery).skip(currentPage * perPage).limit(perPage).sort({ 'createdAt': timeSort, '_id': -1 })
+    
+    const targetPosts = await Post.find(queryString).populate(populateQuery).skip(currentPage * perPage).limit(perPage).sort(sortRule)
 
     const total = await Post.find(queryString).countDocuments()
     const totalPages = Math.ceil(total / perPage)
