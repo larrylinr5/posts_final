@@ -9,7 +9,7 @@ module.exports = (app) => {
   app.use('/posts', postRouter),
   app.use('/auth', authRouter),
   app.use('/check', isAuth, (req, res, next) => {
-    res(getHttpResponse({ message: "驗證成功" }))
+    res.status(200).json(getHttpResponse({ message: "驗證成功" }))
   })
   app.use('/', generalRouter)
 }
