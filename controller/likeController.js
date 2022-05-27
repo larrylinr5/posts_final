@@ -29,8 +29,8 @@ const like = {
         let totalDatas = userAllPost.length // 總資料筆數
         let totalPages = Math.ceil(userAllPost.length / perPage) // 一共顯示幾頁
 
+        const message = userAllPost.length === 0 ? '您尚未按讚，故無該資料' : '取得資料成功';
         const resData = {
-            message: userAllPost.length === 0 ? '您尚未按讚，故無該資料' : '取得資料成功',
             list: userAllPost,
             page: {
                 totalPages, // 總頁數
@@ -40,9 +40,8 @@ const like = {
             },
         }
 
-        res.status(200).json(getHttpResponse(resData));
+        res.status(200).json(getHttpResponse({ data: resData, message }));
     }),
-
     addPostLike: handleErrorAsync(async (req, res, next) => {
         const { user, params: { postId } } = req
 
@@ -50,7 +49,6 @@ const like = {
 
         res.status(201).json(getHttpResponse({ message: '加入按讚成功' }));
     }),
-
     delPostLike: handleErrorAsync(async (req, res, next) => {
         const { user, params: { postId } } = req
 
