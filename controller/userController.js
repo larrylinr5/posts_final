@@ -20,10 +20,9 @@ const users = {
     if (user.length > 0) {
       return next(appError('400', '資料內容', '已註冊此用戶'))
     }
-    res.status(201).json({
-      status: 'success',
+    res.status(201).json(getHttpResponse({
       message: "驗證成功"
-    });
+    }));
   }),
 
   signUp: handleErrorAsync(async (req, res, next) => {
@@ -52,10 +51,10 @@ const users = {
     if (token.length === 0) {
       return next(appError('400', '資料內容', 'token建立失敗'))
     }
-    res.status(201)({
-      status: 'success',
-      token,
-    });
+    const data = {
+      token
+    }
+    res.status(201).json(getHttpResponse({data}));
   }),
 
   signIn: handleErrorAsync(async (req, res, next) => {
@@ -79,13 +78,13 @@ const users = {
     if (token.length === 0) {
       return res.status(400).json({
         status: 'false',
-        msg: 'token建立失敗',
+        message: 'token建立失敗',
       })
     }
-    res.status(201).json({
-      status: 'success',
-      token,
-    });
+    const data = {
+      token
+    }
+    res.status(201).json(getHttpResponse({data}));
   }),
   // 更新會員密碼
   updatePassword: handleErrorAsync(async (req, res, next) => {
