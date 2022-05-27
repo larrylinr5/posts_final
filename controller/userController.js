@@ -8,7 +8,7 @@ const User = require('../models/userModel')
 const Follow = require('../models/followModel')
 const Validator = require('../utils/validator')
 const users = {
-  async signUpCheck(req, res, next) {
+  signUpCheck: handleErrorAsync(async (req, res, next) => {
     const validatorResult = Validator.signUpCheck(req.body)
     if (!validatorResult.status) {
       return next(appError('400', '格式錯誤', validatorResult.msg))
@@ -20,12 +20,13 @@ const users = {
     if (user.length > 0) {
       return next(appError('400', '資料內容', '已註冊此用戶'))
     }
-    res.json({
+    res.status(201).json({
       status: 'success',
       message: "驗證成功"
     });
-  },
-  async signUp(req, res, next) {
+  }),
+
+  signUp: handleErrorAsync(async (req, res, next) => {
     const validatorResult = Validator.signUp(req.body)
     if (!validatorResult.status) {
       return next(appError('400', '格式錯誤', validatorResult.msg))
@@ -51,12 +52,13 @@ const users = {
     if (token.length === 0) {
       return next(appError('400', '資料內容', 'token建立失敗'))
     }
-    res.json({
+    res.status(201)({
       status: 'success',
       token,
     });
-  },
-  async signIn(req, res, next) {
+  }),
+
+  signIn: handleErrorAsync(async (req, res, next) => {
     const validatorResult = Validator.signIn(req.body)
     if (!validatorResult.status) {
       return next(appError('400', '格式錯誤', validatorResult.msg))
@@ -80,13 +82,13 @@ const users = {
         msg: 'token建立失敗',
       })
     }
-    res.json({
+    res.status(201).json({
       status: 'success',
       token,
     });
-  },
+  }),
   // 更新會員密碼
-  async updatePassword(req, res, next) {
+  updatePassword: handleErrorAsync(async (req, res, next) => {
     const {
       user,
       body: { password, confirm_password: confirmPassword },
@@ -98,14 +100,14 @@ const users = {
     const newPassword = await bcrypt.hash(req.body.password, 12)
     await User.updateOne({ _id: user._id }, { password: newPassword });
     res.status(201).json(getHttpResponse({ "message": "更新密碼成功" }));
-  },
+  }),
 
   getMyProfile: handleErrorAsync(async (req, res, next) => {
     const { user } = req
 
     const profile = await User.findById(user._id).select('-logicDeleteFlag')
 
-    res.status(201).json(getHttpResponse(profile))
+    res.status(200).json(getHttpResponse(profile))
   }),
 
   getOtherProfile: handleErrorAsync(async (req, res, next) => {
@@ -113,7 +115,7 @@ const users = {
 
     const profile = await User.findById(userId).select('-logicDeleteFlag')
 
-    res.status(201).json(getHttpResponse(profile))
+    res.status(200).json(getHttpResponse(profile))
   }),
 
   updateProfile: handleErrorAsync(async (req, res, next) => {

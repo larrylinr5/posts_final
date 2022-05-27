@@ -66,7 +66,7 @@ const comments = {
 
     // 執行刪除，其實是把 Comment 的 logicDeleteFlag 設為 true
     await Comment.findOneAndUpdate({ '_id': commentId }, { $set: { 'logicDeleteFlag': true } });
-    res.status(200).json(getHttpResponse({ "message": "刪除留言成功！" }))
+    res.status(201).json(getHttpResponse({ "message": "刪除留言成功！" }))
   })
 };
 
