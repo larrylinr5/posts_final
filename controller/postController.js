@@ -86,7 +86,7 @@ const posts = {
     await Post.create({ editor: user, content, image });
     const newPost = await Post.find({}).sort({_id:-1}).limit(1).select('-logicDeleteFlag');
 
-    res.status(201).json(getHttpResponse({"data": newPost}));
+    res.status(201).json(getHttpResponse({data: newPost}));
   }),
   // 修改貼文
   patchOnePost: handleErrorAsync(async (req, res, next) => {
@@ -116,7 +116,7 @@ const posts = {
 
     await Post.findByIdAndUpdate(postId, { content, image });
     const editPost = await Post.findOne({_id: postId}).limit(1).select('-logicDeleteFlag');
-    res.status(201).json(getHttpResponse({"data": editPost}));
+    res.status(201).json(getHttpResponse({data: editPost}));
   }),
 
   // 刪除一筆貼文
@@ -151,7 +151,7 @@ const posts = {
         $set: {'logicDeleteFlag': true }
       }
     )
-    res.status(201).json(getHttpResponse({"message" : "刪除貼文成功!"}))
+    res.status(201).json(getHttpResponse({message : "刪除貼文成功!"}))
   })
 }
 
