@@ -23,22 +23,22 @@ const posts = {
         'logicDeleteFlag': false
       }
 
-    if(userId){
+    if (userId) {
       queryString.editor = userId
     }
 
     // 排序條件，先後順序有差
     const selectedSortRule = {}
 
-    if (query.sort){
-      if (query.sort === 'asc' || query.sort === 'desc'){
+    if (query.sort) {
+      if (query.sort === 'asc' || query.sort === 'desc') {
         selectedSortRule.createdAt = query.sort === "asc" ? 1 : query.sort === 'desc' ? -1 : 'desc'
       }
 
-      if (query.sort === 'hot'){
+      if (query.sort === 'hot') {
         selectedSortRule.likes = -1
       }
-    }else{
+    } else {
       selectedSortRule.createdAt = 'desc'
     }
 
@@ -63,7 +63,7 @@ const posts = {
         }
       }
     ]
-    
+
     const targetPosts = await Post.find(queryString).populate(populateQuery).skip(currentPage * perPage).limit(perPage).sort(sortRule)
 
     const total = await Post.find(queryString).countDocuments()
@@ -77,12 +77,12 @@ const posts = {
         currentPage: currentPage + 1,
         perPage,
         totalDatas: total,
-        has_pre: total === 0 ?  false : currentPage + 1 > 1,
-        has_next: total === 0 ?  false : currentPage + 1 < totalPages
+        has_pre: total === 0 ? false : currentPage + 1 > 1,
+        has_next: total === 0 ? false : currentPage + 1 < totalPages
       }
     }
 
-    res.status(200).json(getHttpResponse({data: resData, message}));
+    res.status(200).json(getHttpResponse({ data: resData, message }));
   }),
 
   // 新增貼文
@@ -103,9 +103,9 @@ const posts = {
       return next(appError(400, '格式錯誤', '欄位未填寫正確!'));
 
     await Post.create({ editor: user, content, image });
-    const newPost = await Post.find({}).sort({_id:-1}).limit(1).select('-logicDeleteFlag');
+    const newPost = await Post.find({}).sort({ _id: -1 }).limit(1).select('-logicDeleteFlag');
 
-    res.status(201).json(getHttpResponse({data: newPost}));
+    res.status(201).json(getHttpResponse({ data: newPost }));
   }),
   // 修改貼文
   patchOnePost: handleErrorAsync(async (req, res, next) => {
@@ -134,8 +134,8 @@ const posts = {
       return next(appError(400, '資料錯誤', '您無權限編輯此貼文'));
 
     await Post.findByIdAndUpdate(postId, { content, image });
-    const editPost = await Post.findOne({_id: postId}).limit(1).select('-logicDeleteFlag');
-    res.status(201).json(getHttpResponse({data: editPost}));
+    const editPost = await Post.findOne({ _id: postId }).limit(1).select('-logicDeleteFlag');
+    res.status(201).json(getHttpResponse({ data: editPost }));
   }),
 
   // 刪除一筆貼文
@@ -151,14 +151,14 @@ const posts = {
     }
     const existPost = await Post.findOne(filter);
     if (!existPost)
-        return next(appError(400, '資料錯誤', '無此貼文!'));
+      return next(appError(400, '資料錯誤', '無此貼文!'));
 
     if (existPost.editor.toString() !== user._id.toString())
       return next(appError(400, '資料錯誤', '您無權限編輯此貼文'));
 
     //執行刪除Post，把logicDeleteFlag設為true
-    await Post.findOneAndUpdate({'_id': postId}, {
-      $set: {'logicDeleteFlag': true}
+    await Post.findOneAndUpdate({ '_id': postId }, {
+      $set: { 'logicDeleteFlag': true }
     });
 
     //執行刪除Comments，把logicDeleteFlag設為true
@@ -167,10 +167,10 @@ const posts = {
         _id: { $in: existPost.comments }
       },
       {
-        $set: {'logicDeleteFlag': true }
+        $set: { 'logicDeleteFlag': true }
       }
     )
-    res.status(201).json(getHttpResponse({message : "刪除貼文成功!"}))
+    res.status(201).json(getHttpResponse({ message: "刪除貼文成功!" }))
   })
 }
 
