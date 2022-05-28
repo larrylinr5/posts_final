@@ -81,12 +81,19 @@ const users = {
   updatePassword: handleErrorAsync(async (req, res, next) => {
     const {
       user,
-      body: { password, confirm_password: confirmPassword },
+      body: { password, confirm_password: confirmPassword, old_password: oldpassword },
     } = req;
-    const validatorResult = Validator.updatePw({ password, confirmPassword })
+    const validatorResult = Validator.updatePw({ password, confirmPassword, oldpassword })
     if (!validatorResult.status) {
-      return next(appError(400, '格式錯誤', validatorResult.msg))
+      return next(appError(400, '格式錯誤', validatorResult.msg, next))
     }
+    const users = await User.findOne({_id: user._id}).select('+password');
+    const compare = await bcrypt.compare(oldpassword, users.password);
+    if (!compare) {
+      return next(appError(400, '內容錯誤', '您的舊密碼不正確!'));
+    }
+
+    users.password = null
     const newPassword = await bcrypt.hash(req.body.password, 12)
     await User.updateOne({ _id: user._id }, { password: newPassword });
     res.status(201).json(getHttpResponse({ "message": "更新密碼成功" }));
