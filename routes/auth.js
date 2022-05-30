@@ -11,7 +11,7 @@ router.get('/google/callback', handleErrorAsync(authController.google.execCallba
         const token = await generateJwtToken(req.user.id)
 
         if(token){
-            res.cookie('x-token', token)
+            res.cookie('google-token', token)
             res.redirect(`${process.env.FRONTEND_REDIRECT_URL}?token=${token}`)
         }else{
             return next(appError('401','','No permission to generate token'))
