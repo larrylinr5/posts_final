@@ -4,10 +4,8 @@ const Post = require("../models/postModel");
 const mongoose = require("mongoose");
 
 const like = {
-  getUserLikeList: handleErrorAsync(async(req, res, next) => {
-
+  getUserLikeList: async(req, res) => {
     const { user, query } = req;
-
     const keyword = query.q ? query.q : ""; // 關鍵字
     let currentPage = Math.max(0, Number(query.currentPage - 1)); // 當前頁數
     let perPage = query.perPage ? Number(query.perPage) : 10; // 一頁顯示幾筆資料
@@ -31,7 +29,7 @@ const like = {
     let totalPages = Math.ceil(userAllPost.length / perPage); // 一共顯示幾頁
 
     const message = userAllPost.length === 0 ? "您尚未按讚，故無該資料" : "取得資料成功";
-    const resData = {
+    const data = {
       list: userAllPost,
       page: {
         totalPages, // 總頁數
@@ -43,36 +41,54 @@ const like = {
       },
     };
 
-    res.status(200).json(getHttpResponse({ data: resData, message }));
-  }),
-  addPostLike: handleErrorAsync(async(req, res, next) => {
-    const { user, params: { postId } } = req;
+    res.status(200).json(getHttpResponse({ data, message }));
+  },
+  addPostLike: async(req, res, next) => {
+    const { 
+      user, 
+      params: { 
+        postId 
+      } 
+    } = req;
 
     if (!(postId && mongoose.Types.ObjectId.isValid(postId)))
-      return next(appError(400, "資料錯誤", "請傳入特定貼文"));
+      return next(appError(400, "40002", "請傳入特定貼文"));
 
     const ExistPost = await Post.findById(postId);
     if (!ExistPost)
-      return next(appError(400, "資料錯誤", "尚未發布貼文"));
+      return next(appError(400, "40010", "尚未發布貼文"));
 
-    const likes = await Post.findOneAndUpdate({ postId }, { $addToSet: { likes: user._id } }, { new: true });
+    const data = await Post.findOneAndUpdate(
+      { postId }, 
+      { $addToSet: { likes: user._id } }, 
+      { new: true }
+    );
 
-    res.status(201).json(getHttpResponse({ data: likes, message: "加入按讚成功" }));
-  }),
-  delPostLike: handleErrorAsync(async(req, res, next) => {
-    const { user, params: { postId } } = req;
+    res.status(201).json(getHttpResponse({ data, message: "加入按讚成功" }));
+  },
+  delPostLike: async(req, res, next) => {
+    const { 
+      user, 
+      params: { 
+        postId 
+      } 
+    } = req;
 
     if (!(postId && mongoose.Types.ObjectId.isValid(postId)))
-      return next(appError(400, "資料錯誤", "請傳入特定貼文"));
+      return next(appError(400, "40002", "請傳入特定貼文"));
 
     const ExistPost = await Post.findById(postId);
     if (!ExistPost)
-      return next(appError(400, "資料錯誤", "尚未發布貼文"));
+      return next(appError(400, "40010", "尚未發布貼文"));
 
-    const likes = await Post.findOneAndUpdate({ postId }, { $pull: { likes: user._id } }, { new: true });
+    const data = await Post.findOneAndUpdate(
+      { postId }, 
+      { $pull: { likes: user._id } }, 
+      { new: true }
+    );
 
-    res.status(201).json(getHttpResponse({ data: likes, message: "移除按讚成功" }));
-  })
+    res.status(201).json(getHttpResponse({ data, message: "移除按讚成功" }));
+  }
 };
 
 module.exports = like;
