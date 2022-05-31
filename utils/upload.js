@@ -20,9 +20,9 @@ const uploadCore = multer(multerSettings).any();
 const upload = handleErrorAsync(async (req, res, next) => {
   uploadCore(req, res, function (err) {
     if (err instanceof multer.MulterError) {
-      return next(appError(400, "40005", err.message, next));
+      return next(appError(400, "40005", err.message));
     } else if (err) {
-      return next(appError(500, "50001", "上傳發生錯誤", next));
+      return next(appError(500, "50001", "上傳發生錯誤"));
     }
     next();
   });
