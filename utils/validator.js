@@ -1,4 +1,4 @@
-const validator = require('validator')
+const validator = require("validator");
 module.exports = class Validator {
   /**
    *
@@ -10,32 +10,32 @@ module.exports = class Validator {
     if (!email || !password || !confirmPassword) {
       return {
         status: false,
-        msg: '欄位未填寫正確!',
-      }
+        msg: "欄位未填寫正確!",
+      };
     }
     if (password !== confirmPassword) {
       return {
         status: false,
-        msg: '密碼不一致!',
-      }
+        msg: "密碼不一致!",
+      };
     }
     if (!validator.isEmail(email)) {
       return {
         status: false,
-        msg: 'Email 格式不正確!',
-      }
+        msg: "Email 格式不正確!",
+      };
     }
 
     if (!validator.isLength(password, { min: 8 })) {
       return {
         status: false,
-        msg: '密碼少於8位數!',
-      }
+        msg: "密碼少於8位數!",
+      };
     }
     return {
       status: true,
-      msg: 'success',
-    }
+      msg: "success",
+    };
   }
   /**
    *
@@ -47,79 +47,79 @@ module.exports = class Validator {
     if (!nickName || !email || !password || !confirmPassword) {
       return {
         status: false,
-        msg: '欄位未填寫正確!',
-      }
+        msg: "欄位未填寫正確!",
+      };
     }
     if (password !== confirmPassword) {
       return {
         status: false,
-        msg: '密碼不一致!',
-      }
+        msg: "密碼不一致!",
+      };
     }
     if (!validator.isEmail(email)) {
       return {
         status: false,
-        msg: 'Email 格式不正確!',
-      }
+        msg: "Email 格式不正確!",
+      };
     }
 
     if (!validator.isLength(password, { min: 8 })) {
       return {
         status: false,
-        msg: '密碼少於8位數!',
-      }
+        msg: "密碼少於8位數!",
+      };
     }
     return {
       status: true,
-      msg: 'success',
-    }
+      msg: "success",
+    };
   }
   static signIn({ email, password }) {
     if (!email || !password) {
       return {
         status: false,
-        msg: '帳號密碼不可為空!',
-      }
+        msg: "帳號密碼不可為空!",
+      };
     }
     if (!validator.isEmail(email)) {
       return {
         status: false,
-        msg: 'Email 格式不正確!',
-      }
+        msg: "Email 格式不正確!",
+      };
     }
     if (!validator.isLength(password, { min: 8 })) {
       return {
         status: false,
-        msg: '密碼少於8位數!',
-      }
+        msg: "密碼少於8位數!",
+      };
     }
     return {
       status: true,
-      msg: 'success',
-    }
+      msg: "success",
+    };
   }
   static updatePw({ password, confirmPassword, oldpassword }) {
     if (!password || !confirmPassword || !oldpassword) {
       return {
         status: false,
-        msg: '請填寫舊密碼、新密碼或確認密碼!',
-      }
+        msg: "請填寫舊密碼、新密碼或確認密碼!",
+      };
     }
     if (password !== confirmPassword) {
       return {
         status: false,
-        msg: '新密碼和確認密碼不一致!',
-      }
+        msg: "新密碼和確認密碼不一致!",
+      };
     }
     if (!validator.isLength(password, { min: 8 })) {
       return {
         status: false,
-        msg: '密碼少於8位數!',
-      }
+        msg: "密碼少於8位數!",
+      };
     }
     return {
       status: true,
-      msg: 'success',
-    }
+      msg: "success",
+    };
   }
-}
+};
