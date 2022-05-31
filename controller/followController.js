@@ -2,8 +2,6 @@ const { appError, handleErrorAsync } = require("../utils/errorHandler");
 const getHttpResponse = require('../utils/successHandler');
 const mongoose = require('mongoose');
 const validator = require('validator');
-
-const User = require('../models/userModel');
 const Follow = require('../models/followModel');
 
 const follows = {
@@ -51,7 +49,7 @@ const follows = {
 
     // 若沒有資料，則回傳空陣列
     if (totalDatas.length === 0) {
-      res.status(200).json(getHttpResponse({
+      return res.status(200).json(getHttpResponse({
         message: '取得資料成功',
         data: {
           page: {
@@ -160,45 +158,39 @@ const follows = {
     const { user } = req;
     const otherUser = req.params.userId;
     if (otherUser === user.id) {
-      return next(appError(400, '無法追蹤自己', '無法追蹤自己', next));
+      return next(appError(400, '無法追蹤自己', '無法追蹤自己'));
     }
     const existedFollowing = await Follow.findOne({
       editor: user.id,
       following: otherUser
     })
     if (existedFollowing) {
-      return next(appError(400, '已經追蹤', '已經追蹤', next));
+      return next(appError(400, '已經追蹤', '已經追蹤'));
     }
     await Follow.create({
       editor: user.id,
       following: otherUser
     });
-    res.status(201).json({
-      status: 'success',
-      message: '追蹤成功'
-    });
+    res.status(201).json(getHttpResponse({ message: '追蹤成功' }));
   }),
   deleteFollow: handleErrorAsync(async (req, res, next) => {
     const { user } = req;
     const otherUser = req.params.userId;
     if (otherUser === user.id) {
-      return next(appError(400, '無法取消追蹤自己', '無法取消追蹤自己', next));
+      return next(appError(400, '無法取消追蹤自己', '無法取消追蹤自己'));
     }
     const existedFollowing = await Follow.findOne({
       editor: user.id,
       following: otherUser
     });
     if (!existedFollowing) {
-      return next(appError(400, '尚未追蹤', '尚未追蹤', next));
+      return next(appError(400, '尚未追蹤', '尚未追蹤'));
     }
     await Follow.deleteOne({
       editor: user.id,
       following: otherUser
     });
-    res.status(201).json({
-      status: 'success',
-      message: '取消追蹤成功'
-    });
+    res.status(201).json(getHttpResponse({ message: '取消追蹤成功' }));
   })
 }
 

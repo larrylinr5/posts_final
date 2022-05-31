@@ -1,31 +1,23 @@
 const { appError, handleErrorAsync } = require('../utils/errorHandler')
 const getHttpResponse = require('../utils/successHandler');
-
 const bcrypt = require('bcryptjs')
 const { generateJwtToken } = require('../middleware/auth')
-
 const User = require('../models/userModel')
-const Follow = require('../models/followModel')
 const Validator = require('../utils/validator')
+
 const users = {
   signUpCheck: handleErrorAsync(async (req, res, next) => {
     const validatorResult = Validator.signUpCheck(req.body)
     if (!validatorResult.status) {
       return next(appError('400', '格式錯誤', validatorResult.msg))
     }
-    const { nickName, email } = req.body
-    const user = await User.find({
-      email
-    })
+    const { email } = req.body
+    const user = await User.find({ email })
     if (user.length > 0) {
       return next(appError('400', '資料內容', '已註冊此用戶'))
     }
-    res.status(201).json({
-      status: 'success',
-      message: "驗證成功"
-    });
+    res.status(201).json(getHttpResponse({ message: "驗證成功" }));
   }),
-
   signUp: handleErrorAsync(async (req, res, next) => {
     const validatorResult = Validator.signUp(req.body)
     if (!validatorResult.status) {
@@ -50,14 +42,14 @@ const users = {
     const { _id } = newUser
     const token = await generateJwtToken(_id)
     if (token.length === 0) {
-      return next(appError('400', '資料內容', 'token建立失敗'))
+      return next(appError('400', '資料內容', 'token 建立失敗'))
     }
-    res.status(201)({
-      status: 'success',
+    const data = {
       token,
-    });
+      "id": _id
+    }
+    res.status(201).json(getHttpResponse({ data }));
   }),
-
   signIn: handleErrorAsync(async (req, res, next) => {
     const validatorResult = Validator.signIn(req.body)
     if (!validatorResult.status) {
@@ -77,45 +69,48 @@ const users = {
     const { _id } = user
     const token = await generateJwtToken(_id)
     if (token.length === 0) {
-      return res.status(400).json({
-        status: 'false',
-        msg: 'token建立失敗',
-      })
+      return next(appError('400', '資料內容', 'token 建立失敗'));
     }
-    res.status(201).json({
-      status: 'success',
+    const data = {
       token,
-    });
+      "id": _id
+    }
+    res.status(201).json(getHttpResponse({ data }));
   }),
   // 更新會員密碼
   updatePassword: handleErrorAsync(async (req, res, next) => {
     const {
       user,
-      body: { password, confirm_password: confirmPassword },
+      body: { password, confirm_password: confirmPassword, old_password: oldpassword },
     } = req;
-    const validatorResult = Validator.updatePw({ password, confirmPassword })
+    const validatorResult = Validator.updatePw({ password, confirmPassword, oldpassword })
     if (!validatorResult.status) {
       return next(appError(400, '格式錯誤', validatorResult.msg, next))
     }
+    const users = await User.findOne({_id: user._id}).select('+password');
+    const compare = await bcrypt.compare(oldpassword, users.password);
+    if (!compare) {
+      return next(appError(400, '內容錯誤', '您的舊密碼不正確!'));
+    }
+
+    users.password = null
     const newPassword = await bcrypt.hash(req.body.password, 12)
     await User.updateOne({ _id: user._id }, { password: newPassword });
     res.status(201).json(getHttpResponse({ "message": "更新密碼成功" }));
   }),
-
   getMyProfile: handleErrorAsync(async (req, res, next) => {
     const { user } = req
 
     const profile = await User.findById(user._id).select('-logicDeleteFlag')
 
-    res.status(200).json(getHttpResponse(profile))
+    res.status(200).json(getHttpResponse({ data: profile }))
   }),
-
   getOtherProfile: handleErrorAsync(async (req, res, next) => {
     const { userId } = req.params
 
     const profile = await User.findById(userId).select('-logicDeleteFlag')
 
-    res.status(200).json(getHttpResponse(profile))
+    res.status(200).json(getHttpResponse({ data: profile }))
   }),
 
   updateProfile: handleErrorAsync(async (req, res, next) => {
@@ -127,7 +122,7 @@ const users = {
 
     const profile = await User.findByIdAndUpdate(userId, { nickName, gender, avatar }, { new: true }).select('-logicDeleteFlag')
 
-    res.status(201).json(getHttpResponse(profile))
+    res.status(201).json(getHttpResponse({ data: profile }))
   })
 }
 

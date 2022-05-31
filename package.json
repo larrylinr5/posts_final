@@ -5,7 +5,8 @@
   "scripts": {
     "start": "node ./bin/www",
     "dev": "cross-env NODE_ENV=dev nodemon ./bin/www",
-    "prod": "cross-env NODE_ENV=production nodemon ./bin/www"
+    "prod": "cross-env NODE_ENV=production nodemon ./bin/www",
+    "format": "eslint . --fix"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
@@ -35,5 +36,8 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": ""
+  "description": "",
+  "devDependencies": {
+    "eslint": "^8.16.0"
+  }
 }

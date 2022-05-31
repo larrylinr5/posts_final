@@ -1,8 +1,6 @@
 const mongoose = require('mongoose');
 const { appError, handleErrorAsync } = require('../utils/errorHandler');
 const getHttpResponse = require('../utils/successHandler');
-const validator = require('validator');
-const User = require('../models/userModel')
 const Post = require('../models/postModel');
 const Comment = require('../models/commentModel');
 
@@ -24,7 +22,7 @@ const comments = {
     const newComment = await Comment.create({ editor: user, comment });
     await Post.updateOne({ _id: postId }, { comments: [...ExistPost.comments, newComment._id] });
 
-    res.status(201).json(getHttpResponse({ comment: newComment }));
+    res.status(201).json(getHttpResponse({ data: { comment: newComment } }));
   }),
   // 修改一則貼文的留言
   patchPostComment: handleErrorAsync(async (req, res, next) => {
@@ -47,7 +45,7 @@ const comments = {
     const editComment = await Comment.findByIdAndUpdate(commentId, { comment });
     const patchComment = await Comment.findById(editComment._id).populate({ path: "editor", select: "nickName avatar" })
 
-    res.status(201).json(getHttpResponse({ comment: patchComment }));
+    res.status(201).json(getHttpResponse({ data: { comment: patchComment } }));
   }),
   // 刪除一則貼文的留言
   deletePostComment: handleErrorAsync(async (req, res, next) => {
@@ -66,7 +64,7 @@ const comments = {
 
     // 執行刪除，其實是把 Comment 的 logicDeleteFlag 設為 true
     await Comment.findOneAndUpdate({ '_id': commentId }, { $set: { 'logicDeleteFlag': true } });
-    res.status(201).json(getHttpResponse({ "message": "刪除留言成功！" }))
+    res.status(201).json(getHttpResponse({ message: "刪除留言成功！" }))
   })
 };
 
