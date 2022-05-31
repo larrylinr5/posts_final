@@ -55,7 +55,7 @@ const posts = {
       },
       {
         path: "comments",
-        select: "editor comment",
+        select: 'editor comment createdAt updatedAt',
         match: { logicDeleteFlag: false },
         populate: {
           path: "editor",
