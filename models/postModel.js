@@ -1,18 +1,18 @@
 // models/PostsModel.js
-const mongoose = require('mongoose')
+const mongoose = require("mongoose");
 
 // 建立 Schema
 const postsSchema = new mongoose.Schema(
   {
     editor: {
       type: mongoose.Schema.ObjectId,
-      ref: 'User',
-      required: [true, '請填寫創作者 ID'],
+      ref: "User",
+      required: [true, "請填寫創作者 ID"],
     },
     content: {
       type: String,
       trim: true,
-      required: [true, '請填寫貼文內容'],
+      required: [true, "請填寫貼文內容"],
       trim: true
     },
     image: {
@@ -23,14 +23,14 @@ const postsSchema = new mongoose.Schema(
     likes: [
       {
         type: mongoose.Schema.ObjectId,
-        ref: 'User',
+        ref: "User",
       },
     ],
     // 留言
     comments: [
       {
         type: mongoose.Schema.ObjectId,
-        ref: 'Comment',
+        ref: "Comment",
       },
     ],
     createdAt: {
@@ -50,9 +50,9 @@ const postsSchema = new mongoose.Schema(
   {
     versionKey: false,
   }
-)
+);
 
 // 建立 Model
-const Post = mongoose.model('Post', postsSchema)
+const Post = mongoose.model("Post", postsSchema);
 
-module.exports = Post
+module.exports = Post;
