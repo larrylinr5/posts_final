@@ -57,6 +57,9 @@ const posts = {
         path: 'comments',
         select: 'editor comment createdAt updatedAt',
         match: { logicDeleteFlag: false },
+        options:{
+          sort: { 'createdAt': -1 }
+        },
         populate: {
           path: 'editor',
           select: 'nickName avatar'
