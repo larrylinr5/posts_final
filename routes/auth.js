@@ -14,7 +14,7 @@ router.get("/google/callback", handleErrorAsync(authController.google.execCallba
       res.cookie("google-token", token);
       res.redirect(`${process.env.FRONTEND_REDIRECT_URL}?token=${token}`);
     }else{
-      return next(appError("401", "", "No permission to generate token"));
+      return next(appError("400", "40003", "No permission to generate token"));
     }
 
   }else{
