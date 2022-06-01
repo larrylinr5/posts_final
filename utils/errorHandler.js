@@ -4,9 +4,8 @@
  * @param {Number} statusCode
  * @param {String} errName
  * @param {String} errMessage
- * @param {Next} next
  */
-const appError = (statusCode, errName, errMessage, next) => {
+const appError = (statusCode, errName, errMessage) => {
   const error = new Error(errMessage);
   error.name = errName;
   error.statusCode = statusCode;
