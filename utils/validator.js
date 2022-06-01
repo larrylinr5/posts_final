@@ -98,8 +98,8 @@ module.exports = class Validator {
       msg: "success",
     };
   }
-  static updatePw({ password, confirmPassword, oldpassword }) {
-    if (!password || !confirmPassword || !oldpassword) {
+  static updatePw({ password, confirmPassword, oldPassword }) {
+    if (!password || !confirmPassword || !oldPassword) {
       return {
         status: false,
         msg: "請填寫舊密碼、新密碼或確認密碼!",
