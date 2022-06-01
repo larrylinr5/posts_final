@@ -105,6 +105,12 @@ module.exports = class Validator {
         msg: "請填寫舊密碼、新密碼或確認密碼!",
       };
     }
+    if (password === oldPassword) {
+      return {
+        status: false,
+        msg: "新密碼與舊密碼相同!",
+      };
+    }
     if (password !== confirmPassword) {
       return {
         status: false,
