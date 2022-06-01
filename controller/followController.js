@@ -1,4 +1,4 @@
-const { appError, handleErrorAsync } = require("../utils/errorHandler");
+const { appError } = require("../utils/errorHandler");
 const getHttpResponse = require("../utils/successHandler");
 const mongoose = require("mongoose");
 const validator = require("validator");
@@ -6,8 +6,13 @@ const Follow = require("../models/followModel");
 
 const follows = {
   // 取得個人所有追蹤列表
-  getFollowList: handleErrorAsync(async (req, res, next) => {
-    let { sort, q, currentPage, perPage } = req.query;
+  getFollowList: async (req, res, next) => {
+    let { 
+      sort, 
+      q, 
+      currentPage,
+      perPage 
+    } = req.query;
 
     // 關鍵字處理
     const keyword = q ? new RegExp(q) : "";
@@ -31,7 +36,7 @@ const follows = {
       {
         $match: {
           "$and": [
-            { editor: new mongoose.Types.ObjectId(req.user.id) },
+            { follow: new mongoose.Types.ObjectId(req.user.id) },
             { logicDeleteFlag: false },
             { "following.nickName": { "$regex": keyword } }
           ]
@@ -92,7 +97,7 @@ const follows = {
 
     // 若總頁數 >0 且 當前頁碼 大於等於 最大頁數
     if (totalPages > 0 && currentPage >= totalPages) {
-      return next(appError("400", "資料內容有誤", `請輸入正確頁碼，共有${totalPages}頁`));
+      return next(appError(400, "40002", `請輸入正確頁碼，共有${totalPages}頁`));
     }
 
     // 要跳過的筆數
@@ -114,7 +119,7 @@ const follows = {
       {
         $match: {
           $and: [
-            { editor: new mongoose.Types.ObjectId(req.user.id) },
+            { follow: new mongoose.Types.ObjectId(req.user.id) },
             { logicDeleteFlag: false },
             { "following.nickName": { "$regex": keyword } }
           ]
@@ -153,45 +158,49 @@ const follows = {
         list: list
       }
     }));
-  }),
-  postFollow: handleErrorAsync(async (req, res, next) => {
+  },
+  postFollow: async (req, res, next) => {
     const { user } = req;
     const otherUser = req.params.userId;
     if (otherUser === user.id) {
-      return next(appError(400, "無法追蹤自己", "無法追蹤自己"));
+      return next(appError(400, "40004", "無法追蹤自己"));
     }
     const existedFollowing = await Follow.findOne({
-      editor: user.id,
+      follow: user.id,
       following: otherUser
     });
     if (existedFollowing) {
-      return next(appError(400, "已經追蹤", "已經追蹤"));
+      return next(appError(400, "40010", "已經追蹤"));
     }
     await Follow.create({
-      editor: user.id,
+      follow: user.id,
       following: otherUser
     });
-    res.status(201).json(getHttpResponse({ message: "追蹤成功" }));
-  }),
-  deleteFollow: handleErrorAsync(async (req, res, next) => {
+    res.status(201).json(getHttpResponse({ 
+      message: "追蹤成功" 
+    }));
+  },
+  deleteFollow: async (req, res, next) => {
     const { user } = req;
     const otherUser = req.params.userId;
     if (otherUser === user.id) {
-      return next(appError(400, "無法取消追蹤自己", "無法取消追蹤自己"));
+      return next(appError(400, "40004", "無法取消追蹤自己"));
     }
     const existedFollowing = await Follow.findOne({
-      editor: user.id,
+      follow: user.id,
       following: otherUser
     });
     if (!existedFollowing) {
-      return next(appError(400, "尚未追蹤", "尚未追蹤"));
+      return next(appError(400, "40010", "尚未追蹤"));
     }
     await Follow.deleteOne({
-      editor: user.id,
+      follow: user.id,
       following: otherUser
     });
-    res.status(201).json(getHttpResponse({ message: "取消追蹤成功" }));
-  })
+    res.status(201).json(getHttpResponse({ 
+      message: "取消追蹤成功" 
+    }));
+  }
 };
 
 module.exports = follows;
