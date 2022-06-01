@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const followSchema = new mongoose.Schema(
   {
     // 設計稿 4.追蹤名單
-    editor: { // 自己
+    follow: { // 自己
       type: mongoose.Schema.ObjectId,
       ref: "User",
       select: false
