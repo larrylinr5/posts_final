@@ -11,7 +11,6 @@ const postsSchema = new mongoose.Schema(
     },
     content: {
       type: String,
-      trim: true,
       required: [true, "請填寫貼文內容"],
       trim: true
     },
