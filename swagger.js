@@ -9,7 +9,7 @@ const doc = {
     title: "MetaWall", // swagger 文件名稱
     description: "MetaWall API 文件" // 描述文件
   },
-  host: "localhost:3000", // 生成文件的路徑
+  host: "localhost:3005", // 生成文件的路徑
   schemes, // 文件所支援的模式
   tags: [
     { name: "Auth", description: "驗證相關" },

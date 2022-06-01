@@ -4,7 +4,7 @@
     "title": "MetaWall",
     "description": "MetaWall API 文件"
   },
-  "host": "localhost:3000",
+  "host": "localhost:3005",
   "basePath": "/",
   "tags": [
     {
