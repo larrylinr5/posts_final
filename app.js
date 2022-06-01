@@ -1,7 +1,7 @@
 const express = require("express");
 const path = require("path");
 const cookieParser = require("cookie-parser");
-const logger = require("morgan");
+const logger = require("./utils/logger");
 /** 跨網域套件 */
 const cors = require("cors");
 
@@ -17,7 +17,7 @@ if (process.env.NODE_ENV === "dev") {
 const app = express();
 
 app.use(cors());
-app.use(logger("dev"));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -34,6 +34,26 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 require("./utils/passport")(passport);
+app.use(function (req, res, next) {
+  const originalSend = res.send;
+  res.send = function (body) { // res.send() 和 res.json() 都會攔截到
+    res.__body_response = body;
+    originalSend.call(this, body);
+  };
+  next();
+});
+
+/* logger */
+// 必須在 routes 前面
+// if (process.env.NODE_ENV === "dev"){
+  app.use(logger.devLog);
+// 開發環境日誌不保存
+// }else {
+//   // 生產環境 - heroku 無法使用暫時先 comment out
+//   app.use(logger.accessLog);
+//   app.use(logger.accessLogErr);
+// }
+
 
 /* 連線 */
 require("./connections");
