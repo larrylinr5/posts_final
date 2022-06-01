@@ -8,11 +8,11 @@ const Comment = require("../models/commentModel");
 const posts = {
   // 取得全部貼文或個人全部貼文
   getAllPosts: async (req, res) => {
-    const { 
-      query, 
-      params: { 
-        userId 
-      } 
+    const {
+      query,
+      params: {
+        userId
+      }
     } = req;
     const currentPage = query.currentPage ? Math.max(0, Number(query.currentPage - 1)) : 0;
     const perPage = query.perPage ? Number(query.perPage) : 10;
@@ -89,16 +89,18 @@ const posts = {
       }
     };
 
-    res.status(200).json(getHttpResponse({ data, message }));
+    res.status(200).json(getHttpResponse({
+      data, message
+    }));
   },
   // 新增貼文
   postOnePost: async (req, res, next) => {
-    const { 
-      user, 
-      body: { 
-        content, 
-        image 
-      } 
+    const {
+      user,
+      body: {
+        content,
+        image
+      }
     } = req;
 
     // 判斷圖片開頭是否為 http
@@ -110,24 +112,27 @@ const posts = {
         }
       });
     }
-    if (!content)
+    if (!content) {
       return next(appError(400, "40001", "欄位未填寫正確!"));
+    }
 
     await Post.create({ editor: user, content, image });
     const newPost = await Post.find({}).sort({ _id: -1 }).limit(1).select("-logicDeleteFlag");
-    res.status(201).json(getHttpResponse({ data: newPost }));
+    res.status(201).json(getHttpResponse({ 
+      data: newPost 
+    }));
   },
   // 修改貼文
   patchOnePost: async (req, res, next) => {
-    const { 
-      user, 
-      body: { 
-        content, 
-        image 
-      }, 
-      params: { 
-        postId 
-      } 
+    const {
+      user,
+      body: {
+        content,
+        image
+      },
+      params: {
+        postId
+      }
     } = req;
 
     if (!(postId && mongoose.Types.ObjectId.isValid(postId)))
@@ -141,46 +146,54 @@ const posts = {
         }
       });
     }
-    if (!content)
+    if (!content){
       return next(appError(400, "40001", "欄位未填寫正確!"));
+    }
 
     const ExistPost = await Post.findById(postId).exec();
-    if (!ExistPost)
+    if (!ExistPost){
       return next(appError(400, "40010", "尚未發布貼文!"));
-    if (ExistPost.editor.toString() !== user._id.toString())
+    }
+    if (ExistPost.editor.toString() !== user._id.toString()){
       return next(appError(400, "40004", "您無權限編輯此貼文"));
+    }
 
     await Post.findByIdAndUpdate(postId, { content, image });
     const editPost = await Post.findOne({ _id: postId }).limit(1).select("-logicDeleteFlag");
-    res.status(201).json(getHttpResponse({ data: editPost }));
+    res.status(201).json(getHttpResponse({ 
+      data: editPost
+    }));
   },
   // 刪除一筆貼文
   deleteOnePost: async (req, res, next) => {
-    const { 
-      user, 
-      params: { 
-        postId 
-      } 
+    const {
+      user,
+      params: {
+        postId
+      }
     } = req;
 
-    if (!(postId && mongoose.Types.ObjectId.isValid(postId)))
+    if (!(postId && mongoose.Types.ObjectId.isValid(postId))){
       return next(appError(400, "40002", "請傳入特定貼文"));
+    }
 
     const filter = {
       "_id": postId,
       "logicDeleteFlag": 0
     };
     const existPost = await Post.findOne(filter);
-    if (!existPost)
+    if (!existPost){
       return next(appError(400, "40010", "無此貼文!"));
+    }
 
-    if (existPost.editor.toString() !== user._id.toString())
+    if (existPost.editor.toString() !== user._id.toString()){
       return next(appError(400, "40004", "您無權限編輯此貼文"));
+    }
 
     // 執行刪除 Post，把 logicDeleteFlag 設為 true
     await Post.findOneAndUpdate(
-      { 
-        "_id": postId 
+      {
+        "_id": postId
       },
       {
         $set: { "logicDeleteFlag": true }
@@ -196,7 +209,9 @@ const posts = {
         $set: { "logicDeleteFlag": true }
       }
     );
-    res.status(201).json(getHttpResponse({ message: "刪除貼文成功!" }));
+    res.status(201).json(getHttpResponse({ 
+      message: "刪除貼文成功!" 
+    }));
   }
 };
 
