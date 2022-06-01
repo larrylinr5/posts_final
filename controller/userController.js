@@ -147,10 +147,10 @@ const users = {
       }
     } = req;
     if (String(user._id) !== String(userId)) { 
-      return next(appError(400, "40004", "您無權限修改他人資料")) 
+      return next(appError(400, "40004", "您無權限修改他人資料")); 
     };
     if (!nickName || nickName.trim().length === 0) { 
-      return next(appError(400, "40001", "請填寫暱稱")) 
+      return next(appError(400, "40001", "請填寫暱稱")); 
     };
     const profile = await User.findByIdAndUpdate(userId,
       {
