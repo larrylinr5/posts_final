@@ -43,7 +43,7 @@ require("./routes")(app);
 require("./utils/process");
 const { appError, errorHandlerMainProcess } = require("./utils/errorHandler");
 app.use((req, res, next) => {
-  next(appError(404, "路由錯誤", "無此路由資訊"));
+  next(appError(404, "40401", "無此路由資訊"));
 });
 app.use(errorHandlerMainProcess);
 
