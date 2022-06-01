@@ -1,4 +1,4 @@
-const { appError, handleErrorAsync } = require("../utils/errorHandler");
+const { appError } = require("../utils/errorHandler");
 const getHttpResponse = require("../utils/successHandler");
 const Post = require("../models/postModel");
 const mongoose = require("mongoose");
@@ -41,7 +41,9 @@ const like = {
       },
     };
 
-    res.status(200).json(getHttpResponse({ data, message }));
+    res.status(200).json(getHttpResponse({ 
+      data, message 
+    }));
   },
   addPostLike: async(req, res, next) => {
     const { 
@@ -51,20 +53,31 @@ const like = {
       } 
     } = req;
 
-    if (!(postId && mongoose.Types.ObjectId.isValid(postId)))
+    if (!(postId && mongoose.Types.ObjectId.isValid(postId))){
       return next(appError(400, "40002", "請傳入特定貼文"));
+    }
 
     const ExistPost = await Post.findById(postId);
-    if (!ExistPost)
+    if (!ExistPost){
       return next(appError(400, "40010", "尚未發布貼文"));
+    }
 
     const data = await Post.findOneAndUpdate(
-      { postId }, 
-      { $addToSet: { likes: user._id } }, 
-      { new: true }
+      { 
+        postId
+      }, 
+      { 
+        $addToSet: { likes: user._id } 
+      }, 
+      { 
+        new: true 
+      }
     );
 
-    res.status(201).json(getHttpResponse({ data, message: "加入按讚成功" }));
+    res.status(201).json(getHttpResponse({ 
+      data, 
+      message: "加入按讚成功" 
+    }));
   },
   delPostLike: async(req, res, next) => {
     const { 
@@ -74,20 +87,31 @@ const like = {
       } 
     } = req;
 
-    if (!(postId && mongoose.Types.ObjectId.isValid(postId)))
+    if (!(postId && mongoose.Types.ObjectId.isValid(postId))){
       return next(appError(400, "40002", "請傳入特定貼文"));
+    }
 
     const ExistPost = await Post.findById(postId);
-    if (!ExistPost)
+    if (!ExistPost){
       return next(appError(400, "40010", "尚未發布貼文"));
+    }
 
     const data = await Post.findOneAndUpdate(
-      { postId }, 
-      { $pull: { likes: user._id } }, 
-      { new: true }
+      { 
+        postId
+      }, 
+      { 
+        $pull: { likes: user._id } 
+      }, 
+      { 
+        new: true 
+      }
     );
 
-    res.status(201).json(getHttpResponse({ data, message: "移除按讚成功" }));
+    res.status(201).json(getHttpResponse({ 
+      data, 
+      message: "移除按讚成功" 
+    }));
   }
 };
 
