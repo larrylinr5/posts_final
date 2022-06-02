@@ -38,7 +38,7 @@ const comments = {
         comments: [...ExistPost.comments, newComment._id]
       }
     );
-    const postComment = await Comment.find({}).sort({ _id: -1 }).limit(1).select("-logicDeleteFlag");
+    const postComment = await Comment.findById(newComment.id).populate({ path: "editor", select: "nickName avatar" }).select("-logicDeleteFlag");
     res.status(201).json(getHttpResponse({ 
       data: { 
         comment: postComment

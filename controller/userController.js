@@ -89,8 +89,8 @@ const users = {
       user,
       body: {
         password,
-        confirmPassword: confirmPassword,
-        oldPassword: oldPassword
+        confirmPassword,
+        oldPassword
       },
     } = req;
     const validatorResult = Validator.updatePw({
