@@ -1,58 +1,33 @@
-[
-  {
-      "_id": "628994a96c5d0a28a5bc118c",
-      "editor": {
-          "_id": "627fb6024fd518e80ccdeba3",
-          "nickName": "Ada",
-          "avatar": "https://thumb.fakeface.rest/thumb_female_27_5a94a297efb15caf0e3d769ce1694953e8bf33e2.jpg",
-          "gender": 0,
-          "logicDeleteFlag": false,
-          "updatedAt": "2022-05-21T14:10:10.807Z"
-      },
-      "content": "找到大海的照片，好美啊",
-      "image": [
-          "https://images.unsplash.com/photo-1476673160081-cf065607f449?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTh8fHNlYXxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=800&q=60"
-      ],
-      "likes": [],
-      "comments": [],
-      "logicDeleteFlag": false,
-      "createdAt": "2022-05-22T01:40:57.383Z",
-      "updatedAt": "2022-05-22T01:40:57.383Z"
-  },
-  {
-      "_id": "628994a96c5d0a28a5bc118b",
-      "editor": {
-          "_id": "627fb4ac4fd518e80ccdeba1",
-          "nickName": "John",
-          "avatar": "https://thumb.fakeface.rest/thumb_male_10_8c02e4e9bdc0e103530691acfca605f18caf1766.jpg",
-          "gender": 0,
-          "logicDeleteFlag": false,
-          "updatedAt": "2022-05-21T14:10:10.807Z"
-      },
-      "content": "搶到想要的 NFT 啦",
-      "image": [],
-      "likes": [],
-      "comments": [],
-      "logicDeleteFlag": false,
-      "createdAt": "2022-05-22T01:40:57.383Z",
-      "updatedAt": "2022-05-22T01:40:57.383Z"
-  },
-  {
-      "_id": "628994a96c5d0a28a5bc118a",
-      "editor": {
-          "_id": "627fb5c64fd518e80ccdeba2",
-          "nickName": "Mary",
-          "avatar": "https://thumb.fakeface.rest/thumb_female_30_8ab46617938c195cadf80bc11a96ce906a47c110.jpg",
-          "gender": 0,
-          "logicDeleteFlag": false,
-          "updatedAt": "2022-05-21T14:10:10.807Z"
-      },
-      "content": "各位我有一個作戰計劃",
-      "image": [],
-      "likes": [],
-      "comments": [],
-      "logicDeleteFlag": false,
-      "createdAt": "2022-05-22T01:40:57.383Z",
-      "updatedAt": "2022-05-22T01:40:57.383Z"
-  }
-]
+[{
+    "_id": "628994a96c5d0a28a5bc118c",
+    "editor": "627fb6024fd518e80ccdeba3",
+    "content": "找到大海的照片，好美啊",
+    "image": [
+      "https://images.unsplash.com/photo-1476673160081-cf065607f449?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTh8fHNlYXxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=800&q=60"
+    ],
+    "likes": [],
+    "comments": ["628cfdac12c993b263c0c71a"],
+    "createdAt": "1653183657383",
+    "updatedAt": "1653183657383",
+    "logicDeleteFlag": false
+  },{
+    "_id": "628994a96c5d0a28a5bc118b",
+    "editor": "627fb4ac4fd518e80ccdeba1",
+    "content": "搶到想要的 NFT 啦",
+    "image": [],
+    "likes": [],
+    "comments": ["628cef604936f8c247e02e9f","628d61c7de1ee178ba22f6c2"],
+    "createdAt": "1653183657383",
+    "updatedAt": "1653183657383",
+    "logicDeleteFlag": false
+  },{
+    "_id": "628994a96c5d0a28a5bc118a",
+    "editor": "627fb5c64fd518e80ccdeba2",
+    "content": "各位我有一個作戰計劃",
+    "image": [],
+    "likes": [],
+    "comments": ["628cf48dcaccc76fd003048f"],
+    "createdAt": "1653183657383",
+    "updatedAt": "1653183657383",
+    "logicDeleteFlag": false
+  }]
