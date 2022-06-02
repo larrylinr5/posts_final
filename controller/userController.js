@@ -1,12 +1,13 @@
-const { appError } = require("../utils/errorHandler");
+const { appError, handleErrorAsync } = require("../utils/errorHandler");
 const getHttpResponse = require("../utils/successHandler");
 const bcrypt = require("bcryptjs");
+const validator = require('validator');
 const { generateJwtToken } = require("../middleware/auth");
 const User = require("../models/userModel");
 const Validator = require("../utils/validator");
 
 const users = {
-  signUpCheck: async (req, res, next) => {
+  signUpCheck: handleErrorAsync(async (req, res, next) => {
     const validatorResult = Validator.signUpCheck(req.body);
     if (!validatorResult.status) {
       return next(appError(400, "40001", validatorResult.msg));
@@ -19,8 +20,8 @@ const users = {
     res.status(201).json(getHttpResponse({
       message: "驗證成功"
     }));
-  },
-  signUp: async (req, res, next) => {
+  }),
+  signUp: handleErrorAsync(async (req, res, next) => {
     const validatorResult = Validator.signUp(req.body);
     if (!validatorResult.status) {
       return next(appError(400, "40001", validatorResult.msg));
@@ -32,7 +33,7 @@ const users = {
       newUser = await User.create({
         nickName,
         email,
-        password,
+        password
       });
     } catch (error) {
       if (error.code === 11000) {
@@ -53,8 +54,8 @@ const users = {
     res.status(201).json(getHttpResponse({
       data
     }));
-  },
-  signIn: async (req, res, next) => {
+  }),
+  signIn: handleErrorAsync(async (req, res, next) => {
     const validatorResult = Validator.signIn(req.body);
     if (!validatorResult.status) {
       return next(appError(400, "40001", validatorResult.msg));
@@ -82,9 +83,8 @@ const users = {
     res.status(201).json(getHttpResponse({
       data
     }));
-  },
-  // 更新會員密碼
-  updatePassword: async (req, res, next) => {
+  }),
+  updatePassword: handleErrorAsync(async (req, res, next) => {
     const {
       user,
       body: {
@@ -121,22 +121,22 @@ const users = {
     res.status(201).json(getHttpResponse({
       message: "更新密碼成功"
     }));
-  },
-  getMyProfile: async (req, res) => {
+  }),
+  getMyProfile: handleErrorAsync(async (req, res) => {
     const { user } = req;
     const profile = await User.findById(user._id).select("-logicDeleteFlag");
     res.status(200).json(getHttpResponse({
       data: profile
     }));
-  },
-  getOtherProfile: async (req, res) => {
+  }),
+  getOtherProfile: handleErrorAsync(async (req, res) => {
     const { userId } = req.params;
     const profile = await User.findById(userId).select("-logicDeleteFlag");
     res.status(200).json(getHttpResponse({
       data: profile
     }));
-  },
-  updateProfile: async (req, res, next) => {
+  }),
+  updateProfile: handleErrorAsync(async (req, res, next) => {
     const {
       user,
       params: { userId },
@@ -152,6 +152,8 @@ const users = {
     if (!nickName || nickName.trim().length === 0) {
       return next(appError(400, "40001", "請填寫暱稱"));
     };
+    if (avatar && !validator.isURL(avatar, { protocols: ['https'] }))
+      return next(appError(400, "40001", "圖片格式不正確!"));
     const profile = await User.findByIdAndUpdate(userId,
       {
         nickName,
@@ -164,7 +166,7 @@ const users = {
     res.status(201).json(getHttpResponse({
       data: profile
     }));
-  }
+  })
 };
 
 module.exports = users;

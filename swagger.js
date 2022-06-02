@@ -1,7 +1,5 @@
 // swagger.js
 const swaggerAutogen = require("swagger-autogen")();
-
-const schemes = process.env.NODE_ENV === "dev" ? ["http"] : ["https"];
 const definitions = require("./swagger-defintion");
 
 const doc = {
@@ -10,7 +8,7 @@ const doc = {
     description: "MetaWall API 文件" // 描述文件
   },
   host: "localhost:3005", // 生成文件的路徑
-  schemes, // 文件所支援的模式
+  schemes: "http", // 文件所支援的模式
   tags: [
     { name: "Auth", description: "驗證相關" },
     { name: "Users", description: "會員相關" },
@@ -23,11 +21,11 @@ const doc = {
   definitions,
   securityDefinitions: {
     // Token
-    apiKeyAuth: {
+    Bearer: {
       type: "apiKey",
       in: "headers", // can be 'header', 'query' or 'cookie'
-      name: "authorization", // name of the header, query parameter or cookie
-      description: "JSON Web Token"
+      name: "Authorization", // name of the header, query parameter or cookie
+      description: "JWT Token"
     }
   }
 };

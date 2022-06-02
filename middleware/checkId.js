@@ -6,11 +6,11 @@ const checkUserId = async(req, res, next) => {
   const { userId } = req.params;
   const isValidId = mongoose.Types.ObjectId.isValid(userId);
   if (!isValidId) {
-    return next(appError(400, "格式錯誤", "使用者 ID 格式錯誤, 請重新確認"));
+    return next(appError(400, "40001", "使用者 ID 格式錯誤, 請重新確認"));
   }
   const user = await User.findById(userId);
   if (!user) {
-    return next(appError(400, "無此資料", "ID 不存在"));
+    return next(appError(400, "40010", "ID 不存在"));
   }
   next();
 };
