@@ -8,7 +8,7 @@ const like = {
     const { user, query } = req;
     const keyword = query.q ? query.q : ""; // 關鍵字
     let currentPage = Math.max(0, Number(query.currentPage - 1)); // 當前頁數
-    let perPage = query.perPage ? Number(query.perPage) : 10; // 一頁顯示幾筆資料
+    let perPage = query.perPage ? Number(query.perPage) : 100; // 一頁顯示幾筆資料
 
     // 搜尋條件
     const filter = {
@@ -23,10 +23,10 @@ const like = {
     // 倒序: desc，升序: asc
     const sort = query.sort === "desc" ? -1 : query.sort === "asc" ? 1 : "asc";
     // 用戶有按讚的所有貼文，隱藏comments欄位
-    const userAllPost = await Post.find(filter, { "comments": false }).populate({ path: "editor", select: "nickName avatar" }).skip(currentPage).limit(perPage).sort({ "createdAt": sort });
+    const userAllPost = await Post.find(filter, { "comments": false }).populate({ path: "editor", select: "nickName avatar" }).skip(currentPage * perPage).limit(perPage).sort({ "createdAt": sort, "id": -1 });
 
-    let totalDatas = userAllPost.length; // 總資料筆數
-    let totalPages = Math.ceil(userAllPost.length / perPage); // 一共顯示幾頁
+    const total = await Post.find(filter, { "comments": false }).countDocuments(); // 總資料筆數
+    const totalPages = Math.ceil(total / perPage); // 一共顯示幾頁
 
     const message = userAllPost.length === 0 ? "您尚未按讚，故無該資料" : "取得資料成功";
     const data = {
@@ -35,9 +35,9 @@ const like = {
         totalPages, // 總頁數
         currentPage, // 當前頁數
         perPage, // 一頁顯示資料筆數
-        totalDatas, // 資料總筆數
-        has_pre: totalDatas === 0 ? false : currentPage + 1 > 1,
-        has_next: totalDatas === 0 ? false : currentPage + 1 < totalPages
+        totalDatas: total, // 資料總筆數
+        has_pre: total === 0 ? false : currentPage + 1 > 1,
+        has_next: total === 0 ? false : currentPage + 1 < totalPages
       },
     };
 
@@ -63,8 +63,8 @@ const like = {
     }
 
     const data = await Post.findOneAndUpdate(
-      { 
-        postId
+      {
+        "_id": postId
       }, 
       { 
         $addToSet: { likes: user._id } 
@@ -98,7 +98,7 @@ const like = {
 
     const data = await Post.findOneAndUpdate(
       { 
-        postId
+        "_id": postId
       }, 
       { 
         $pull: { likes: user._id } 
