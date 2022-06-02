@@ -89,8 +89,8 @@ const users = {
       user,
       body: {
         password,
-        confirm_password: confirmPassword,
-        old_password: oldPassword
+        confirmPassword,
+        oldPassword
       },
     } = req;
     const validatorResult = Validator.updatePw({
@@ -146,11 +146,11 @@ const users = {
         avatar
       }
     } = req;
-    if (String(user._id) !== String(userId)) { 
-      return next(appError(400, "40004", "您無權限修改他人資料")); 
+    if (String(user._id) !== String(userId)) {
+      return next(appError(400, "40004", "您無權限修改他人資料"));
     };
-    if (!nickName || nickName.trim().length === 0) { 
-      return next(appError(400, "40001", "請填寫暱稱")); 
+    if (!nickName || nickName.trim().length === 0) {
+      return next(appError(400, "40001", "請填寫暱稱"));
     };
     const profile = await User.findByIdAndUpdate(userId,
       {
