@@ -8,8 +8,8 @@
     "prod": "cross-env NODE_ENV=production nodemon ./bin/www",
     "format": "eslint . --fix",
     "swagger": "node ./swagger.js",
-    "seed-up": "node seeds/userSeeder.js up && node seeds/postSeeder.js up",
-    "seed-down": "node seeds/userSeeder.js down && node seeds/postSeeder.js down"
+    "seed-up": "node seeds/userSeeder.js up && node seeds/postSeeder.js up && node seeds/followSeeder.js up",
+    "seed-down": "node seeds/userSeeder.js down && node seeds/postSeeder.js down && node seeds/followSeeder.js down"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

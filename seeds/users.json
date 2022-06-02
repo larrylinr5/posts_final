@@ -1,5 +1,13 @@
 [
   {
+    "_id":"628bbb1025b04816f750179b",
+    "nickName": "Justin",
+    "gender": 0,
+    "avatar": "https://thumb.fakeface.rest/thumb_male_10_8c02e4e9bdc0e103530691acfca605f18caf1766.jpg",
+    "email": "juns3700@gmail.com",
+    "password": "$2a$12$5N.M/4ztahpbk1GMEMBSLO3qblRAx4FrTpe81YIPbR/WmfDFcHTnC"
+  },
+  {
       "_id":"627fb4ac4fd518e80ccdeba1",
       "nickName": "John",
       "gender": 0,
@@ -22,5 +30,52 @@
       "avatar": "https://thumb.fakeface.rest/thumb_female_27_5a94a297efb15caf0e3d769ce1694953e8bf33e2.jpg",
       "email": "AdaWang@gmail.com",
       "password": "$2a$12$5N.M/4ztahpbk1GMEMBSLO3qblRAx4FrTpe81YIPbR/WmfDFcHTnC"
+  },
+  {
+    "_id": "6289144309e9a7d515969080",
+    "nickName": "HObby",
+    "gender": 0,
+    "email": "hobby@gmail.com",
+    "password": "$2a$12$gkHGEGkfel7MuP7QI9YAcuDTmZTFjW7rIM4Mb9zDVBp8cimW2k8cu",
+    "logicDeleteFlag": false,
+    "createdAt": "1653150787891",
+    "updatedAt": "1653150787891"
+  },{
+    "_id": "628a01ddbe28392a6a62918b",
+    "nickName": "Haru",
+    "gender": 0,
+    "email": "haru@gmail.com",
+    "password": "$2a$12$KZpXQelIfu7BVvwmjPpZbuNd2TN8aaRnnlLNJc8gp0Y0K2Y83MFV.",
+    "logicDeleteFlag": false,
+    "createdAt": "1653211613890",
+    "updatedAt": "1653211613890"
+  },{
+    "_id": "628a01e5be28392a6a62918d",
+    "nickName": "aaron",
+    "gender": 0,
+    "email": "aaron@gmail.com",
+    "password": "$2a$12$U3fq/kj8Wdit3IOJWXQdA.RLRsGTqI0aHTyCKG4WfQqqTgL3oNc0q",
+    "logicDeleteFlag": false,
+    "createdAt": "1653211621036",
+    "updatedAt": "1653211621036"
+  },{
+    "_id": "628a01eebe28392a6a62918f",
+    "nickName": "hazel",
+    "gender": 0,
+    "email": "hazel@gmail.com",
+    "password": "$2a$12$K./S/WJfenxP7DZYFG6yJeLd2VECobvlJXhvwKOgalL9nTD6WGhti",
+    "logicDeleteFlag": false,
+    "createdAt": "1653211630446",
+    "updatedAt": "1653211630446"
+  },
+  {
+    "_id": "628bb164fcb18e7bb16bf59d",
+    "nickName": "ellie",
+    "gender": 0,
+    "email": "ellie@gmail.com",
+    "password": "$2a$12$LOEp/IM6RyBdebmr2LuPROhNEaJYMzV1YxOJJQHh.sehHvRejQ1uG",
+    "logicDeleteFlag": false,
+    "createdAt": "1653322084629",
+    "updatedAt": "1653322084629"
   }
 ]

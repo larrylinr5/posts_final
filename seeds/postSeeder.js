@@ -1,7 +1,9 @@
 // postSeeder.js
 /* connect to mongoDB */
 const mongoose = require('mongoose');
-const localUrl = process.env.DATABASE
+const dbName = "metaWall"
+const mongoDbLocalPort = "27017"
+const localUrl = `mongodb://localhost:${mongoDbLocalPort}/${dbName}`
 mongoose.connect(localUrl)
 const db = mongoose.connection
 
