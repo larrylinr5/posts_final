@@ -92,6 +92,11 @@ const Error = {
   message: "錯誤訊息"
 };
 
+const Sign = {
+  token: "abcde",
+  _id: "123456789"
+};
+
 module.exports = {
   User,
   Posts,
@@ -101,4 +106,5 @@ module.exports = {
   File,
   Success,
   Error,
+  Sign
 };

@@ -36,15 +36,13 @@
       "description": "上傳檔案相關"
     }
   ],
-  "schemes": [
-    "https"
-  ],
+  "schemes": "http",
   "securityDefinitions": {
-    "apiKeyAuth": {
+    "Bearer": {
       "type": "apiKey",
       "in": "headers",
-      "name": "authorization",
-      "description": "JSON Web Token"
+      "name": "Authorization",
+      "description": "JWT Token"
     }
   },
   "consumes": [],
@@ -60,15 +58,33 @@
     },
     "/users/profile": {
       "get": {
-        "tags": [],
+        "tags": [
+          "Users"
+        ],
+        "summary": "取得會員的個人資料",
         "description": "",
         "parameters": [],
-        "responses": {}
+        "responses": {
+          "200": {
+            "description": "取得會員的個人資料成功",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
       }
     },
     "/users/profile/{userId}": {
       "get": {
-        "tags": [],
+        "tags": [
+          "Users"
+        ],
+        "summary": "取得特定會員的個人資料",
         "description": "",
         "parameters": [
           {
@@ -78,10 +94,25 @@
             "type": "string"
           }
         ],
-        "responses": {}
+        "responses": {
+          "200": {
+            "description": "取得特定會員的個人資料成功",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
       },
       "patch": {
-        "tags": [],
+        "tags": [
+          "Users"
+        ],
+        "summary": "更新特定會員的個人資料",
         "description": "",
         "parameters": [
           {
@@ -89,33 +120,212 @@
             "in": "path",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "parameter_name",
+            "in": "body",
+            "description": "更新資料",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "nickName": {
+                  "type": "string",
+                  "example": "兩金勘吉"
+                },
+                "gender": {
+                  "type": "number",
+                  "example": 1
+                },
+                "avatar": {
+                  "type": "string",
+                  "example": "https://i.imgur.com/xxx.png"
+                }
+              },
+              "required": [
+                "nickName"
+              ]
+            },
+            "type": "string"
           }
         ],
-        "responses": {}
+        "responses": {
+          "201": {
+            "description": "更新特定會員的個人資料成功",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          },
+          "400": {
+            "description": "更新特定會員的個人資料失敗",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
       }
     },
     "/users/sign_up_check": {
       "post": {
-        "tags": [],
+        "tags": [
+          "Auth"
+        ],
+        "summary": "驗證註冊會員",
         "description": "",
-        "parameters": [],
-        "responses": {}
+        "parameters": [
+          {
+            "name": "parameter_name",
+            "in": "body",
+            "description": "註冊資料",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "example": "test@gmail.com"
+                },
+                "password": {
+                  "type": "string",
+                  "example": "a1234567"
+                },
+                "confirmPassword": {
+                  "type": "string",
+                  "example": "a1234567"
+                }
+              },
+              "required": [
+                "email",
+                "password",
+                "confirmPassword"
+              ]
+            },
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "驗證成功",
+            "schema": {
+              "$ref": "#/definitions/Success"
+            }
+          },
+          "400": {
+            "description": "驗證失敗",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
       }
     },
     "/users/sign_up": {
       "post": {
-        "tags": [],
+        "tags": [
+          "Users"
+        ],
+        "summary": "註冊",
         "description": "",
-        "parameters": [],
-        "responses": {}
+        "parameters": [
+          {
+            "name": "parameter_name",
+            "in": "body",
+            "description": "註冊資料",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "nickName": {
+                  "type": "string",
+                  "example": "暱稱"
+                },
+                "email": {
+                  "type": "string",
+                  "example": "test@gmail.com"
+                },
+                "password": {
+                  "type": "string",
+                  "example": "a1234567"
+                },
+                "confirmPassword": {
+                  "type": "string",
+                  "example": "a1234567"
+                }
+              },
+              "required": [
+                "nickName",
+                "email",
+                "password",
+                "confirmPassword"
+              ]
+            },
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "註冊成功",
+            "schema": {
+              "$ref": "#/definitions/Sign"
+            }
+          },
+          "400": {
+            "description": "註冊失敗",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
       }
     },
     "/users/sign_in": {
       "post": {
-        "tags": [],
+        "tags": [
+          "Users"
+        ],
+        "summary": "登入",
         "description": "",
-        "parameters": [],
-        "responses": {}
+        "parameters": [
+          {
+            "name": "parameter_name",
+            "in": "body",
+            "description": "登入資料",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "example": "test@gmail.com"
+                },
+                "password": {
+                  "type": "string",
+                  "example": "a1234567"
+                }
+              },
+              "required": [
+                "email",
+                "password"
+              ]
+            },
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "登入成功",
+            "schema": {
+              "$ref": "#/definitions/Sign"
+            }
+          },
+          "400": {
+            "description": "登入失敗",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
       }
     },
     "/users/avatar": {
@@ -156,10 +366,60 @@
     },
     "/users/updatePassword": {
       "patch": {
-        "tags": [],
+        "tags": [
+          "Users"
+        ],
+        "summary": "更新會員密碼",
         "description": "",
-        "parameters": [],
-        "responses": {}
+        "parameters": [
+          {
+            "name": "parameter_name",
+            "in": "body",
+            "description": "更新資料",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "password": {
+                  "type": "string",
+                  "example": "ktv1234567"
+                },
+                "confirmPassword": {
+                  "type": "string",
+                  "example": "ktv1234567"
+                },
+                "oldPassword": {
+                  "type": "string",
+                  "example": "a1234567"
+                }
+              },
+              "required": [
+                "password",
+                "confirmPassword",
+                "oldPassword"
+              ]
+            },
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "更新密碼成功",
+            "schema": {
+              "$ref": "#/definitions/Success"
+            }
+          },
+          "400": {
+            "description": "更新密碼失敗",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
       }
     },
     "/posts/": {
@@ -746,6 +1006,19 @@
         "message": {
           "type": "string",
           "example": "錯誤訊息"
+        }
+      }
+    },
+    "Sign": {
+      "type": "object",
+      "properties": {
+        "token": {
+          "type": "string",
+          "example": "abcde"
+        },
+        "_id": {
+          "type": "string",
+          "example": "123456789"
         }
       }
     }
