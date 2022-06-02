@@ -64,7 +64,7 @@ const like = {
 
     const data = await Post.findOneAndUpdate(
       {
-        "_id": postId
+        _id: postId
       }, 
       { 
         $addToSet: { likes: user._id } 
@@ -98,7 +98,7 @@ const like = {
 
     const data = await Post.findOneAndUpdate(
       { 
-        "_id": postId
+        _id: postId
       }, 
       { 
         $pull: { likes: user._id } 
