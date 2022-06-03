@@ -438,10 +438,56 @@
     },
     "/posts/likes": {
       "get": {
-        "tags": [],
+        "tags": [
+          "Likes"
+        ],
+        "summary": "取得按讚貼文列表",
         "description": "",
-        "parameters": [],
-        "responses": {}
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "description": "關鍵字",
+            "type": "string"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "排序方式，desc 為新至舊，asc 為舊至新",
+            "type": "string"
+          },
+          {
+            "name": "currentPage",
+            "in": "query",
+            "description": "當前頁數",
+            "type": "number"
+          },
+          {
+            "name": "perPage",
+            "in": "query",
+            "description": "一頁顯示資料筆數",
+            "type": "number"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "取得按讚貼文列表成功",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/getLikes"
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
       }
     },
     "/posts/{userId}": {
@@ -484,7 +530,10 @@
     },
     "/posts/likes/{postId}": {
       "put": {
-        "tags": [],
+        "tags": [
+          "Likes"
+        ],
+        "summary": "新增一則特定貼文的讚",
         "description": "",
         "parameters": [
           {
@@ -494,10 +543,31 @@
             "type": "string"
           }
         ],
-        "responses": {}
+        "responses": {
+          "201": {
+            "description": "按讚貼文成功",
+            "schema": {
+              "$ref": "#/definitions/Like"
+            }
+          },
+          "400": {
+            "description": "按讚貼文失敗",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
       },
       "delete": {
-        "tags": [],
+        "tags": [
+          "Likes"
+        ],
+        "summary": "取消一則特定貼文的讚",
         "description": "",
         "parameters": [
           {
@@ -507,7 +577,25 @@
             "type": "string"
           }
         ],
-        "responses": {}
+        "responses": {
+          "201": {
+            "description": "取消按讚貼文成功 ",
+            "schema": {
+              "$ref": "#/definitions/Like"
+            }
+          },
+          "400": {
+            "description": "取消按讚貼文失敗 ",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
       }
     },
     "/posts/comment/{postId}/{commentId}": {
@@ -845,7 +933,66 @@
         }
       }
     },
-    "Likes": {
+    "Like": {
+      "type": "object",
+      "properties": {
+        "_id": {
+          "type": "string",
+          "example": "123456789"
+        },
+        "user": {
+          "type": "object",
+          "properties": {
+            "_id": {
+              "type": "string",
+              "example": "123456789"
+            },
+            "nickName": {
+              "type": "string",
+              "example": "會員暱稱"
+            },
+            "avatar": {
+              "type": "string",
+              "example": "https://i.imgur.com/xxx.png"
+            }
+          }
+        },
+        "content": {
+          "type": "string",
+          "example": "來新增一筆資料吧"
+        },
+        "image": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "likes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "createdAt": {
+          "type": "string",
+          "example": "2022-06-01T08:32:14.125Z"
+        },
+        "updatedAt": {
+          "type": "string",
+          "example": "2022-06-01T08:32:14.125Z"
+        },
+        "Success": {
+          "type": "object",
+          "properties": {
+            "message": {
+              "type": "string",
+              "example": "成功訊息"
+            }
+          }
+        }
+      }
+    },
+    "getLikes": {
       "type": "object",
       "properties": {
         "list": {
@@ -927,6 +1074,15 @@
             "has_next": {
               "type": "boolean",
               "example": false
+            }
+          }
+        },
+        "Success": {
+          "type": "object",
+          "properties": {
+            "message": {
+              "type": "string",
+              "example": "成功訊息"
             }
           }
         }

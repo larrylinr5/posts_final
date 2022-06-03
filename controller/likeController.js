@@ -1,14 +1,14 @@
-const { appError } = require("../utils/errorHandler");
+const { appError, handleErrorAsync } = require("../utils/errorHandler");
 const getHttpResponse = require("../utils/successHandler");
 const Post = require("../models/postModel");
 const mongoose = require("mongoose");
 
 const like = {
-  getUserLikeList: async(req, res) => {
+  getUserLikeList: handleErrorAsync(async (req, res) => {
     const { user, query } = req;
     const keyword = query.q ? query.q : ""; // 關鍵字
     let currentPage = Math.max(0, Number(query.currentPage - 1)); // 當前頁數
-    let perPage = query.perPage ? Number(query.perPage) : 100; // 一頁顯示幾筆資料
+    let perPage = query.perPage ? Number(query.perPage) : 10; // 一頁顯示幾筆資料
 
     // 搜尋條件
     const filter = {
@@ -23,7 +23,19 @@ const like = {
     // 倒序: desc，升序: asc
     const sort = query.sort === "desc" ? -1 : query.sort === "asc" ? 1 : "asc";
     // 用戶有按讚的所有貼文，隱藏comments欄位
-    const userAllPost = await Post.find(filter, { "comments": false }).populate({ path: "editor", select: "nickName avatar" }).skip(currentPage * perPage).limit(perPage).sort({ "createdAt": sort, "id": -1 });
+    const userAllPost = await Post.find(
+      filter,
+      {
+        "comments": false
+      })
+      .populate({
+        path: "editor",
+        select: "nickName avatar"
+      })
+      .skip(currentPage * perPage)
+      .limit(perPage)
+      .sort({ "createdAt": sort, "id": -1 })
+      .populate("likes");
 
     const total = await Post.find(filter, { "comments": false }).countDocuments(); // 總資料筆數
     const totalPages = Math.ceil(total / perPage); // 一共顯示幾頁
@@ -41,78 +53,90 @@ const like = {
       },
     };
 
-    res.status(200).json(getHttpResponse({ 
-      data, message 
+    res.status(200).json(getHttpResponse({
+      data, message
     }));
-  },
-  addPostLike: async(req, res, next) => {
-    const { 
-      user, 
-      params: { 
-        postId 
-      } 
+  }),
+  addPostLike: handleErrorAsync(async (req, res, next) => {
+    const {
+      user,
+      params: {
+        postId
+      }
     } = req;
 
-    if (!(postId && mongoose.Types.ObjectId.isValid(postId))){
+    if (!(postId && mongoose.Types.ObjectId.isValid(postId))) {
       return next(appError(400, "40002", "請傳入特定貼文"));
     }
 
     const ExistPost = await Post.findById(postId);
-    if (!ExistPost){
+    if (!ExistPost) {
       return next(appError(400, "40010", "尚未發布貼文"));
     }
 
     const data = await Post.findOneAndUpdate(
       {
         _id: postId
-      }, 
-      { 
-        $addToSet: { likes: user._id } 
-      }, 
-      { 
-        new: true 
+      },
+      {
+        $addToSet: { likes: user._id }
+      },
+      {
+        new: true
       }
-    );
+    )
+      .select("-comments")
+      .select("-logicDeleteFlag")
+      .populate({
+        path: "editor",
+        select: "nickName avatar",
+      }).populate("likes");
 
-    res.status(201).json(getHttpResponse({ 
-      data, 
-      message: "加入按讚成功" 
+    res.status(201).json(getHttpResponse({
+      data,
+      message: "加入按讚成功"
     }));
-  },
-  delPostLike: async(req, res, next) => {
-    const { 
-      user, 
-      params: { 
-        postId 
-      } 
+  }),
+  delPostLike: handleErrorAsync(async (req, res, next) => {
+    const {
+      user,
+      params: {
+        postId
+      }
     } = req;
 
-    if (!(postId && mongoose.Types.ObjectId.isValid(postId))){
+    if (!(postId && mongoose.Types.ObjectId.isValid(postId))) {
       return next(appError(400, "40002", "請傳入特定貼文"));
     }
 
     const ExistPost = await Post.findById(postId);
-    if (!ExistPost){
+    if (!ExistPost) {
       return next(appError(400, "40010", "尚未發布貼文"));
     }
 
     const data = await Post.findOneAndUpdate(
-      { 
+      {
         _id: postId
-      }, 
-      { 
-        $pull: { likes: user._id } 
-      }, 
-      { 
-        new: true 
+      },
+      {
+        $pull: { likes: user._id }
+      },
+      {
+        new: true
       }
-    );
+    )
+      .select("-comments")
+      .select("-logicDeleteFlag")
+      .populate({
+        path: "editor",
+        select: "nickName avatar",
+      }).populate("likes");
 
-    res.status(201).json(getHttpResponse({ 
-      data, 
-      message: "移除按讚成功" 
+    res.status(201).json(getHttpResponse({
+      data,
+      message: "移除按讚成功"
     }));
-  }
+  })
 };
 
 module.exports = like;

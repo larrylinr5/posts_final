@@ -7,6 +7,19 @@ const page = {
   has_next: false
 };
 
+const Success = {
+  message: "成功訊息"
+};
+
+const Error = {
+  message: "錯誤訊息"
+};
+
+const Sign = {
+  token: "abcde",
+  _id: "123456789"
+};
+
 const user = { // Schema 定義為 editor
   _id: "123456789",
   nickName: "會員暱稱",
@@ -67,9 +80,15 @@ const like = {
   updatedAt: "2022-06-01T08:32:14.125Z"
 };
 
-const Likes = {
+const Like = {
+  ...like,
+  Success
+};
+
+const getLikes = {
   list: [like],
   page: page,
+  Success
 };
 
 const Comment = {
@@ -84,24 +103,12 @@ const File = {
   upload: "https://i.imgur.com/xxx.png"
 };
 
-const Success = {
-  message: "成功訊息"
-};
-
-const Error = {
-  message: "錯誤訊息"
-};
-
-const Sign = {
-  token: "abcde",
-  _id: "123456789"
-};
-
 module.exports = {
   User,
   Posts,
   Follows,
-  Likes,
+  Like,
+  getLikes,
   Comment,
   File,
   Success,
