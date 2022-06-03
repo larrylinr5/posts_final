@@ -1480,7 +1480,33 @@
         "likes": {
           "type": "array",
           "items": {
-            "type": "string"
+            "type": "object",
+            "properties": {
+              "_id": {
+                "type": "string",
+                "example": "123456789"
+              },
+              "nickName": {
+                "type": "string",
+                "example": "會員暱稱"
+              },
+              "avatar": {
+                "type": "string",
+                "example": "https://i.imgur.com/xxx.png"
+              },
+              "gender": {
+                "type": "number",
+                "example": 1
+              },
+              "createdAt": {
+                "type": "string",
+                "example": "2022-05-31T14:21:36.129Z"
+              },
+              "updatedAt": {
+                "type": "string",
+                "example": "2022-05-31T14:21:36.129Z"
+              }
+            }
           }
         },
         "createdAt": {
@@ -1544,7 +1570,74 @@
               "likes": {
                 "type": "array",
                 "items": {
-                  "type": "string"
+                  "type": "object",
+                  "properties": {
+                    "_id": {
+                      "type": "string",
+                      "example": "123456789"
+                    },
+                    "nickName": {
+                      "type": "string",
+                      "example": "會員暱稱"
+                    },
+                    "avatar": {
+                      "type": "string",
+                      "example": "https://i.imgur.com/xxx.png"
+                    },
+                    "gender": {
+                      "type": "number",
+                      "example": 1
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "example": "2022-05-31T14:21:36.129Z"
+                    },
+                    "updatedAt": {
+                      "type": "string",
+                      "example": "2022-05-31T14:21:36.129Z"
+                    }
+                  }
+                }
+              },
+              "comments": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "_id": {
+                      "type": "string",
+                      "example": "123456789"
+                    },
+                    "user": {
+                      "type": "object",
+                      "properties": {
+                        "_id": {
+                          "type": "string",
+                          "example": "123456789"
+                        },
+                        "nickName": {
+                          "type": "string",
+                          "example": "會員暱稱"
+                        },
+                        "avatar": {
+                          "type": "string",
+                          "example": "https://i.imgur.com/xxx.png"
+                        }
+                      }
+                    },
+                    "comment": {
+                      "type": "string",
+                      "example": "大家來回應"
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "example": "2022-06-01T08:41:23.254Z"
+                    },
+                    "updatedAt": {
+                      "type": "string",
+                      "example": "2022-06-01T08:41:23.254Z"
+                    }
+                  }
                 }
               },
               "createdAt": {
@@ -1605,7 +1698,7 @@
           "type": "string",
           "example": "123456789"
         },
-        "User": {
+        "user": {
           "type": "object",
           "properties": {
             "_id": {
@@ -1619,18 +1712,6 @@
             "avatar": {
               "type": "string",
               "example": "https://i.imgur.com/xxx.png"
-            },
-            "gender": {
-              "type": "number",
-              "example": 1
-            },
-            "createdAt": {
-              "type": "string",
-              "example": "2022-05-31T14:21:36.129Z"
-            },
-            "updatedAt": {
-              "type": "string",
-              "example": "2022-05-31T14:21:36.129Z"
             }
           }
         },

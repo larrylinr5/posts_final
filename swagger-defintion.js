@@ -81,12 +81,20 @@ const Follows = {
   Success
 };
 
+const Comment = {
+  _id: "123456789",
+  user,
+  comment: "大家來回應",
+  createdAt: "2022-06-01T08:41:23.254Z",
+  updatedAt: "2022-06-01T08:41:23.254Z"
+};
+
 const like = {
   _id: "123456789",
   user,
   content: "來新增一筆資料吧",
   image: ["https://i.imgur.com/xxx.png"],
-  likes: ["123456789"],
+  likes: [User],
   createdAt: "2022-06-01T08:32:14.125Z",
   updatedAt: "2022-06-01T08:32:14.125Z"
 };
@@ -96,18 +104,21 @@ const Like = {
   Success
 };
 
-const getLikes = {
-  list: [like],
-  page: page,
-  Success
+const getLike = {
+  _id: "123456789",
+  user,
+  content: "來新增一筆資料吧",
+  image: ["https://i.imgur.com/xxx.png"],
+  likes: [User],
+  comments: [Comment],
+  createdAt: "2022-06-01T08:32:14.125Z",
+  updatedAt: "2022-06-01T08:32:14.125Z"
 };
 
-const Comment = {
-  _id: "123456789",
-  User,
-  comment: "大家來回應",
-  createdAt: "2022-06-01T08:41:23.254Z",
-  updatedAt: "2022-06-01T08:41:23.254Z"
+const getLikes = {
+  list: [getLike],
+  page: page,
+  Success
 };
 
 const File = {
