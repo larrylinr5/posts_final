@@ -424,16 +424,102 @@
     },
     "/posts/": {
       "get": {
-        "tags": [],
+        "tags": [
+          "Posts"
+        ],
+        "summary": "取得所有貼文",
         "description": "",
-        "parameters": [],
-        "responses": {}
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "description": "關鍵字",
+            "type": "string"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "排序方式，desc 為新至舊，asc 為舊至新，hot 為最熱門",
+            "type": "string"
+          },
+          {
+            "name": "currentPage",
+            "in": "query",
+            "description": "當前頁面",
+            "type": "number"
+          },
+          {
+            "name": "perPage",
+            "in": "query",
+            "description": "一頁顯示資料筆數",
+            "type": "number"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "取得貼文成功",
+            "schema": {
+              "$ref": "#/definitions/GetPosts"
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
       },
       "post": {
-        "tags": [],
+        "tags": [
+          "Posts"
+        ],
+        "summary": "新增一則貼文",
         "description": "",
-        "parameters": [],
-        "responses": {}
+        "parameters": [
+          {
+            "name": "parameter_name",
+            "in": "body",
+            "description": "貼文資料",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "content": {
+                  "type": "string",
+                  "example": "貼文內容"
+                },
+                "image": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "required": [
+                "content"
+              ]
+            },
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "新增貼文成功",
+            "schema": {
+              "$ref": "#/definitions/Post"
+            }
+          },
+          "400": {
+            "description": "新增貼文失敗",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
       }
     },
     "/posts/likes": {
@@ -446,7 +532,10 @@
     },
     "/posts/{userId}": {
       "get": {
-        "tags": [],
+        "tags": [
+          "Posts"
+        ],
+        "summary": "取得特定會員的所有貼文",
         "description": "",
         "parameters": [
           {
@@ -454,9 +543,45 @@
             "in": "path",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "description": "關鍵字",
+            "type": "string"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "排序方式，desc 為新至舊，asc 為舊至新，hot 為最熱門",
+            "type": "string"
+          },
+          {
+            "name": "currentPage",
+            "in": "query",
+            "description": "當前頁面",
+            "type": "number"
+          },
+          {
+            "name": "perPage",
+            "in": "query",
+            "description": "一頁顯示資料筆數",
+            "type": "number"
           }
         ],
-        "responses": {}
+        "responses": {
+          "200": {
+            "description": "取得貼文成功",
+            "schema": {
+              "$ref": "#/definitions/GetPosts"
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
       }
     },
     "/posts/image": {
@@ -552,7 +677,10 @@
     },
     "/posts/{postId}": {
       "patch": {
-        "tags": [],
+        "tags": [
+          "Posts"
+        ],
+        "summary": "修改一則特定貼文",
         "description": "",
         "parameters": [
           {
@@ -560,12 +688,57 @@
             "in": "path",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "parameter_name",
+            "in": "body",
+            "description": "貼文資料",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "content": {
+                  "type": "string",
+                  "example": "貼文內容"
+                },
+                "image": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "required": [
+                "content"
+              ]
+            },
+            "type": "string"
           }
         ],
-        "responses": {}
+        "responses": {
+          "201": {
+            "description": "修改貼文成功",
+            "schema": {
+              "$ref": "#/definitions/Post"
+            }
+          },
+          "400": {
+            "description": "修改貼文失敗",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
       },
       "delete": {
-        "tags": [],
+        "tags": [
+          "Posts"
+        ],
+        "summary": "刪除一則特定貼文",
         "description": "",
         "parameters": [
           {
@@ -575,7 +748,25 @@
             "type": "string"
           }
         ],
-        "responses": {}
+        "responses": {
+          "201": {
+            "description": "刪除貼文成功",
+            "schema": {
+              "$ref": "#/definitions/Success"
+            }
+          },
+          "400": {
+            "description": " 刪除貼文失敗 ",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
       }
     },
     "/auth/google": {
@@ -636,6 +827,97 @@
         "updatedAt": {
           "type": "string",
           "example": "2022-05-31T14:21:36.129Z"
+        }
+      }
+    },
+    "Post": {
+      "type": "object",
+      "properties": {
+        "_id": {
+          "type": "string",
+          "example": "123456789"
+        },
+        "user": {
+          "type": "object",
+          "properties": {
+            "_id": {
+              "type": "string",
+              "example": "123456789"
+            },
+            "nickName": {
+              "type": "string",
+              "example": "會員暱稱"
+            },
+            "avatar": {
+              "type": "string",
+              "example": "https://i.imgur.com/xxx.png"
+            }
+          }
+        },
+        "content": {
+          "type": "string",
+          "example": "來新增一筆資料吧"
+        },
+        "image": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "likes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "comments": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "_id": {
+                "type": "string",
+                "example": "123456789"
+              },
+              "user": {
+                "type": "object",
+                "properties": {
+                  "_id": {
+                    "type": "string",
+                    "example": "123456789"
+                  },
+                  "nickName": {
+                    "type": "string",
+                    "example": "會員暱稱"
+                  },
+                  "avatar": {
+                    "type": "string",
+                    "example": "https://i.imgur.com/xxx.png"
+                  }
+                }
+              },
+              "comment": {
+                "type": "string",
+                "example": "夏日大作戰?!"
+              },
+              "createdAt": {
+                "type": "string",
+                "example": "2022-05-24T14:44:48.358Z"
+              },
+              "updatedAt": {
+                "type": "string",
+                "example": "2022-05-24T14:44:48.358Z"
+              }
+            }
+          }
+        },
+        "createdAt": {
+          "type": "string",
+          "example": "2022-06-01T08:32:14.125Z"
+        },
+        "updatedAt": {
+          "type": "string",
+          "example": "2022-06-01T08:32:14.125Z"
         }
       }
     },
@@ -762,6 +1044,143 @@
             "has_next": {
               "type": "boolean",
               "example": false
+            }
+          }
+        }
+      }
+    },
+    "GetPosts": {
+      "type": "object",
+      "properties": {
+        "list": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "_id": {
+                "type": "string",
+                "example": "123456789"
+              },
+              "user": {
+                "type": "object",
+                "properties": {
+                  "_id": {
+                    "type": "string",
+                    "example": "123456789"
+                  },
+                  "nickName": {
+                    "type": "string",
+                    "example": "會員暱稱"
+                  },
+                  "avatar": {
+                    "type": "string",
+                    "example": "https://i.imgur.com/xxx.png"
+                  }
+                }
+              },
+              "content": {
+                "type": "string",
+                "example": "來新增一筆資料吧"
+              },
+              "image": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "likes": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "comments": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "_id": {
+                      "type": "string",
+                      "example": "123456789"
+                    },
+                    "user": {
+                      "type": "object",
+                      "properties": {
+                        "_id": {
+                          "type": "string",
+                          "example": "123456789"
+                        },
+                        "nickName": {
+                          "type": "string",
+                          "example": "會員暱稱"
+                        },
+                        "avatar": {
+                          "type": "string",
+                          "example": "https://i.imgur.com/xxx.png"
+                        }
+                      }
+                    },
+                    "comment": {
+                      "type": "string",
+                      "example": "夏日大作戰?!"
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "example": "2022-05-24T14:44:48.358Z"
+                    },
+                    "updatedAt": {
+                      "type": "string",
+                      "example": "2022-05-24T14:44:48.358Z"
+                    }
+                  }
+                }
+              },
+              "createdAt": {
+                "type": "string",
+                "example": "2022-06-01T08:32:14.125Z"
+              },
+              "updatedAt": {
+                "type": "string",
+                "example": "2022-06-01T08:32:14.125Z"
+              }
+            }
+          }
+        },
+        "page": {
+          "type": "object",
+          "properties": {
+            "totalPages": {
+              "type": "number",
+              "example": 1
+            },
+            "currentPage": {
+              "type": "number",
+              "example": 1
+            },
+            "perPage": {
+              "type": "number",
+              "example": 10
+            },
+            "totalDatas": {
+              "type": "number",
+              "example": 1
+            },
+            "has_pre": {
+              "type": "boolean",
+              "example": false
+            },
+            "has_next": {
+              "type": "boolean",
+              "example": false
+            }
+          }
+        },
+        "Success": {
+          "type": "object",
+          "properties": {
+            "message": {
+              "type": "string",
+              "example": "成功訊息"
             }
           }
         }

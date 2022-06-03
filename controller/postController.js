@@ -1,13 +1,13 @@
 const mongoose = require("mongoose");
-const { appError } = require("../utils/errorHandler");
+const { appError, handleErrorAsync } = require("../utils/errorHandler");
 const getHttpResponse = require("../utils/successHandler");
 const validator = require("validator");
 const Post = require("../models/postModel");
 const Comment = require("../models/commentModel");
 
 const posts = {
-  // 取得全部貼文或個人全部貼文
-  getAllPosts: async (req, res) => {
+  // 取得所有貼文或特定會員的所有貼文
+  getAllPosts: handleErrorAsync(async (req, res) => {
     const {
       query,
       params: {
@@ -92,9 +92,9 @@ const posts = {
     res.status(200).json(getHttpResponse({
       data, message
     }));
-  },
-  // 新增貼文
-  postOnePost: async (req, res, next) => {
+  }),
+  // 新增一則貼文
+  postOnePost: handleErrorAsync(async (req, res, next) => {
     const {
       user,
       body: {
@@ -116,14 +116,17 @@ const posts = {
       return next(appError(400, "40001", "欄位未填寫正確!"));
     }
 
-    await Post.create({ editor: user, content, image });
-    const newPost = await Post.find({}).sort({ _id: -1 }).limit(1).select("-logicDeleteFlag");
-    res.status(201).json(getHttpResponse({ 
-      data: newPost 
+    const newPost = await Post.create({ editor: user, content, image });
+    const postPost = await Post.findById(newPost._id).populate({
+      path: "editor",
+      select: "nickName avatar",
+    }).select("-logicDeleteFlag");
+    res.status(201).json(getHttpResponse({
+      data: postPost
     }));
-  },
-  // 修改貼文
-  patchOnePost: async (req, res, next) => {
+  }),
+  // 修改一則特定貼文
+  patchOnePost: handleErrorAsync(async (req, res, next) => {
     const {
       user,
       body: {
@@ -146,26 +149,29 @@ const posts = {
         }
       });
     }
-    if (!content){
+    if (!content) {
       return next(appError(400, "40001", "欄位未填寫正確!"));
     }
 
     const ExistPost = await Post.findById(postId).exec();
-    if (!ExistPost){
+    if (!ExistPost) {
       return next(appError(400, "40010", "尚未發布貼文!"));
     }
-    if (ExistPost.editor.toString() !== user._id.toString()){
+    if (ExistPost.editor.toString() !== user._id.toString()) {
       return next(appError(400, "40004", "您無權限編輯此貼文"));
     }
 
     await Post.findByIdAndUpdate(postId, { content, image });
-    const editPost = await Post.findOne({ _id: postId }).limit(1).select("-logicDeleteFlag");
-    res.status(201).json(getHttpResponse({ 
-      data: editPost
+    const patchPost = await Post.findById(postId).populate({
+      path: "editor",
+      select: "nickName avatar",
+    }).select("-logicDeleteFlag");
+    res.status(201).json(getHttpResponse({
+      data: patchPost
     }));
-  },
+  }),
   // 刪除一筆貼文
-  deleteOnePost: async (req, res, next) => {
+  deleteOnePost: handleErrorAsync(async (req, res, next) => {
     const {
       user,
       params: {
@@ -173,7 +179,7 @@ const posts = {
       }
     } = req;
 
-    if (!(postId && mongoose.Types.ObjectId.isValid(postId))){
+    if (!(postId && mongoose.Types.ObjectId.isValid(postId))) {
       return next(appError(400, "40002", "請傳入特定貼文"));
     }
 
@@ -182,11 +188,11 @@ const posts = {
       "logicDeleteFlag": 0
     };
     const existPost = await Post.findOne(filter);
-    if (!existPost){
+    if (!existPost) {
       return next(appError(400, "40010", "無此貼文!"));
     }
 
-    if (existPost.editor.toString() !== user._id.toString()){
+    if (existPost.editor.toString() !== user._id.toString()) {
       return next(appError(400, "40004", "您無權限編輯此貼文"));
     }
 
@@ -209,10 +215,10 @@ const posts = {
         $set: { "logicDeleteFlag": true }
       }
     );
-    res.status(201).json(getHttpResponse({ 
-      message: "刪除貼文成功!" 
+    res.status(201).json(getHttpResponse({
+      message: "刪除貼文成功!"
     }));
-  }
+  })
 };
 
 module.exports = posts;

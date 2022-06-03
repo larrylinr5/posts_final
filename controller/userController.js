@@ -1,7 +1,7 @@
 const { appError, handleErrorAsync } = require("../utils/errorHandler");
 const getHttpResponse = require("../utils/successHandler");
 const bcrypt = require("bcryptjs");
-const validator = require('validator');
+const validator = require("validator");
 const { generateJwtToken } = require("../middleware/auth");
 const User = require("../models/userModel");
 const Validator = require("../utils/validator");
@@ -152,7 +152,7 @@ const users = {
     if (!nickName || nickName.trim().length === 0) {
       return next(appError(400, "40001", "請填寫暱稱"));
     };
-    if (avatar && !validator.isURL(avatar, { protocols: ['https'] }))
+    if (avatar && !validator.isURL(avatar, { protocols: ["https"] }))
       return next(appError(400, "40001", "圖片格式不正確!"));
     const profile = await User.findByIdAndUpdate(userId,
       {
