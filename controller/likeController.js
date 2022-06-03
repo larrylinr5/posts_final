@@ -22,12 +22,8 @@ const like = {
 
     // 倒序: desc，升序: asc
     const sort = query.sort === "desc" ? -1 : query.sort === "asc" ? 1 : "asc";
-    // 用戶有按讚的所有貼文，隱藏comments欄位
-    const userAllPost = await Post.find(
-      filter,
-      {
-        "comments": false
-      })
+
+    const userAllPost = await Post.find(filter)
       .populate({
         path: "editor",
         select: "nickName avatar"
@@ -35,9 +31,16 @@ const like = {
       .skip(currentPage * perPage)
       .limit(perPage)
       .sort({ "createdAt": sort, "id": -1 })
-      .populate("likes");
+      .populate("likes")
+      .populate({
+        path: 'comments',
+        populate: {
+          path: 'editor',
+          select: 'nickName avatar',
+        }
+      })
 
-    const total = await Post.find(filter, { "comments": false }).countDocuments(); // 總資料筆數
+    const total = await Post.find(filter).countDocuments(); // 總資料筆數
     const totalPages = Math.ceil(total / perPage); // 一共顯示幾頁
 
     const message = userAllPost.length === 0 ? "您尚未按讚，故無該資料" : "取得資料成功";
