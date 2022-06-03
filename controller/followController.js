@@ -1,17 +1,16 @@
-const { appError } = require("../utils/errorHandler");
+const { appError, handleErrorAsync } = require("../utils/errorHandler");
 const getHttpResponse = require("../utils/successHandler");
 const mongoose = require("mongoose");
 const validator = require("validator");
 const Follow = require("../models/followModel");
 
 const follows = {
-  // 取得個人所有追蹤列表
-  getFollowList: async (req, res, next) => {
-    let { 
-      sort, 
-      q, 
+  getFollowList: handleErrorAsync(async (req, res, next) => {
+    let {
+      sort,
+      q,
       currentPage,
-      perPage 
+      perPage
     } = req.query;
 
     // 關鍵字處理
@@ -158,8 +157,8 @@ const follows = {
         list: list
       }
     }));
-  },
-  postFollow: async (req, res, next) => {
+  }),
+  postFollow: handleErrorAsync(async (req, res, next) => {
     const { user } = req;
     const otherUser = req.params.userId;
     if (otherUser === user.id) {
@@ -176,31 +175,31 @@ const follows = {
       follow: user.id,
       following: otherUser
     });
-    res.status(201).json(getHttpResponse({ 
-      message: "追蹤成功" 
+    res.status(201).json(getHttpResponse({
+      message: "追蹤成功"
     }));
-  },
-  deleteFollow: async (req, res, next) => {
+  }),
+  deleteFollow: handleErrorAsync(async (req, res, next) => {
     const { user } = req;
     const otherUser = req.params.userId;
     if (otherUser === user.id) {
       return next(appError(400, "40004", "無法取消追蹤自己"));
     }
-    const existedFollowing = await Follow.findOne({
+    const existedFollowing = await Follow.findOneAndUpdate({
       follow: user.id,
       following: otherUser
+    },
+    {
+      $set: { "logicDeleteFlag": true }
     });
     if (!existedFollowing) {
       return next(appError(400, "40010", "尚未追蹤"));
     }
-    await Follow.deleteOne({
-      follow: user.id,
-      following: otherUser
-    });
-    res.status(201).json(getHttpResponse({ 
-      message: "取消追蹤成功" 
+
+    res.status(201).json(getHttpResponse({
+      message: "取消追蹤成功"
     }));
-  }
+  })
 };
 
 module.exports = follows;

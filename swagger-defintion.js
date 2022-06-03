@@ -78,6 +78,7 @@ const follow = {
 const Follows = {
   list: [follow],
   page: page,
+  Success
 };
 
 const like = {
