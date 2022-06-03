@@ -90,9 +90,15 @@ const like = {
   updatedAt: "2022-06-01T08:32:14.125Z"
 };
 
-const Likes = {
+const Like = {
+  ...like,
+  Success
+};
+
+const getLikes = {
   list: [like],
   page: page,
+  Success
 };
 
 const Comment = {
@@ -113,7 +119,8 @@ module.exports = {
   Posts,
   GetPosts,
   Follows,
-  Likes,
+  Like,
+  getLikes,
   Comment,
   File,
   Success,
