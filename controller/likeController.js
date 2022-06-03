@@ -33,12 +33,12 @@ const like = {
       .sort({ "createdAt": sort, "id": -1 })
       .populate("likes")
       .populate({
-        path: 'comments',
+        path: "comments",
         populate: {
-          path: 'editor',
-          select: 'nickName avatar',
+          path: "editor",
+          select: "nickName avatar",
         }
-      })
+      });
 
     const total = await Post.find(filter).countDocuments(); // 總資料筆數
     const totalPages = Math.ceil(total / perPage); // 一共顯示幾頁

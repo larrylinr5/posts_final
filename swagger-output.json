@@ -50,10 +50,50 @@
   "paths": {
     "/users/follows": {
       "get": {
-        "tags": [],
+        "tags": [
+          "Follows"
+        ],
+        "summary": "取得會員的追蹤列表",
         "description": "",
-        "parameters": [],
-        "responses": {}
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "description": "關鍵字",
+            "type": "string"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "排序方式，desc 為新至舊，asc 為舊至新",
+            "type": "string"
+          },
+          {
+            "name": "currentPage",
+            "in": "query",
+            "description": "當前頁面",
+            "type": "number"
+          },
+          {
+            "name": "perPage",
+            "in": "query",
+            "description": "一頁顯示資料筆數",
+            "type": "number"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "取得會員的追蹤列表成功",
+            "schema": {
+              "$ref": "#/definitions/Follows"
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
       }
     },
     "/users/profile": {
@@ -338,7 +378,10 @@
     },
     "/users/follows/{userId}": {
       "post": {
-        "tags": [],
+        "tags": [
+          "Follows"
+        ],
+        "summary": "追蹤朋友",
         "description": "",
         "parameters": [
           {
@@ -348,10 +391,31 @@
             "type": "string"
           }
         ],
-        "responses": {}
+        "responses": {
+          "201": {
+            "description": "追蹤朋友成功",
+            "schema": {
+              "$ref": "#/definitions/Success"
+            }
+          },
+          "400": {
+            "description": "追蹤朋友失敗",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
       },
       "delete": {
-        "tags": [],
+        "tags": [
+          "Follows"
+        ],
+        "summary": "取消追蹤朋友",
         "description": "",
         "parameters": [
           {
@@ -361,7 +425,25 @@
             "type": "string"
           }
         ],
-        "responses": {}
+        "responses": {
+          "201": {
+            "description": "取消追蹤朋友成功",
+            "schema": {
+              "$ref": "#/definitions/Success"
+            }
+          },
+          "400": {
+            "description": "取消追蹤朋友失敗",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
       }
     },
     "/users/updatePassword": {
@@ -1347,6 +1429,15 @@
             "has_next": {
               "type": "boolean",
               "example": false
+            }
+          }
+        },
+        "Success": {
+          "type": "object",
+          "properties": {
+            "message": {
+              "type": "string",
+              "example": "成功訊息"
             }
           }
         }
