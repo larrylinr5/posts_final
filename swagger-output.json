@@ -1404,26 +1404,6 @@
         ]
       }
     },
-    "/auth/google": {
-      "get": {
-        "tags": [],
-        "description": "",
-        "parameters": [],
-        "responses": {}
-      }
-    },
-    "/auth/google/callback": {
-      "get": {
-        "tags": [],
-        "description": "",
-        "parameters": [],
-        "responses": {
-          "401": {
-            "description": "Unauthorized"
-          }
-        }
-      }
-    },
     "/*": {
       "get": {
         "tags": [
