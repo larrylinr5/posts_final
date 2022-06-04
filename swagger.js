@@ -11,12 +11,14 @@ const doc = {
   schemes: "http", // 文件所支援的模式
   tags: [
     { name: "Auth", description: "驗證相關" },
+    { name: "Login", description: "登入相關" },
     { name: "Users", description: "會員相關" },
     { name: "Posts", description: "貼文相關" },
     { name: "Follows", description: "追蹤相關" },
     { name: "Likes", description: "按讚相關" },
     { name: "Comments", description: "留言相關" },
-    { name: "Files", description: "上傳檔案相關" }
+    { name: "Files", description: "上傳檔案相關" },
+    { name: "NotFound", description: "頁面路由相關" }
   ],
   definitions,
   securityDefinitions: {

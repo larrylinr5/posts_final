@@ -44,7 +44,15 @@ router.get("/", isAuth, (req, res, next) =>
       description: '取得貼文成功',
       schema: { $ref: '#/definitions/GetPosts' }
     }
-    */
+    #swagger.responses[404] = {
+      description: '無此路由',
+      schema: { $ref: '#/definitions/Error' }
+    }
+    #swagger.responses[500] = {
+      description: '系統錯誤',
+      schema: { $ref: '#/definitions/Error' }
+    }
+  */
   PostController.getAllPosts(req, res, next)
 );
 
@@ -83,6 +91,14 @@ router.get("/likes", isAuth, (req, res, next) =>
     #swagger.responses[200] = {
       description: '取得按讚貼文列表成功',
       schema: [{ $ref: '#/definitions/getLikes' }]
+    }
+    #swagger.responses[404] = {
+      description: '無此路由',
+      schema: { $ref: '#/definitions/Error' }
+    }
+    #swagger.responses[500] = {
+      description: '系統錯誤',
+      schema: { $ref: '#/definitions/Error' }
     }
     */
   LikesControllers.getUserLikeList(req, res, next)
@@ -124,6 +140,14 @@ router.get("/:userId", isAuth, (req, res, next) =>
       description: '取得貼文成功',
       schema: { $ref: '#/definitions/GetPosts' }
     }
+    #swagger.responses[404] = {
+      description: '無此路由',
+      schema: { $ref: '#/definitions/Error' }
+    }
+    #swagger.responses[500] = {
+      description: '系統錯誤',
+      schema: { $ref: '#/definitions/Error' }
+    }
     */
   PostController.getAllPosts(req, res, next)
 );
@@ -156,6 +180,14 @@ router.post("/", isAuth, (req, res, next) =>
       description: '新增貼文失敗',
       schema: { $ref: '#/definitions/Error' }
     }
+    #swagger.responses[404] = {
+      description: '無此路由',
+      schema: { $ref: '#/definitions/Error' }
+    }
+    #swagger.responses[500] = {
+      description: '系統錯誤',
+      schema: { $ref: '#/definitions/Error' }
+    }
     */
   PostController.postOnePost(req, res, next)
 );
@@ -163,12 +195,12 @@ router.post("/", isAuth, (req, res, next) =>
 /* 上傳貼文圖片 */
 router.post("/image", isAuth, upload, (req, res, next) =>
 /**
-   * #swagger.tags = ['Files']
-   * #swagger.summary = '上傳貼文圖片'
-   * #swagger.security = [{
-      "Bearer": [] 
-    }]
-   */
+    * #swagger.tags = ['Files']
+    * #swagger.summary = '上傳貼文圖片'
+    * #swagger.security = [{
+       "Bearer": [] 
+      }]
+    */
 /**
     #swagger.consumes = ['multipart/form-data']
     #swagger.parameters['files'] = {
@@ -177,7 +209,7 @@ router.post("/image", isAuth, upload, (req, res, next) =>
       required: 'true',
       description: '圖片檔案',
     }
-   */
+    */
   /**
     #swagger.responses[201] = {
       description: '上傳成功',
@@ -187,6 +219,14 @@ router.post("/image", isAuth, upload, (req, res, next) =>
     }
     #swagger.responses[400] = {
       description: '上傳失敗',
+      schema: { $ref: '#/definitions/Error' }
+    }
+    #swagger.responses[404] = {
+      description: '無此路由',
+      schema: { $ref: '#/definitions/Error' }
+    }
+    #swagger.responses[500] = {
+      description: '系統錯誤',
       schema: { $ref: '#/definitions/Error' }
     }
    */
@@ -220,6 +260,14 @@ router.post("/comment/:postId", isAuth, (req, res, next) =>
       description: '新增貼文留言失敗',
       schema: { $ref: '#/definitions/Error' }
     }
+    #swagger.responses[404] = {
+      description: '無此路由',
+      schema: { $ref: '#/definitions/Error' }
+    }
+    #swagger.responses[500] = {
+      description: '系統錯誤',
+      schema: { $ref: '#/definitions/Error' }
+    }
     */
   CommentController.postPostComment(req, res, next)
 );
@@ -240,6 +288,14 @@ router.put("/likes/:postId", isAuth, (req, res, next) =>
     }
     #swagger.responses[400] = {
       description: '按讚貼文失敗',
+      schema: { $ref: '#/definitions/Error' }
+    }
+    #swagger.responses[404] = {
+      description: '無此路由',
+      schema: { $ref: '#/definitions/Error' }
+    }
+    #swagger.responses[500] = {
+      description: '系統錯誤',
       schema: { $ref: '#/definitions/Error' }
     }
     */
@@ -271,6 +327,14 @@ router.patch("/comment/:postId/:commentId", isAuth, (req, res, next) =>
     }
     #swagger.responses[400] = {
       description: '修改貼文留言失敗',
+      schema: { $ref: '#/definitions/Error' }
+    }
+    #swagger.responses[404] = {
+      description: '無此路由',
+      schema: { $ref: '#/definitions/Error' }
+    }
+    #swagger.responses[500] = {
+      description: '系統錯誤',
       schema: { $ref: '#/definitions/Error' }
     }
     */
@@ -305,6 +369,14 @@ router.patch("/:postId", isAuth, (req, res, next) =>
       description: '修改貼文失敗',
       schema: { $ref: '#/definitions/Error' }
     }
+    #swagger.responses[404] = {
+      description: '無此路由',
+      schema: { $ref: '#/definitions/Error' }
+    }
+    #swagger.responses[500] = {
+      description: '系統錯誤',
+      schema: { $ref: '#/definitions/Error' }
+    }
     */
   PostController.patchOnePost(req, res, next)
 );
@@ -325,6 +397,14 @@ router.delete("/likes/:postId", isAuth, (req, res, next) =>
     }
     #swagger.responses[400] = {
       description: '取消按讚貼文失敗 ',
+      schema: { $ref: '#/definitions/Error' }
+    }
+    #swagger.responses[404] = {
+      description: '無此路由',
+      schema: { $ref: '#/definitions/Error' }
+    }
+    #swagger.responses[500] = {
+      description: '系統錯誤',
       schema: { $ref: '#/definitions/Error' }
     }
     */
@@ -349,6 +429,14 @@ router.delete("/comment/:postId/:commentId", isAuth, (req, res, next) =>
       description: '刪除貼文留言失敗',
       schema: { $ref: '#/definitions/Error' }
     }
+    #swagger.responses[404] = {
+      description: '無此路由',
+      schema: { $ref: '#/definitions/Error' }
+    }
+    #swagger.responses[500] = {
+      description: '系統錯誤',
+      schema: { $ref: '#/definitions/Error' }
+    }
     */
   CommentController.deletePostComment(req, res, next)
 );
@@ -369,6 +457,14 @@ router.delete("/:postId", isAuth, (req, res, next) =>
     }
     #swagger.responses[400] = {
       description: ' 刪除貼文失敗 ',
+      schema: { $ref: '#/definitions/Error' }
+    }
+    #swagger.responses[404] = {
+      description: '無此路由',
+      schema: { $ref: '#/definitions/Error' }
+    }
+    #swagger.responses[500] = {
+      description: '系統錯誤',
       schema: { $ref: '#/definitions/Error' }
     }
     */
