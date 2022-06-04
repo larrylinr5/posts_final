@@ -12,6 +12,10 @@
       "description": "驗證相關"
     },
     {
+      "name": "Login",
+      "description": "登入相關"
+    },
+    {
       "name": "Users",
       "description": "會員相關"
     },
@@ -34,6 +38,10 @@
     {
       "name": "Files",
       "description": "上傳檔案相關"
+    },
+    {
+      "name": "NotFound",
+      "description": "頁面路由相關"
     }
   ],
   "schemes": "http",
@@ -87,6 +95,18 @@
             "schema": {
               "$ref": "#/definitions/Follows"
             }
+          },
+          "404": {
+            "description": "無此路由",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "系統錯誤",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
           }
         },
         "security": [
@@ -109,6 +129,18 @@
             "description": "取得會員的個人資料成功",
             "schema": {
               "$ref": "#/definitions/User"
+            }
+          },
+          "404": {
+            "description": "無此路由",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "系統錯誤",
+            "schema": {
+              "$ref": "#/definitions/Error"
             }
           }
         },
@@ -139,6 +171,18 @@
             "description": "取得特定會員的個人資料成功",
             "schema": {
               "$ref": "#/definitions/User"
+            }
+          },
+          "404": {
+            "description": "無此路由",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "系統錯誤",
+            "schema": {
+              "$ref": "#/definitions/Error"
             }
           }
         },
@@ -200,6 +244,18 @@
             "schema": {
               "$ref": "#/definitions/Error"
             }
+          },
+          "404": {
+            "description": "無此路由",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "系統錯誤",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
           }
         },
         "security": [
@@ -258,6 +314,18 @@
             "schema": {
               "$ref": "#/definitions/Error"
             }
+          },
+          "404": {
+            "description": "無此路由",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "系統錯誤",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
           }
         }
       }
@@ -265,7 +333,7 @@
     "/users/sign_up": {
       "post": {
         "tags": [
-          "Users"
+          "Login"
         ],
         "summary": "註冊",
         "description": "",
@@ -316,6 +384,18 @@
             "schema": {
               "$ref": "#/definitions/Error"
             }
+          },
+          "404": {
+            "description": "無此路由",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "系統錯誤",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
           }
         }
       }
@@ -323,7 +403,7 @@
     "/users/sign_in": {
       "post": {
         "tags": [
-          "Users"
+          "Login"
         ],
         "summary": "登入",
         "description": "",
@@ -361,6 +441,18 @@
           },
           "400": {
             "description": "登入失敗",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "404": {
+            "description": "無此路由",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "系統錯誤",
             "schema": {
               "$ref": "#/definitions/Error"
             }
@@ -408,6 +500,18 @@
             "schema": {
               "$ref": "#/definitions/Error"
             }
+          },
+          "404": {
+            "description": "無此路由",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "系統錯誤",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
           }
         },
         "security": [
@@ -444,6 +548,18 @@
             "schema": {
               "$ref": "#/definitions/Error"
             }
+          },
+          "404": {
+            "description": "無此路由",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "系統錯誤",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
           }
         },
         "security": [
@@ -475,6 +591,18 @@
           },
           "400": {
             "description": "取消追蹤朋友失敗",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "404": {
+            "description": "無此路由",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "系統錯誤",
             "schema": {
               "$ref": "#/definitions/Error"
             }
@@ -536,6 +664,18 @@
             "schema": {
               "$ref": "#/definitions/Error"
             }
+          },
+          "404": {
+            "description": "無此路由",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "系統錯誤",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
           }
         },
         "security": [
@@ -583,6 +723,18 @@
             "description": "取得貼文成功",
             "schema": {
               "$ref": "#/definitions/GetPosts"
+            }
+          },
+          "404": {
+            "description": "無此路由",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "系統錯誤",
+            "schema": {
+              "$ref": "#/definitions/Error"
             }
           }
         },
@@ -633,6 +785,18 @@
           },
           "400": {
             "description": "新增貼文失敗",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "404": {
+            "description": "無此路由",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "系統錯誤",
             "schema": {
               "$ref": "#/definitions/Error"
             }
@@ -690,6 +854,18 @@
                 "name": "main"
               }
             }
+          },
+          "404": {
+            "description": "無此路由",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "系統錯誤",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
           }
         },
         "security": [
@@ -744,6 +920,18 @@
             "schema": {
               "$ref": "#/definitions/GetPosts"
             }
+          },
+          "404": {
+            "description": "無此路由",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "系統錯誤",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
           }
         },
         "security": [
@@ -790,6 +978,18 @@
           },
           "400": {
             "description": "上傳失敗",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "404": {
+            "description": "無此路由",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "系統錯誤",
             "schema": {
               "$ref": "#/definitions/Error"
             }
@@ -847,6 +1047,18 @@
             "schema": {
               "$ref": "#/definitions/Error"
             }
+          },
+          "404": {
+            "description": "無此路由",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "系統錯誤",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
           }
         },
         "security": [
@@ -883,6 +1095,18 @@
             "schema": {
               "$ref": "#/definitions/Error"
             }
+          },
+          "404": {
+            "description": "無此路由",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "系統錯誤",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
           }
         },
         "security": [
@@ -914,6 +1138,18 @@
           },
           "400": {
             "description": "取消按讚貼文失敗 ",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "404": {
+            "description": "無此路由",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "系統錯誤",
             "schema": {
               "$ref": "#/definitions/Error"
             }
@@ -977,6 +1213,18 @@
             "schema": {
               "$ref": "#/definitions/Error"
             }
+          },
+          "404": {
+            "description": "無此路由",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "系統錯誤",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
           }
         },
         "security": [
@@ -1014,6 +1262,18 @@
           },
           "400": {
             "description": "刪除貼文留言失敗",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "404": {
+            "description": "無此路由",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "系統錯誤",
             "schema": {
               "$ref": "#/definitions/Error"
             }
@@ -1077,6 +1337,18 @@
             "schema": {
               "$ref": "#/definitions/Error"
             }
+          },
+          "404": {
+            "description": "無此路由",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "系統錯誤",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
           }
         },
         "security": [
@@ -1108,6 +1380,18 @@
           },
           "400": {
             "description": " 刪除貼文失敗 ",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "404": {
+            "description": "無此路由",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "系統錯誤",
             "schema": {
               "$ref": "#/definitions/Error"
             }
@@ -1143,11 +1427,19 @@
     "/*": {
       "get": {
         "tags": [
-          "Generals"
+          "NotFound"
         ],
+        "summary": "404 路由",
         "description": "",
         "parameters": [],
-        "responses": {}
+        "responses": {
+          "404": {
+            "description": "無此路由",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
       }
     }
   },
