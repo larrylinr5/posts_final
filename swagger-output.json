@@ -370,10 +370,51 @@
     },
     "/users/avatar": {
       "post": {
-        "tags": [],
+        "tags": [
+          "Files"
+        ],
+        "summary": "上傳會員頭像",
         "description": "",
-        "parameters": [],
-        "responses": {}
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "files",
+            "in": "formData",
+            "type": "file",
+            "required": "true",
+            "description": "圖片檔案"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "上傳成功",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "string",
+                  "example": "https://i.imgur.com/xxx.png"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "400": {
+            "description": "上傳失敗",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
       }
     },
     "/users/follows/{userId}": {
@@ -714,10 +755,51 @@
     },
     "/posts/image": {
       "post": {
-        "tags": [],
+        "tags": [
+          "Files"
+        ],
+        "summary": "上傳貼文圖片",
         "description": "",
-        "parameters": [],
-        "responses": {}
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "files",
+            "in": "formData",
+            "type": "file",
+            "required": "true",
+            "description": "圖片檔案"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "上傳成功",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "string",
+                  "example": "https://i.imgur.com/xxx.png"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "400": {
+            "description": "上傳失敗",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
       }
     },
     "/posts/comment/{postId}": {
