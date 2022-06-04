@@ -722,7 +722,10 @@
     },
     "/posts/comment/{postId}": {
       "post": {
-        "tags": [],
+        "tags": [
+          "Comments"
+        ],
+        "summary": "新增一則特定貼文的留言",
         "description": "",
         "parameters": [
           {
@@ -730,9 +733,45 @@
             "in": "path",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "parameter_name",
+            "in": "body",
+            "description": "留言資料",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "comment": {
+                  "type": "string",
+                  "example": "留言內容"
+                }
+              },
+              "required": [
+                "comment"
+              ]
+            },
+            "type": "string"
           }
         ],
-        "responses": {}
+        "responses": {
+          "201": {
+            "description": "新增貼文留言成功",
+            "schema": {
+              "$ref": "#/definitions/Comment"
+            }
+          },
+          "400": {
+            "description": "新增貼文留言失敗",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
       }
     },
     "/posts/likes/{postId}": {
@@ -807,7 +846,10 @@
     },
     "/posts/comment/{postId}/{commentId}": {
       "patch": {
-        "tags": [],
+        "tags": [
+          "Comments"
+        ],
+        "summary": "修改一則特定貼文的特定留言",
         "description": "",
         "parameters": [
           {
@@ -821,12 +863,51 @@
             "in": "path",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "parameter_name",
+            "in": "body",
+            "description": "留言資料",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "comment": {
+                  "type": "string",
+                  "example": "留言內容"
+                }
+              },
+              "required": [
+                "comment"
+              ]
+            },
+            "type": "string"
           }
         ],
-        "responses": {}
+        "responses": {
+          "201": {
+            "description": "修改貼文留言成功",
+            "schema": {
+              "$ref": "#/definitions/Comment"
+            }
+          },
+          "400": {
+            "description": "修改貼文留言失敗",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
       },
       "delete": {
-        "tags": [],
+        "tags": [
+          "Comments"
+        ],
+        "summary": "刪除一則特定貼文的特定留言",
         "description": "",
         "parameters": [
           {
@@ -842,7 +923,25 @@
             "type": "string"
           }
         ],
-        "responses": {}
+        "responses": {
+          "201": {
+            "description": "刪除貼文留言成功",
+            "schema": {
+              "$ref": "#/definitions/Success"
+            }
+          },
+          "400": {
+            "description": "刪除貼文留言失敗",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
       }
     },
     "/posts/{postId}": {
