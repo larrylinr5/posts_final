@@ -175,7 +175,37 @@ router.post("/sign_in", (req, res, next) =>
 );
 
 /* 上傳會員頭像 */
-router.post("/avatar", isAuth, upload, handleErrorAsync(FileController.uploadOneImage));
+router.post("/avatar", isAuth, upload, (req, res, next) =>
+/**
+   * #swagger.tags = ['Files']
+   * #swagger.summary = '上傳會員頭像'
+   * #swagger.security = [{
+      "Bearer": [] 
+    }]
+   */
+/**
+    #swagger.consumes = ['multipart/form-data']
+    #swagger.parameters['files'] = {
+      in: 'formData',
+      type: 'file',
+      required: 'true',
+      description: '圖片檔案',
+    }
+   */
+  /**
+    #swagger.responses[201] = {
+      description: '上傳成功',
+      schema: {
+        data: 'https://i.imgur.com/xxx.png'
+      }
+    }
+    #swagger.responses[400] = {
+      description: '上傳失敗',
+      schema: { $ref: '#/definitions/Error' }
+    }
+   */
+  FileController.uploadOneImage(req, res, next)
+);
 
 /* 追蹤朋友(自己 → 別人) */
 router.post("/follows/:userId", isAuth, checkUserId, (req, res, next) =>
