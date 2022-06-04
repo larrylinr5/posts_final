@@ -7,11 +7,16 @@ const Follow = require("../models/followModel");
 const follows = {
   getFollowList: handleErrorAsync(async (req, res, next) => {
     let {
+      userId,
       sort,
       q,
       currentPage,
       perPage
     } = req.query;
+
+    if(!userId) {
+      return next(appError(400, "格式錯誤", '欄位未填寫'));
+    }
 
     // 關鍵字處理
     const keyword = q ? new RegExp(q) : "";
@@ -35,7 +40,7 @@ const follows = {
       {
         $match: {
           "$and": [
-            { follow: new mongoose.Types.ObjectId(req.user.id) },
+            { follow: new mongoose.Types.ObjectId(userId) },
             { logicDeleteFlag: false },
             { "following.nickName": { "$regex": keyword } }
           ]
