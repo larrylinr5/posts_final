@@ -1,12 +1,11 @@
 const mongoose = require("mongoose");
-const { appError } = require("../utils/errorHandler");
+const { appError, handleErrorAsync } = require("../utils/errorHandler");
 const getHttpResponse = require("../utils/successHandler");
 const Post = require("../models/postModel");
 const Comment = require("../models/commentModel");
 
 const comments = {
-  // 新增一則貼文的留言
-  postPostComment: async (req, res, next) => {
+  postPostComment: handleErrorAsync(async (req, res, next) => {
     const { 
       user, 
       body: { 
@@ -38,15 +37,19 @@ const comments = {
         comments: [...ExistPost.comments, newComment._id]
       }
     );
-    const postComment = await Comment.findById(newComment.id).populate({ path: "editor", select: "nickName avatar" }).select("-logicDeleteFlag");
+    const postComment = await Comment.findById(newComment.id).populate(
+      { 
+        path: "editor",
+        select: "nickName avatar"
+      })
+      .select("-logicDeleteFlag");
     res.status(201).json(getHttpResponse({ 
       data: { 
         comment: postComment
       } 
     }));
-  },
-  // 修改一則貼文的留言
-  patchPostComment: async (req, res, next) => {
+  }),
+  patchPostComment: handleErrorAsync(async (req, res, next) => {
     const { 
       body: { 
         comment 
@@ -75,15 +78,18 @@ const comments = {
     }
 
     const editComment = await Comment.findByIdAndUpdate(commentId, { comment });
-    const patchComment = await Comment.findById(editComment._id).populate({ path: "editor", select: "nickName avatar" });
+    const patchComment = await Comment.findById(editComment._id).populate(
+      { 
+        path: "editor",
+        select: "nickName avatar" 
+      });
     res.status(201).json(getHttpResponse({ 
       data: { 
         comment: patchComment
       } 
     }));
-  },
-  // 刪除一則貼文的留言
-  deletePostComment: async (req, res, next) => {
+  }),
+  deletePostComment: handleErrorAsync(async (req, res, next) => {
     const { 
       params: { 
         postId, 
@@ -117,7 +123,7 @@ const comments = {
     res.status(201).json(getHttpResponse({ 
       message: "刪除留言成功！"
     }));
-  }
+  })
 };
 
 module.exports = comments;
