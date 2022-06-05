@@ -7,16 +7,13 @@ const Follow = require("../models/followModel");
 const follows = {
   getFollowList: handleErrorAsync(async (req, res, next) => {
     let {
-      userId,
       sort,
       q,
       currentPage,
       perPage
     } = req.query;
 
-    if(!userId) {
-      return next(appError(400, "格式錯誤", '欄位未填寫'));
-    }
+    const userId = req.params.userId;
 
     // 關鍵字處理
     const keyword = q ? new RegExp(q) : "";
@@ -171,15 +168,29 @@ const follows = {
     }
     const existedFollowing = await Follow.findOne({
       follow: user.id,
-      following: otherUser
+      following: otherUser,
+      logicDeleteFlag: false
     });
+
     if (existedFollowing) {
       return next(appError(400, "40010", "已經追蹤"));
     }
-    await Follow.create({
+
+    await Follow.findOneAndUpdate({
       follow: user.id,
       following: otherUser
-    });
+    },
+    {
+      $setOnInsert: {
+        follow: user.id,
+        following: otherUser
+      },
+      $set: { "logicDeleteFlag": false }
+    }, 
+    {
+      upsert: true
+    });    
+    
     res.status(201).json(getHttpResponse({
       message: "追蹤成功"
     }));

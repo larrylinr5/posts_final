@@ -8,7 +8,7 @@ const like = {
     const { user, query } = req;
     const keyword = query.q ? query.q : ""; // 關鍵字
     let currentPage = Math.max(0, Number(query.currentPage - 1)); // 當前頁數
-    let perPage = query.perPage ? Number(query.perPage) : 10; // 一頁顯示幾筆資料
+    let perPage = query.perPage ? Number(query.perPage) : 1000; // 一頁顯示幾筆資料
 
     // 搜尋條件
     const filter = {
