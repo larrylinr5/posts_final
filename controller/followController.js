@@ -168,15 +168,29 @@ const follows = {
     }
     const existedFollowing = await Follow.findOne({
       follow: user.id,
-      following: otherUser
+      following: otherUser,
+      logicDeleteFlag: false
     });
+
     if (existedFollowing) {
       return next(appError(400, "40010", "已經追蹤"));
     }
-    await Follow.create({
+
+    await Follow.findOneAndUpdate({
       follow: user.id,
       following: otherUser
-    });
+    },
+    {
+      $setOnInsert: {
+        follow: user.id,
+        following: otherUser
+      },
+      $set: { "logicDeleteFlag": false }
+    }, 
+    {
+      upsert: true
+    });    
+    
     res.status(201).json(getHttpResponse({
       message: "追蹤成功"
     }));
