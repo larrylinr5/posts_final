@@ -7,6 +7,19 @@ const page = {
   has_next: false
 };
 
+const Success = {
+  message: "成功訊息"
+};
+
+const Error = {
+  message: "錯誤訊息"
+};
+
+const Sign = {
+  token: "abcde",
+  _id: "123456789"
+};
+
 const user = { // Schema 定義為 editor
   _id: "123456789",
   nickName: "會員暱稱",
@@ -39,9 +52,19 @@ const post = {
   updatedAt: "2022-06-01T08:32:14.125Z"
 };
 
+const Post = {
+  ...post
+};
+
 const Posts = {
   list: [post],
+  page: page
+};
+
+const GetPosts = {
+  list: [post],
   page: page,
+  Success
 };
 
 const follow = {
@@ -55,6 +78,15 @@ const follow = {
 const Follows = {
   list: [follow],
   page: page,
+  Success
+};
+
+const Comment = {
+  _id: "123456789",
+  user,
+  comment: "大家來回應",
+  createdAt: "2022-06-01T08:41:23.254Z",
+  updatedAt: "2022-06-01T08:41:23.254Z"
 };
 
 const like = {
@@ -62,43 +94,48 @@ const like = {
   user,
   content: "來新增一筆資料吧",
   image: ["https://i.imgur.com/xxx.png"],
-  likes: ["123456789"],
+  likes: [User],
   createdAt: "2022-06-01T08:32:14.125Z",
   updatedAt: "2022-06-01T08:32:14.125Z"
 };
 
-const Likes = {
-  list: [like],
-  page: page,
+const Like = {
+  ...like,
+  Success
 };
 
-const Comment = {
+const getLike = {
   _id: "123456789",
-  User,
-  comment: "大家來回應",
-  createdAt: "2022-06-01T08:41:23.254Z",
-  updatedAt: "2022-06-01T08:41:23.254Z"
+  user,
+  content: "來新增一筆資料吧",
+  image: ["https://i.imgur.com/xxx.png"],
+  likes: [User],
+  comments: [Comment],
+  createdAt: "2022-06-01T08:32:14.125Z",
+  updatedAt: "2022-06-01T08:32:14.125Z"
+};
+
+const getLikes = {
+  list: [getLike],
+  page: page,
+  Success
 };
 
 const File = {
   upload: "https://i.imgur.com/xxx.png"
 };
 
-const Success = {
-  message: "成功訊息"
-};
-
-const Error = {
-  message: "錯誤訊息"
-};
-
 module.exports = {
   User,
+  Post,
   Posts,
+  GetPosts,
   Follows,
-  Likes,
+  Like,
+  getLikes,
   Comment,
   File,
   Success,
   Error,
+  Sign
 };

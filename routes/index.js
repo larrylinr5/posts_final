@@ -13,9 +13,9 @@ module.exports = (app) => {
   app.use("/users", userRouter),
   app.use("/posts", postRouter),
   app.use("/auth", authRouter),
-  app.use("/check", isAuth, (res) => {
-    res.status(200).json(getHttpResponse({ 
-      message: "驗證成功" 
+  app.use("/check", isAuth, ({res}) => {
+    res.status(200).json(getHttpResponse({
+      message: "驗證成功"
     }));
   });
   app.use("/", generalRouter);

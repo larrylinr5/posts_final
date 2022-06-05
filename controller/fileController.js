@@ -1,10 +1,14 @@
 const { ImgurClient } = require("imgur");
-const { appError } = require("../utils/errorHandler");
+const { appError, handleErrorAsync } = require("../utils/errorHandler");
 const getHttpResponse = require("../utils/successHandler");
 
 const files = {
-  uploadOneImage: async (req, res, next) => {
-    if (!req.files.length) {
+  uploadOneImage: handleErrorAsync(async (req, res, next) => {
+    const {
+      files
+    } = req;
+
+    if (!files.length) {
       return next(appError(400, "40004", "未選擇檔案"));
     }
 
@@ -15,7 +19,7 @@ const files = {
     });
 
     const { data, status, success } = await client.upload({
-      image: req.files[0].buffer.toString("base64"),
+      image: files[0].buffer.toString("base64"),
       type: "base64",
       album: process.env.IMGUR_ALBUM_ID
     });
@@ -29,7 +33,7 @@ const files = {
     } else {
       return next(appError(status, "40005", "發生錯誤，請稍後再試"));
     }
-  }
+  })
 };
 
 module.exports = files;

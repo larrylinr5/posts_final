@@ -20,7 +20,7 @@ const isAuth = handleErrorAsync(async (req, res, next) => {
   }
 
   if (!token) {
-    return next(appError(401, "Authorization Error", "You have not logged in."));
+    return next(appError(400, "40003", "You have not logged in."));
   }
 
   const decoded = await new Promise((resolve, reject) => {
@@ -28,13 +28,13 @@ const isAuth = handleErrorAsync(async (req, res, next) => {
       err ? reject(err) : resolve(payload);
     });
   });
-  const currentUser = await User.findById(decoded.id);
 
+  const currentUser = await User.findById(decoded.id);
   if (currentUser) {
     req.user = currentUser;
     next();
   } else {
-    return next(appError(400, "System Error", "The user is not existed."));
+    return next(appError(400, "40010", "The user is not existed."));
   }
 });
 
