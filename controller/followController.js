@@ -7,16 +7,13 @@ const Follow = require("../models/followModel");
 const follows = {
   getFollowList: handleErrorAsync(async (req, res, next) => {
     let {
-      userId,
       sort,
       q,
       currentPage,
       perPage
     } = req.query;
 
-    if(!userId) {
-      return next(appError(400, "格式錯誤", '欄位未填寫'));
-    }
+    const userId = req.params.userId;
 
     // 關鍵字處理
     const keyword = q ? new RegExp(q) : "";
