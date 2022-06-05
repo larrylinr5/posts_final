@@ -9,7 +9,7 @@ const { isAuth } = require("../middleware/auth");
 const { upload } = require("../utils/upload");
 
 /* 取得會員的追蹤列表 */
-router.get("/follows", isAuth, (req, res, next) =>
+router.get("/follows/:userId", isAuth, (req, res, next) =>
 /**
     * #swagger.tags = ['Follows']
     * #swagger.summary = '取得會員的追蹤列表'
