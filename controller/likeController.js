@@ -1,78 +1,145 @@
-const { appError, handleErrorAsync } = require('../utils/errorHandler');
-const getHttpResponse = require('../utils/successHandler');
-const Post = require('../models/postModel');
-const mongoose = require('mongoose');
+const { appError, handleErrorAsync } = require("../utils/errorHandler");
+const getHttpResponse = require("../utils/successHandler");
+const Post = require("../models/postModel");
+const mongoose = require("mongoose");
 
 const like = {
-    getUserLikeList: handleErrorAsync(async(req, res, next) => {
+  getUserLikeList: handleErrorAsync(async (req, res) => {
+    const { user, query } = req;
+    const keyword = query.q ? query.q : ""; // 關鍵字
+    let currentPage = Math.max(0, Number(query.currentPage - 1)); // 當前頁數
+    let perPage = query.perPage ? Number(query.perPage) : 1000; // 一頁顯示幾筆資料
 
-        const { user, query } = req
+    // 搜尋條件
+    const filter = {
+      "$in": user._id,
+      "likes.0": { $exists: true },
+      "logicDeleteFlag": false,
+      $or: [
+        { content: { $regex: keyword } },
+      ],
+    };
 
-        const keyword = query.q ? query.q : '' // 關鍵字
-        let currentPage = Math.max(0, Number(query.currentPage - 1)) // 當前頁數
-        let perPage = query.perPage ? Number(query.perPage) : 10 // 一頁顯示幾筆資料
+    // 倒序: desc，升序: asc
+    const sort = query.sort === "desc" ? -1 : query.sort === "asc" ? 1 : "asc";
 
-        // 搜尋條件
-        const filter = {
-            '$in': user._id,
-            'likes.0': { $exists: true },
-            'logicDeleteFlag': false,
-            $or: [
-                { content: { $regex: keyword } },
-            ],
+    const userAllPost = await Post.find(filter)
+      .populate({
+        path: "editor",
+        select: "nickName avatar"
+      })
+      .skip(currentPage * perPage)
+      .limit(perPage)
+      .sort({ "createdAt": sort, "id": -1 })
+      .populate("likes")
+      .populate({
+        path: "comments",
+        populate: {
+          path: "editor",
+          select: "nickName avatar",
         }
+      });
 
-        // 倒序: desc，升序: asc
-        const sort = query.sort === 'desc' ? -1 : query.sort === 'asc' ? 1 : 'asc'
-            // 用戶有按讚的所有貼文，隱藏comments欄位
-        const userAllPost = await Post.find(filter, { 'comments': false }).populate({ path: 'editor', select: 'nickName avatar' }).skip(currentPage).limit(perPage).sort({ 'createdAt': sort })
+    const total = await Post.find(filter).countDocuments(); // 總資料筆數
+    const totalPages = Math.ceil(total / perPage); // 一共顯示幾頁
 
-        let totalDatas = userAllPost.length // 總資料筆數
-        let totalPages = Math.ceil(userAllPost.length / perPage) // 一共顯示幾頁
+    const message = userAllPost.length === 0 ? "您尚未按讚，故無該資料" : "取得資料成功";
+    const data = {
+      list: userAllPost,
+      page: {
+        totalPages, // 總頁數
+        currentPage, // 當前頁數
+        perPage, // 一頁顯示資料筆數
+        totalDatas: total, // 資料總筆數
+        has_pre: total === 0 ? false : currentPage + 1 > 1,
+        has_next: total === 0 ? false : currentPage + 1 < totalPages
+      },
+    };
 
-        const message = userAllPost.length === 0 ? '您尚未按讚，故無該資料' : '取得資料成功';
-        const resData = {
-            list: userAllPost,
-            page: {
-                totalPages, // 總頁數
-                currentPage, // 當前頁數
-                perPage, // 一頁顯示資料筆數
-                totalDatas, // 資料總筆數
-                has_pre: totalDatas === 0 ? false : currentPage + 1 > 1,
-                has_next: totalDatas === 0 ? false : currentPage + 1 < totalPages
-            },
-        }
+    res.status(200).json(getHttpResponse({
+      data, message
+    }));
+  }),
+  addPostLike: handleErrorAsync(async (req, res, next) => {
+    const {
+      user,
+      params: {
+        postId
+      }
+    } = req;
 
-        res.status(200).json(getHttpResponse({ data: resData, message }));
-    }),
-    addPostLike: handleErrorAsync(async(req, res, next) => {
-        const { user, params: { postId } } = req
+    if (!(postId && mongoose.Types.ObjectId.isValid(postId))) {
+      return next(appError(400, "40002", "請傳入特定貼文"));
+    }
 
-        if (!(postId && mongoose.Types.ObjectId.isValid(postId)))
-            return next(appError(400, '資料錯誤', '請傳入特定貼文'))
+    const ExistPost = await Post.findById(postId);
+    if (!ExistPost) {
+      return next(appError(400, "40010", "尚未發布貼文"));
+    }
 
-        const ExistPost = await Post.findById(postId)
-        if (!ExistPost)
-            return next(appError(400, '資料錯誤', '尚未發布貼文'))
+    const data = await Post.findOneAndUpdate(
+      {
+        _id: postId
+      },
+      {
+        $addToSet: { likes: user._id }
+      },
+      {
+        new: true
+      }
+    )
+      .select("-comments")
+      .select("-logicDeleteFlag")
+      .populate({
+        path: "editor",
+        select: "nickName avatar",
+      }).populate("likes");
 
-        const likes = await Post.findOneAndUpdate({ postId }, { $addToSet: { likes: user._id } }, { new: true })
+    res.status(201).json(getHttpResponse({
+      data,
+      message: "加入按讚成功"
+    }));
+  }),
+  delPostLike: handleErrorAsync(async (req, res, next) => {
+    const {
+      user,
+      params: {
+        postId
+      }
+    } = req;
 
-        res.status(201).json(getHttpResponse({ data: likes, message: '加入按讚成功' }));
-    }),
-    delPostLike: handleErrorAsync(async(req, res, next) => {
-        const { user, params: { postId } } = req
+    if (!(postId && mongoose.Types.ObjectId.isValid(postId))) {
+      return next(appError(400, "40002", "請傳入特定貼文"));
+    }
 
-        if (!(postId && mongoose.Types.ObjectId.isValid(postId)))
-            return next(appError(400, '資料錯誤', '請傳入特定貼文'))
+    const ExistPost = await Post.findById(postId);
+    if (!ExistPost) {
+      return next(appError(400, "40010", "尚未發布貼文"));
+    }
 
-        const ExistPost = await Post.findById(postId)
-        if (!ExistPost)
-            return next(appError(400, '資料錯誤', '尚未發布貼文'))
+    const data = await Post.findOneAndUpdate(
+      {
+        _id: postId
+      },
+      {
+        $pull: { likes: user._id }
+      },
+      {
+        new: true
+      }
+    )
+      .select("-comments")
+      .select("-logicDeleteFlag")
+      .populate({
+        path: "editor",
+        select: "nickName avatar",
+      }).populate("likes");
 
-        const likes = await Post.findOneAndUpdate({ postId }, { $pull: { likes: user._id } }, { new: true })
+    res.status(201).json(getHttpResponse({
+      data,
+      message: "移除按讚成功"
+    }));
+  })
+};
 
-        res.status(201).json(getHttpResponse({ data: likes, message: '移除按讚成功' }));
-    })
-}
-
-module.exports = like
+module.exports = like;
