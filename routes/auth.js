@@ -28,7 +28,7 @@ router.get(
 
       if (token) {
         res.cookie("google-token", token);
-        res.redirect(`${process.env.FRONTEND_REDIRECT_URL}?token=${token}`);
+        res.redirect(`${process.env.FRONTEND_REDIRECT_URL}?token=${token}&from=google`);
       } else {
         return next(appError("400", "40003", "No permission to generate token"));
       }
