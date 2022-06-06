@@ -13,7 +13,7 @@ const like = {
     // 搜尋條件
     const filter = {
       "$in": user._id,
-      "likes.0": { $exists: true },
+      "likes": { "$in": [user._id] },
       "logicDeleteFlag": false,
       $or: [
         { content: { $regex: keyword } },
