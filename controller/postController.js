@@ -95,7 +95,11 @@ const posts = {
       }
 
       if(querySortType === "hot"){
-        const matchRule = { $match: { logicDeleteFlag: false, content: new RegExp(query.q.trim()) }};
+        const matchRule = { $match: { logicDeleteFlag: false }};
+        
+        if(query.q){
+          matchRule.$match["content"] = new RegExp(query.q.trim());
+        }
 
         const aggregationResult = await Post.aggregate([
           matchRule,
