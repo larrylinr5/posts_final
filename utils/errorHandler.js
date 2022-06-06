@@ -58,10 +58,14 @@ const resErrorProd = (err, res) => {
   const resErrorData = {
     status: "",
     message: "",
+    error: {
+      name: ""
+    }
   };
   resErrorData.status = resErrorStatus(err);
   if (err.isOperational) {
     resErrorData.message = err.message;
+    resErrorData.error.name = err.name;
     res.status(err.statusCode)
       .json(resErrorData);
   } else {
