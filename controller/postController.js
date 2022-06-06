@@ -16,78 +16,152 @@ const posts = {
     } = req;
     const currentPage = query.currentPage ? Math.max(0, Number(query.currentPage - 1)) : 0;
     const perPage = query.perPage ? Number(query.perPage) : 10;
-    const queryString = query.q !== undefined
-      ? {
-        "logicDeleteFlag": false,
-        $or: [
-          { "content": new RegExp(query.q.trim()) }
-        ]
-      }
-      : {
-        "logicDeleteFlag": false
-      };
+    let querySortType = query.sort || "desc";
 
-    if (userId) {
-      queryString.editor = userId;
-    }
-
-    // 排序條件，先後順序有差
-    const selectedSortRule = {};
-
-    if (query.sort) {
-      if (query.sort === "asc" || query.sort === "desc") {
-        selectedSortRule.createdAt = query.sort === "asc" ? 1 : query.sort === "desc" ? -1 : "desc";
-      }
-
-      if (query.sort === "hot") {
-        selectedSortRule.likes = -1;
-      }
-    } else {
-      selectedSortRule.createdAt = "desc";
-    }
-
-    const sortRule = {
-      ...selectedSortRule,
-      "id": -1  // 確保當 perPage 為 1 時，能找到正確值
-    };
-
-    // 向 DB 取得目標貼文資料
-    const populateQuery = [
-      {
-        path: "editor",
-        select: "nickName avatar"
-      },
-      {
-        path: "comments",
-        select: "editor comment createdAt updatedAt",
-        match: { logicDeleteFlag: false },
-        options: {
-          sort: { "createdAt": -1 }
-        },
-        populate: {
-          path: "editor",
-          select: "nickName avatar"
-        }
-      }
-    ];
-
-    const targetPosts = await Post.find(queryString).populate(populateQuery).skip(currentPage * perPage).limit(perPage).sort(sortRule);
-
-    const total = await Post.find(queryString).countDocuments();
-    const totalPages = Math.ceil(total / perPage);
-
-    const message = targetPosts.length === 0 ? "搜尋無資料" : "成功取得搜尋貼文";
-    const data = {
-      list: targetPosts,
+    /* init default response*/
+    let data = {
+      list: [],
       page: {
-        totalPages,
-        currentPage: currentPage + 1,
-        perPage,
-        totalDatas: total,
-        has_pre: total === 0 ? false : currentPage + 1 > 1,
-        has_next: total === 0 ? false : currentPage + 1 < totalPages
+        totalPages: null,
+        currentPage: null,
+        perPage: null,
+        totalDatas: null,
+        has_pre: false,
+        has_next: false
       }
     };
+    let message = "請輸入搜尋條件";
+
+    if(querySortType){
+      if(querySortType === "asc" || querySortType === "desc"){
+        const queryString = query.q !== undefined
+          ? {
+            "logicDeleteFlag": false,
+            $or: [
+              { "content": new RegExp(query.q.trim()) }
+            ]
+          }
+          : {
+            "logicDeleteFlag": false
+          };
+        if (userId) {
+          queryString.editor = userId;
+        }
+        // 排序條件，先後順序有差
+        const selectedSortRule = {};
+        selectedSortRule.createdAt = querySortType === "asc" ? 1 : querySortType === "desc" ? -1 : "desc";
+        const sortRule = {
+          ...selectedSortRule,
+          "id": -1  // 確保當 perPage 為 1 時，能找到正確值
+        };
+
+        // 向 DB 取得目標貼文資料
+        const populateQuery = [
+          {
+            path: "editor",
+            select: "nickName avatar"
+          },
+          {
+            path: "comments",
+            select: "editor comment createdAt updatedAt",
+            match: { logicDeleteFlag: false },
+            options: {
+              sort: { "createdAt": -1 }
+            },
+            populate: {
+              path: "editor",
+              select: "nickName avatar"
+            }
+          }
+        ];
+
+        const targetPosts = await Post.find(queryString).populate(populateQuery).skip(currentPage * perPage).limit(perPage).sort(sortRule);
+
+        const total = await Post.find(queryString).countDocuments();
+        const totalPages = Math.ceil(total / perPage);
+
+        message = targetPosts.length === 0 ? "搜尋無資料" : "成功取得搜尋貼文";
+        data = {
+          list: targetPosts,
+          page: {
+            totalPages,
+            currentPage: currentPage + 1,
+            perPage,
+            totalDatas: total,
+            has_pre: total === 0 ? false : currentPage + 1 > 1,
+            has_next: total === 0 ? false : currentPage + 1 < totalPages
+          }
+        };
+      }
+
+      if(querySortType === "hot"){
+        const aggregationResult = await Post.aggregate([
+          { $match: { logicDeleteFlag: false }},
+          {
+            $lookup: {
+              from: "users",
+              localField: "editor",
+              foreignField: "_id",
+              as: "editor",
+            },
+          },
+          { $unwind: "$editor"},
+          {
+            $project: {
+              _id: 1,          
+              editor: {
+                _id: 1,
+                nickName: 1,
+                avatar: 1
+              },
+              content: 1,
+              comments: 1,
+              image: 1,
+              likes: 1,
+              createdAt: 1,
+              updatedAt: 1,
+              likesLength: { $size: "$likes" }
+            }
+          },
+          { $sort: { likesLength: -1 } },
+          { $skip: currentPage * perPage },
+          { $limit: perPage }
+        ]);
+
+        await Post.populate(aggregationResult, {
+          path: "comments",
+          select: "editor comment createdAt updatedAt",
+          match: { logicDeleteFlag: false },
+          options: {
+            sort: { "createdAt": -1 }
+          },
+          populate: {
+            path: "editor",
+            select: "nickName avatar"
+          }
+        });
+
+        const rawTotal = await Post.aggregate([
+          { $match: { logicDeleteFlag: false }},
+          { $count: "Total" }
+        ]);
+        const total = rawTotal[0]?.Total || 0;
+        const totalPages = Math.ceil(total / perPage);
+
+        message = aggregationResult.length === 0 ? "搜尋無資料" : "成功取得搜尋貼文";
+        data = {
+          list: aggregationResult.map(({likesLength, ...keepAttrs}) => keepAttrs),
+          page: {
+            totalPages,
+            currentPage: currentPage + 1,
+            perPage,
+            totalDatas: total,
+            has_pre: total === 0 ? false : currentPage + 1 > 1,
+            has_next: total === 0 ? false : currentPage + 1 < totalPages
+          }
+        };
+      }
+    }
 
     res.status(200).json(getHttpResponse({
       data, message
