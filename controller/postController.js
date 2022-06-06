@@ -95,8 +95,10 @@ const posts = {
       }
 
       if(querySortType === "hot"){
+        const matchRule = { $match: { logicDeleteFlag: false, content: new RegExp(query.q.trim()) }};
+
         const aggregationResult = await Post.aggregate([
-          { $match: { logicDeleteFlag: false }},
+          matchRule,
           {
             $lookup: {
               from: "users",
@@ -142,7 +144,7 @@ const posts = {
         });
 
         const rawTotal = await Post.aggregate([
-          { $match: { logicDeleteFlag: false }},
+          matchRule,
           { $count: "Total" }
         ]);
         const total = rawTotal[0]?.Total || 0;
