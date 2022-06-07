@@ -45,14 +45,14 @@ app.use(function (req, res, next) {
 
 /* logger */
 // 必須在 routes 前面
-// if (process.env.NODE_ENV === "dev"){
-app.use(logger.devLog);
+if (process.env.NODE_ENV === "dev"){
+  app.use(logger.devLog);
 // 開發環境日誌不保存
-// }else {
-//   // 生產環境 - heroku 無法使用暫時先 comment out
-//   app.use(logger.accessLog);
-//   app.use(logger.accessLogErr);
-// }
+} else {
+  // 生產環境 - heroku 無法使用暫時先 comment out
+  app.use(logger.accessLog);
+  app.use(logger.accessLogErr);
+}
 
 
 /* 連線 */
