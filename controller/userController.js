@@ -65,7 +65,7 @@ const users = {
       email
     }).select("+password");
     if (!user) {
-      return next(appError(400, "40010", "不存在該筆資料"));
+      return next(appError(400, "40010", "尚未註冊"));
     }
     const auth = await bcrypt.compare(password, user.password);
     if (!auth) {
