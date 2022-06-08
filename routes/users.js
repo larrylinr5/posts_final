@@ -108,11 +108,11 @@ router.get("/profile/:userId", isAuth, (req, res, next) =>
   userController.getOtherProfile(req, res, next)
 );
 
-/* 驗證註冊會員 */
+/* 驗證帳號是否註冊 */
 router.post("/sign_up_check", (req, res, next) =>
 /**
     * #swagger.tags = ['Auth']
-    * #swagger.summary = '驗證註冊會員'
+    * #swagger.summary = '驗證帳號是否註冊'
     */
 /**
     #swagger.parameters['parameter_name'] = {
