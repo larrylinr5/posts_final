@@ -34,12 +34,7 @@ router.get(
       }
 
     } else {
-      res.status(401)
-        .json({
-          status: "Error",
-          data: {},
-          message: "Google 認證錯誤"
-        });
+      return next(appError("400", "40001", "Google 認證錯誤"));
     }
   }));
 
