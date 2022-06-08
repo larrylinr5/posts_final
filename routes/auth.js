@@ -34,7 +34,7 @@ router.get(
       }
 
     } else {
-      return next(appError("400", "40001", "Google 認證錯誤"));
+      return next(appError("401", "40001", "Google 認證錯誤"));
     }
   }));
 
