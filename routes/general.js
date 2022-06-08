@@ -13,7 +13,7 @@ router.get("*", (req, res, next) => {
     schema: { $ref: '#/definitions/Error' }
   }
   */
-  return next(appError(404, "40401", "Invalid Route"));
+  return next(appError(404, "40401", "無此路由"));
 });
 
 module.exports = router;
