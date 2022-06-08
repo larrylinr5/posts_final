@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const { appError, handleErrorAsync } = require("../utils/errorHandler");
 const getHttpResponse = require("../utils/successHandler");
 const bcrypt = require("bcryptjs");
@@ -129,8 +130,11 @@ const users = {
       data: profile
     }));
   }),
-  getOtherProfile: handleErrorAsync(async (req, res) => {
+  getOtherProfile: handleErrorAsync(async (req, res, next) => {
     const { userId } = req.params;
+    if (!(userId && mongoose.Types.ObjectId.isValid(userId))) {
+      return next(appError(400, "格式錯誤", "欄位未填寫正確"));
+    }
     const profile = await User.findById(userId).select("-logicDeleteFlag");
     res.status(200).json(getHttpResponse({
       data: profile
