@@ -20,12 +20,12 @@ const isAuth = handleErrorAsync(async (req, res, next) => {
   }
 
   if (!token) {
-    return next(appError(400, "40003", "You have not logged in."));
+    return next(appError(400, "40003", "你尚未登入"));
   }
 
   const decoded = await new Promise((resolve, reject) => {
     jwt.verify(token, process.env.JWT_SECRET, (err, payload) => {
-      err ? reject(err) : resolve(payload);
+      err ? next(appError(400, "40003", "Token 驗證錯誤")) : resolve(payload);
     });
   });
 
@@ -34,7 +34,7 @@ const isAuth = handleErrorAsync(async (req, res, next) => {
     req.user = currentUser;
     next();
   } else {
-    return next(appError(400, "40010", "The user is not existed."));
+    return next(appError(400, "40010", "使用者不存在"));
   }
 });
 
