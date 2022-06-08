@@ -21,6 +21,29 @@ const follows = {
     // 時間排序
     const timeSort = sort === "asc" ? 1 : -1;
 
+    /*
+      當前頁碼處理
+        若有輸入參數，則進一步判定，否則回傳預設值 0
+        若輸入參數不為整數，則回傳預設值 0
+    */
+    currentPage = currentPage
+      ? validator.isInt(currentPage.toString())
+        ? Math.max(0, Number(currentPage - 1))
+        : 0
+      : 0;
+
+
+    /* 
+      單頁筆數處理
+        若有輸入參數，則進一步判定，否則回傳預設值 10
+        若輸入參數不為整數，且<0 ，則回傳預設值 10
+    */
+    perPage = perPage
+      ? validator.isInt(perPage.toString()) && Number(perPage) > 0
+        ? Number(perPage)
+        : 10
+      : 10;
+
     // 取得總筆數
     const totalDatas = await Follow.aggregate([
       {
@@ -71,27 +94,7 @@ const follows = {
       }));
     }
 
-    /*
-      當前頁碼處理
-        若有輸入參數，則進一步判定，否則回傳預設值 0
-        若輸入參數不為整數，則回傳預設值 0
-    */
-    currentPage = currentPage
-      ? validator.isInt(currentPage.toString())
-        ? Math.max(0, Number(currentPage - 1))
-        : 0
-      : 0;
 
-
-    /* 單頁筆數處理
-        若有輸入參數，則進一步判定，否則回傳預設值 10
-        若輸入參數不為整數，且<0 ，則回傳預設值 10
-    */
-    perPage = perPage
-      ? validator.isInt(perPage.toString()) && Number(perPage) > 0
-        ? Number(perPage)
-        : 10
-      : 10;
 
     // 算出總頁數
     const totalPages = Math.ceil(totalDatas[0].totalDatas / perPage);
@@ -180,17 +183,17 @@ const follows = {
       follow: user.id,
       following: otherUser
     },
-    {
-      $setOnInsert: {
-        follow: user.id,
-        following: otherUser
+      {
+        $setOnInsert: {
+          follow: user.id,
+          following: otherUser
+        },
+        $set: { "logicDeleteFlag": false }
       },
-      $set: { "logicDeleteFlag": false }
-    }, 
-    {
-      upsert: true
-    });    
-    
+      {
+        upsert: true
+      });
+
     res.status(201).json(getHttpResponse({
       message: "追蹤成功"
     }));
@@ -205,9 +208,9 @@ const follows = {
       follow: user.id,
       following: otherUser
     },
-    {
-      $set: { "logicDeleteFlag": true }
-    });
+      {
+        $set: { "logicDeleteFlag": true }
+      });
     if (!existedFollowing) {
       return next(appError(400, "40010", "尚未追蹤"));
     }
