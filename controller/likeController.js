@@ -34,6 +34,12 @@ const like = {
       .populate("likes")
       .populate({
         path: "comments",
+        match: { 
+          logicDeleteFlag: {$eq : false }
+        },
+        options: {
+          sort: { "createdAt": -1 }
+        },
         populate: {
           path: "editor",
           select: "nickName avatar",
