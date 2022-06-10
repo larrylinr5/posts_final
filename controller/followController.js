@@ -183,16 +183,16 @@ const follows = {
       follow: user.id,
       following: otherUser
     },
-      {
-        $setOnInsert: {
-          follow: user.id,
-          following: otherUser
-        },
-        $set: { "logicDeleteFlag": false }
+    {
+      $setOnInsert: {
+        follow: user.id,
+        following: otherUser
       },
-      {
-        upsert: true
-      });
+      $set: { "logicDeleteFlag": false }
+    },
+    {
+      upsert: true
+    });
 
     res.status(201).json(getHttpResponse({
       message: "追蹤成功"
@@ -204,16 +204,28 @@ const follows = {
     if (otherUser === user.id) {
       return next(appError(400, "40004", "無法取消追蹤自己"));
     }
-    const existedFollowing = await Follow.findOneAndUpdate({
+    const existedFollowing = await Follow.findOne({
+      follow: user.id,
+      following: otherUser,
+      logicDeleteFlag: true
+    });
+    if (existedFollowing) {
+      return next(appError(400, "40010", "尚未追蹤"));
+    }
+    await Follow.findOneAndUpdate({
       follow: user.id,
       following: otherUser
     },
-      {
-        $set: { "logicDeleteFlag": true }
-      });
-    if (!existedFollowing) {
-      return next(appError(400, "40010", "尚未追蹤"));
-    }
+    {
+      $setOnInsert: {
+        follow: user.id,
+        following: otherUser
+      },
+      $set: { "logicDeleteFlag": true }
+    },
+    {
+      upsert: true
+    });
 
     res.status(201).json(getHttpResponse({
       message: "取消追蹤成功"
