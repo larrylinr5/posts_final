@@ -3,37 +3,47 @@
 ![Image](https://i.imgur.com/h7XdEPc.png)
 我們想打造一個貼近 IG or FB 的交流平台，
 並且鎖定只有成為會員才能享有我們所提供的服務
-[Metawall網址](https://www.universewalls.com/)
 
-#### 功能說明
+- [Metawall網址](https://www.universewalls.com/)
+- [前端Repo](https://github.com/cotton123236/metawall-frontend)
+
+### 功能說明
 ![Image](https://i.imgur.com/r2gQWgD.png)
- - 登入頁
+##### 登入頁
 
 ![Image](https://i.imgur.com/m8m1duG.png)
- - 動態牆
+##### 動態牆
 
 ![Image](https://i.imgur.com/AJQKgEP.png)
- - 收藏貼文
+##### 收藏貼文
 
 ![Image](https://i.imgur.com/WW1YY2O.png)
- - 修改個人檔案
+##### 修改個人檔案
 
 
-#### 執行指令
-```
+## For Developer:
+### 執行指令
+```javascript
 //開發環境
 npm run dev
 
 //正式機環境
 npm run prod
+
+//Swagger開發文件
+npm run swagger
+
+//執行ESlint格式化
+npm run format
 ```
-#### 建立專案和引入套件
+### 建立專案和引入套件
 - (1) 切換 Node.js 版本：``` nvm use v16.14.0 ```
 - (2) 建立專案：``` express --no-view [專案] ```
 - (3) 引入模組：``` npm install ```
 - (4) 安裝套件：``` npm i mongoose dotenv cors bcryptjs validator jsonwebtoken imgur tslib image-size multer express-rate-limit -s ```
-- (5) package.json 自訂指令、部署 AWS
+- (5) package.json 自訂指令、部署 AWS / Heroku
 - (6) 加入 .gitignore、config.env、example.env 檔案
+
 
 #### 建立專案結構
 - app.js
