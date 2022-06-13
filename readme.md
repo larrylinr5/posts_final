@@ -45,7 +45,7 @@ npm run format
 - (6) 加入 .gitignore、config.env、example.env 檔案
 
 
-#### 建立專案結構
+### 建立專案結構
 - app.js
 - connections/db.js：連接資料庫
 - controllers/postsControllers.js、usersControllers.js、uploadsController.js：操作 HTTP 動詞
@@ -56,7 +56,7 @@ npm run format
 - service/auth.js：身份驗證
 - service/upload.js：上傳圖片驗證
 
-#### AWS 架構圖
+### AWS 架構圖
 ![image](https://i.imgur.com/XAShGBE.png)
 - DNS：透過 Cloudflare 做DNS轉址的設定與取得免費的SSL/TLS憑證做更安全的HTTPS連線。
 - 前端：把Vue3的程式碼部署在AWS S3 靜態儲存庫
