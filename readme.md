@@ -58,3 +58,7 @@ npm run format
 
 #### AWS 架構圖
 ![image](https://i.imgur.com/XAShGBE.png)
+- DNS：透過 Cloudflare 做DNS轉址的設定與取得免費的SSL/TLS憑證做更安全的HTTPS連線。
+- 前端：把Vue3的程式碼部署在AWS S3 靜態儲存庫
+- 後端：把Node.js API 部署在AWS EB 容器內，在環境執行起的時候，會自動起一個EC2 instance。
+- 資料庫：MongoDB Atlas
