@@ -22,6 +22,16 @@
 
 
 ## For Developer:
+
+### 使用技術
+- node.js
+- express
+- mongoDB
+- JWT
+- Imgur
+- Google第三方登入
+- AWS
+
 ### 執行指令
 ```javascript
 //開發環境
@@ -45,7 +55,7 @@ npm run format
 - (6) 加入 .gitignore、config.env、example.env 檔案
 
 
-### 建立專案結構
+### 專案結構
 - app.js
 - connections/db.js：連接資料庫
 - controllers/postsControllers.js、usersControllers.js、uploadsController.js：操作 HTTP 動詞
