@@ -33,7 +33,7 @@ module.exports = (passport) =>{
             });
 
             if(newUser){
-              return done(null, user);
+              return done(null, newUser);
             }
           })
         );

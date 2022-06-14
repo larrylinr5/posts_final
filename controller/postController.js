@@ -101,6 +101,10 @@ const posts = {
           matchRule.$match["content"] = new RegExp(query.q.trim());
         }
 
+        if(userId) {
+          matchRule.$match["editor"] = mongoose.Types.ObjectId(userId);
+        }
+
         const aggregationResult = await Post.aggregate([
           matchRule,
           {
@@ -114,7 +118,7 @@ const posts = {
           { $unwind: "$editor"},
           {
             $project: {
-              _id: 1,          
+              _id: 1,        
               editor: {
                 _id: 1,
                 nickName: 1,
