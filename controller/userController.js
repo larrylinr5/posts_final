@@ -88,7 +88,6 @@ const users = {
   }),
   forgetPassword: handleErrorAsync(async (req, res, next) => {
     const {
-      user,
       body: {
         email
       }
@@ -96,14 +95,6 @@ const users = {
     const isEmailValid = validator.isEmail(email.trim());
 
     if (!isEmailValid) return next(appError(400, "40001", "Email 格式有誤", next));
-
-    const targetUser = await User.findOne({
-      _id: user._id
-    }).select("+password email");
-
-    if (targetUser.email !== email.trim()) return next(appError(400, "40080", "請輸入正確的 Email", next));
-    
-    const randomPassword = await bcrypt.hash(Math.random().toString(36).slice(-8), 12);
 
     const emailOptions = {
       from: process.env.EMAIL_SERVICE_SENDER,
@@ -114,13 +105,6 @@ const users = {
 
     const emailSendFinished = await sendEmail(emailOptions);
     if (emailSendFinished){
-      await User.updateOne(
-        {
-          _id: user._id
-        },
-        {
-          password: randomPassword
-        });
       res.status(201).json(getHttpResponse({
         message: "執行成功"
       }));
