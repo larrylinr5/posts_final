@@ -222,6 +222,11 @@ router.post("/sign_in", (req, res, next) =>
   userController.signIn(req, res, next)
 );
 
+/* 忘記密碼 */
+router.post("/postPassword", (req, res, next) =>
+  userController.forgetPassword(req, res, next)
+);
+
 /* 上傳會員頭像 */
 router.post("/avatar", isAuth, upload, (req, res, next) =>
 /**
