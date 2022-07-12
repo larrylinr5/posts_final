@@ -6,6 +6,7 @@ const validator = require("validator");
 const { generateJwtToken } = require("../middleware/auth");
 const User = require("../models/userModel");
 const Validator = require("../utils/validator");
+const {sendEmail} = require("../utils/nodemailer");
 
 const users = {
   signUpCheck: handleErrorAsync(async (req, res, next) => {
@@ -84,6 +85,32 @@ const users = {
     res.status(201).json(getHttpResponse({
       data
     }));
+  }),
+  forgetPassword: handleErrorAsync(async (req, res, next) => {
+    const {
+      body: {
+        email
+      }
+    } = req;
+    const isEmailValid = validator.isEmail(email.trim());
+
+    if (!isEmailValid) return next(appError(400, "40001", "Email 格式有誤", next));
+
+    const emailOptions = {
+      from: process.env.EMAIL_SERVICE_SENDER,
+      to: `${targetUser.email}`,
+      subject: "MetaWalls 密碼重設",
+      html: `<p>請點選右側連結重設密碼: <a href="${process.env.FRONTEND_REDIRECT_URL}?userId=${user._id}" target="_blank">點此處</a></p>`
+    };
+
+    const emailSendFinished = await sendEmail(emailOptions);
+    if (emailSendFinished){
+      res.status(201).json(getHttpResponse({
+        message: "執行成功"
+      }));
+    }else{
+      return next(appError(400, "40081", "Email 寄送失敗"));
+    }
   }),
   updatePassword: handleErrorAsync(async (req, res, next) => {
     const {

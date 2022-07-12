@@ -405,4 +405,9 @@ router.delete("/follows/:userId", isAuth, checkUserId, (req, res, next) =>
   followController.deleteFollow(req, res, next)
 );
 
+/* 寄出更新密碼信 */
+router.post("/forget_password", isAuth, (req, res, next)=>{
+  userController.forgetPassword(req, res, next);
+});
+
 module.exports = router;
