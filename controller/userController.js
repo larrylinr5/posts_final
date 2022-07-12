@@ -6,6 +6,7 @@ const validator = require("validator");
 const { generateJwtToken } = require("../middleware/auth");
 const User = require("../models/userModel");
 const Validator = require("../utils/validator");
+const nodemailer = require("nodemailer");
 
 const users = {
   signUpCheck: handleErrorAsync(async (req, res, next) => {
@@ -83,6 +84,73 @@ const users = {
     };
     res.status(201).json(getHttpResponse({
       data
+    }));
+  }),
+  forgetPassword: handleErrorAsync(async (req, res, next) => {
+    // 接收使用者輸入的信箱
+    const { email } = req.body;
+
+    // 驗證使用者輸入的內容
+    const user = await User.findOne({ email });
+    if (!email) {
+      return next(appError(400, "40002", "欄位未填寫正確"));
+    } else if (!validator.isEmail(email)) {
+      return next(appError(400, "40001", "Email 格式不正確"));
+    }else if (!user) {
+      return next(appError(400, "40010", "尚未註冊"));
+    }
+
+    // 產生一組臨時身分證 (token)
+    const { _id } = user;
+    const token = await generateJwtToken(_id);
+    if (token.length === 0) {
+      return next(appError(400, "40003", "token 建立失敗"));
+    }
+
+    // 產生一組隨機密碼
+    const chars =
+      "0123456789abcdefghijklmnopqrstuvwxyz!@#$%^&*ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const passwordLength = 12;
+    let newPassword = "";
+    for (let i = 0; i <= passwordLength; i++) {
+      const randomNumber = Math.floor(Math.random() * chars.length);
+      newPassword += chars.substring(randomNumber, randomNumber + 1);
+    }
+
+    user.password = null;
+    const postPassword = await bcrypt.hash(newPassword, 12);
+    await User.updateOne(
+      {
+        _id: user._id
+      },
+      {
+        password: postPassword
+      }
+    );
+
+    // 提供登入頁面網址
+    const postUrl = process.env.FRONTEND_REDIRECT_URL;
+
+    // 寄信至輸入信箱
+    const transporter = nodemailer.createTransport({
+      host: process.env.EMAIL_HOST,
+      port: 587,
+      secure: false, // port: 465
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER, // sender address
+      to: process.env.EMAIL_USER, // 正確為 req.body.email，list of receivers
+      subject: "請接收臨時密碼，建議重新登入帳號和更新密碼", // Subject line
+      html: `<p>您的臨時密碼:${newPassword}</p><p>登入網址：${postUrl}</p><p>請重新登入帳號和更新密碼</p>` // html body
+    });
+
+    res.status(201).json(getHttpResponse({
+      message: "請至 Email 查收信件"
     }));
   }),
   updatePassword: handleErrorAsync(async (req, res, next) => {
