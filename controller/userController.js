@@ -3,6 +3,7 @@ const { appError, handleErrorAsync } = require("../utils/errorHandler");
 const getHttpResponse = require("../utils/successHandler");
 const bcrypt = require("bcryptjs");
 const validator = require("validator");
+const nodemailer = require("nodemailer");
 const { generateJwtToken } = require("../middleware/auth");
 const User = require("../models/userModel");
 const Validator = require("../utils/validator");
@@ -170,7 +171,92 @@ const users = {
     res.status(201).json(getHttpResponse({
       data: profile
     }));
-  })
+  }),
+  // 寄出重設密碼信
+  forgetPassword: handleErrorAsync(async (req, res, next) => {
+    const validatorResult = Validator.signUpCheck(req.body);
+    if (!validatorResult.status) {
+      return next(appError(400, "40001", validatorResult.msg));
+    }
+
+    let { email } = req.body;
+
+    // 是否是註冊過的 email
+    const hasRegister = await User.findOne({ email });
+
+    if (!hasRegister) {
+      return next(appError(400, "40002", "此用戶尚未註冊"));
+    }
+
+    // 產生 JWT token
+    const token = jwt.sign({ id: hasRegister._id }, process.env.JWT_RESET_SECRET, {
+      expiresIn: Date.now() + 60 * 30 * 1000
+    });
+
+    let transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true, // true for 465, false for other ports
+      auth: {
+        type: "OAuth2",
+        user: process.env.GMAIL_ACCOUNT,
+        clientId: process.env.OAUTH_CLINENTID,
+        clientSecret: process.env.OAUTH_CLINENTSECRET,
+        refreshToken: process.env.OAUTH_REFRESHTOKEN,
+        accessToken: process.env.OAUTH_ACCESSTOKEN
+      }
+    });
+
+    let mailOptions = {
+      from: process.env.GMAIL_ACCOUNT, // sender address
+      to: email, // list of receivers:gennaro.nolan58@ethereal.email, zxz5khfjx7nsjlon@ethereal.email
+      subject: "MetaWall Reset Password", // plain text body
+      html: `https://hobbyling.github.io/metawall/resetPassword?email=${email}&token=${token}`, // html body
+    };
+
+    await transporter.sendMail(mailOptions, function (err, info) {
+      if (err) {
+        return next(appError(500, "50001", "不明原因錯誤"));
+      } else {
+        res.status(201).json(getHttpResponse({
+          message: "已發送 Email，請前往信箱查看"
+        }));
+      }
+    });
+    res.status(201).json(getHttpResponse({
+      message: "已發送 Email，請前往信箱查看"
+    }));
+  }),
+  // 重設密碼
+  resetPassword: handleErrorAsync(async (req, res, next) => {
+    const {
+      user,
+      body: {
+        password,
+        confirmPassword
+      },
+    } = req;
+    const validatorResult = Validator.resetPw({
+      password,
+      confirmPassword
+    });
+    if (!validatorResult.status) {
+      return next(appError(400, "40001", validatorResult.msg, next));
+    }
+
+    users.password = null;
+    const newPassword = await bcrypt.hash(req.body.password, 12);
+    await User.updateOne(
+      {
+        _id: user._id
+      },
+      {
+        password: newPassword
+      });
+    res.status(201).json(getHttpResponse({
+      message: "更新密碼成功"
+    }));
+  }),
 };
 
 module.exports = users;
