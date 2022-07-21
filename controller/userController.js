@@ -5,7 +5,9 @@ const bcrypt = require("bcryptjs");
 const validator = require("validator");
 const { generateJwtToken } = require("../middleware/auth");
 const User = require("../models/userModel");
+const Verification = require('../models/verificationModel');
 const Validator = require("../utils/validator");
+const mailer = require('../utils/nodemailer');
 
 const users = {
   signUpCheck: handleErrorAsync(async (req, res, next) => {
@@ -84,6 +86,74 @@ const users = {
     res.status(201).json(getHttpResponse({
       data
     }));
+  }),
+  forgetPassword: handleErrorAsync(async (req, res, next) => {
+    const { email } = req.body;
+    if (!email) return next(appError(400, "40001", "欄位未填寫"));
+
+    const isEmailValid = validator.isEmail(email.trim());
+    if (!isEmailValid) return next(appError(400, "40001", "Email 格式錯誤"));
+
+    const user = await User.findOne({ email }).select("+email");
+    if (!user) return next(appError(400, "40002", "此 Email 尚未註冊"));
+    
+    await Verification.findOneAndDelete({ user: user._id });
+
+    const { verification } = await Verification.create({
+      userId: user._id,
+      verification: (Math.floor(Math.random() * 90000) + 10000).toString()
+    });
+
+    mailer(res, next, user, verification);
+  }),
+  verification: handleErrorAsync(async (req, res, next) => {
+    const { userId } = req.params;
+    const inputVerification = req.body.verification;
+
+    if (!inputVerification) return next(appError(400, "40001", "欄位未填寫"));
+    
+    const { verification } = await Verification.findOne({ user: userId });
+
+    if (inputVerification !== verification) {
+      return next(appError(400, "40101", "驗證碼輸入錯誤，請重新輸入"));
+    }
+
+    const token = await generateJwtToken(userId);
+    const data = {
+      token,
+      id: userId
+    };
+    res.status(201).json(getHttpResponse({
+      data
+    }));
+  }),
+  changePassword: handleErrorAsync(async (req, res, next) => {
+    const { password, confirmPassword } = req.body;
+
+    if (!password || !confirmPassword) {
+      return next(appError(400, "40001", "欄位未填寫"));
+    }
+
+    if (password !== confirmPassword) {
+      return next(appError(400, "40001", "密碼不一致"));
+    }
+
+    if (!validator.isStrongPassword(password, {
+      minLength: 8,
+      minUppercase: 0,
+      minSymbols: 0
+    })) {
+      return next(appError(400, "40001", "密碼至少 8 個字元以上，並英數混合"));
+    }
+
+    const newPassword = await bcrypt.hash(password, 12);
+    await User.findByIdAndUpdate(req.user.id, { password: newPassword });
+
+    res.status(201).json(getHttpResponse({
+      message: "更新密碼成功"
+    }));
+
+    await Verification.findOneAndDelete({ user: req.user._id });
   }),
   updatePassword: handleErrorAsync(async (req, res, next) => {
     const {
