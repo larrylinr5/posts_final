@@ -13,6 +13,8 @@ const generateJwtToken = async function (userId = "") {
 };
 
 const isAuth = handleErrorAsync(async (req, res, next) => {
+  const { reset } = req.body;
+
   let token = "";
 
   if (req.headers.authorization && req.headers.authorization.startsWith("Bearer")) {
@@ -24,9 +26,16 @@ const isAuth = handleErrorAsync(async (req, res, next) => {
   }
 
   const decoded = await new Promise((resolve, reject) => {
-    jwt.verify(token, process.env.JWT_SECRET, (err, payload) => {
-      err ? next(appError(400, "40003", "Token 驗證錯誤")) : resolve(payload);
-    });
+    if (reset) {
+      jwt.verify(token, process.env.JWT_RESET_SECRET, (err, payload) => {
+        err ? next(appError(400, "40003", "認證失敗，請重新點選連結")) : resolve(payload);
+      });
+    } else {
+      jwt.verify(token, process.env.JWT_SECRET, (err, payload) => {
+        err ? next(appError(400, "40003", "Token 驗證錯誤")) : resolve(payload);
+      });
+    }
+
   });
 
   const currentUser = await User.findById(decoded.id);
