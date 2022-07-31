@@ -115,8 +115,11 @@ const pay = {
       shaEncrypt,
     });
   }),
+  postReturn: handleErrorAsync(async (req, res, next) => {
+    res.end();
+  }),
   // 取得藍新通知
-  postReturnNotify : handleErrorAsync(async (req, res, next) => {
+  postNotify: handleErrorAsync(async (req, res, next) => {
     console.log("req.body notify data", req.body);
     const reqData = req.body;
   
