@@ -135,10 +135,10 @@ const pay = {
     console.log("data:", data);
   
     // 取得交易內容，並查詢本地端資料庫是否有相符的訂單
-    if (!orders[data?.Result?.MerchantOrderNo]) {
-      console.log("找不到訂單");
-      return res.end();
-    }
+    // if (!orders[data?.Result?.MerchantOrderNo]) {
+    //   console.log("找不到訂單");
+    //   return res.end();
+    // }
 
     // 交易完成，將成功資訊儲存於資料庫
     const result = await Payment.findOneAndUpdate({
