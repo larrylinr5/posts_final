@@ -5,7 +5,7 @@ const { handleErrorAsync } = require("../utils/errorHandler");
 const { isAuth } = require("../middleware/auth");
 const paymentController = require("../controller/paymentController");
 /* 創建訂單 */
-router.post("/createOrder", isAuth, (req, res, next) => 
+router.post("/createOrder", (req, res, next) => 
   paymentController.postCreateOrder(req, res, next)
 );
 router.get("/donate", (req, res, next) => 
