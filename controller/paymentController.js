@@ -139,6 +139,7 @@ const pay = {
     //   console.log("找不到訂單");
     //   return res.end();
     // }
+    const payTime = data.Result.PayTime.replace(/([0-9|-]{10}).*/, "$1") + " " + data.Result.PayTime.replace(/[0-9|-]{10}(.*)/, "$1")
 
     // 交易完成，將成功資訊儲存於資料庫
     const result = await Payment.findOneAndUpdate({
@@ -146,7 +147,7 @@ const pay = {
     }, {
       isPaid: true,
       PaymentType: data.Result.MerchantOrderNo,
-      PayTime: data.Result.PayTime,
+      PayTime: new Date(payTime),
       TradeNo: data.Result.TradeNo
     }, { returnDocument: "after", runValidators: true });
 
