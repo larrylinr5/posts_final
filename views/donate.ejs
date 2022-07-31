@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.0.0-alpha.1/axios.min.js"></script>
+  </head>
+  <body>
+    <div id="app">
+      <form @submit.prevent="createOrder">
+        
+        <div>postId
+          <input type="text" v-model="order.postId">
+        </div>
+        <div>Amt
+          <input type="number" v-model.number="order.amt">
+        </div>
+        <div>ItemDesc
+          <input type="text" v-model="order.ItemDesc">
+        </div>
+        <button type="submit">click</button>
+      </form>
+    </div>
+    <script type="module">
+      import { createApp } from 'https://cdnjs.cloudflare.com/ajax/libs/vue/3.2.37/vue.esm-browser.min.js'
+      const host = 'http://localhost:3005/'
+
+      const app = {
+        data() {
+          return {
+            order: {
+              postId: '62e66860fcaf390ebfd616d2',
+              amt: '1',
+              ItemDesc: '商品名稱',
+            },
+          }
+        },
+        methods: {
+          createOrder() {
+            const token = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyZTY2MmY4OWZiNTc4ZjcyMmFlNDQzNSIsImlhdCI6MTY1OTI2NTc4NCwiZXhwIjoxNjU5ODcwNTg0fQ.x74Xbsg-RHfUO5NLT-oZFrnOKv3A7By7OYwExeUhnWk`;
+            
+            const url = '/payment/createOrder'
+            axios
+              .post(url, this.order,{
+              headers: { Authorization: `Bearer ${token}` }
+            })
+              .then((result) => {
+                console.log(result)
+                window.location.href = `/payment/check/?order=${result.data.TimeStamp}`
+              })
+              .catch((err) => {})
+          },
+        },
+      }
+
+      createApp(app).mount('#app')
+    </script>
+  </body>
+</html>
