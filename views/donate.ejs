@@ -9,6 +9,9 @@
     <div id="app">
       <form @submit.prevent="createOrder">
         
+        <div>userId
+          <input type="text" v-model="order.userId">
+        </div>
         <div>postId
           <input type="text" v-model="order.postId">
         </div>
@@ -29,7 +32,8 @@
         data() {
           return {
             order: {
-              postId: '62e66860fcaf390ebfd616d2',
+              userId:'62e6a46f898cefe51c4e189f',
+              postId: '62e6a497898cefe51c4e18aa',
               amt: '1',
               ItemDesc: '商品名稱',
             },

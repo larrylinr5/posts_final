@@ -11,7 +11,7 @@ const orders = {};
 const pay = {
   postCreateOrder: handleErrorAsync(async (req, res, next) => {
     console.log("----",req.body);
-    const { amt, postId } = req.body;
+    const { amt, postId , userId} = req.body;
     // 驗證
     if (typeof postId !== "string" && postId.length <= 0) {
       return next(appError(400, "40001", "postId 不正確"));
@@ -22,7 +22,7 @@ const pay = {
     if(amt <= 0) {
       return next(appError(400, "40002", "金額不能小於等於零"));
     }
-    const userId = req.user;
+    // const userId = req.user;
     //取得user資料
     const user = await User.findOne({
       _id: userId,
