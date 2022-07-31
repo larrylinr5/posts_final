@@ -20,7 +20,7 @@ router.get("/getOrderInfo/:orderId", (req, res, next) => {
 router.post("/notify", (req, res, next) => {
   paymentController.postNotify(req, res, next);
 });
-router.get("/return", (req, res, next) => {
+router.post("/return", (req, res, next) => {
   paymentController.postReturn(req, res, next);
 });
 
