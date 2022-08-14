@@ -5,9 +5,6 @@ const User = require("../models/userModel");
 const Payment = require("../models/paymentModel");
 const {create_mpg_aes_encrypt, create_mpg_sha_encrypt, create_mpg_aes_decrypt, genDataChain} = require("../utils/payment");
 
-const orders = {};
-
-
 const pay = {
   postCreateOrder: handleErrorAsync(async (req, res, next) => {
     console.log("----",req.body);
@@ -65,7 +62,6 @@ const pay = {
       return next(appError(400, "40005", "建立失敗"));
     }
 
-    // orders[now] = tradeInfo;
     return res.json(tradeInfo);
   }),
   getOrderInfo: handleErrorAsync(async (req, res, next)=>{
