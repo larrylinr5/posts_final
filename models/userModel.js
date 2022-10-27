@@ -34,6 +34,20 @@ const usersSchema = new mongoose.Schema(
       select: false,
       trim: true
     },
+    userStatus: {
+      type: String,
+      default: "offline",
+      enum: [{
+        values: ["online", "offline"],
+        message: "不支援這個 {VALUE} 屬性"
+      }],
+    },
+    conversations: {
+      type: [{
+        type: mongoose.Schema.ObjectId,
+        ref: "Conversation",
+      }],
+    },
     createdAt: {
       type: Date,
       default: Date.now,
