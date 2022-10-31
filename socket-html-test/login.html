@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body onload="init()" class="position-relative">
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="./css/page/login.css" />
+    <div class="container">
+      <h1 class="mt-4 mb-4" font="noto">Login Page</h1>
+      <div class="login-container">
+        <ul class="list-unstyled mb-4">
+          <li>
+            <h3 class="mb-1 h5" font="noto">User token</h3>
+            <div class="input-group mb-3">
+              <input
+                type="text"
+                id="LOGIN_USER_TOKEN_INPUT"
+                class="form-control"
+                placeholder="user token"
+                font="noto"
+              />
+            </div>
+          </li>
+        </ul>
+        <div class="row mb-3">
+          <div class="col-12">
+            <button
+              class="btn btn-outline-primary w-100 py-3"
+              type="button"
+              id="button-addon2"
+              font="noto"
+              onclick="connectSocket()"
+            >
+              連線
+            </button>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <button
+              class="btn btn-outline-primary w-100 py-3"
+              type="button"
+              id="button-addon2"
+              font="noto"
+              onclick="searchChatroom()"
+            >
+              查詢
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="row mt-4">
+        <ul class="list-unstyled mb-4">
+          <li>
+            <h3 class="mb-1 h5" font="noto">Room name</h3>
+            <div class="input-group mb-3">
+              <input
+                type="text"
+                id="ROOM_NAME_INPUT"
+                class="form-control"
+                placeholder="room name"
+                font="noto"
+              />
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div class="row">
+        <div class="col-12">
+          <button
+            class="btn btn-outline-primary w-100 py-3"
+            type="button"
+            id="button-addon2"
+            font="noto"
+            onclick="createChatroom()"
+          >
+            建立房間
+          </button>
+        </div>
+      </div>
+      <div class="row">
+        <h2 class="mt-4">房間一覽</h2>
+        <ul class="list-unstyled" id="CHATROOM_LIST">
+          <!-- <li class="mb-4">
+            <div class="room-container border border-1 border-dark rounded-2 d-flex justify-content-between align-content-center p-4 mt-3">
+              <h5 font="noto" class="d-flex align-content-center mb-0 lh-base">room name</h5>
+              <button class="btn btn-warning">進入</button>
+            </div>
+          </li> -->
+        </ul>
+      </div>
+    </div>
+
+    <div class="position-absolute w-100 d-flex justify-content-center top-0">
+      <div class="" style="z-index: 11">
+        <div
+          id="liveToast"
+          class="toast"
+          role="alert"
+          aria-live="assertive"
+          aria-atomic="true"
+        >
+          <div class="toast-header">
+            <strong class="me-auto">提醒</strong>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="toast"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="toast-body" id="ALERT_TOAST_BODY"></div>
+        </div>
+      </div>
+    </div>
+    <script src="./utils/utils.js"></script>
+    <script src="./utils/socket.js"></script>
+    <script src="./resources/socket.io.js"></script>
+    <script src="./resources/login.js"></script>
+  </body>
+</html>

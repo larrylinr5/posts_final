@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<style>
+
+
+</style>
+<body onload="init()">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="./css/page/index.css">
+  <div class="container">
+    <div class="row vh-80">
+      <div class="col-6">
+        <ul id="message-bar" class="list-unstyled mt-3 vh-80 overflow-scroll"></ul>
+      </div>
+      <div class="col-3 h-100">
+        <h4 font="noto">房間內成員一覽</h4>
+        <ul id="PARTICIPANT_LIST" class="list-unstyled border border-1 vh-80">
+          <!-- <li class="p-2">
+            <div class="d-flex justify-content-between align-items-center border border-1 rounded-2 p-2">
+              <p font="noto" class="lh-base ms-1 mb-0">user name</p>
+              <button class="btn btn-primary" onclick="addUser()">邀請</button>
+            </div>
+          </li> -->
+        </ul>
+      </div>
+      <div class="col-3 h-100">
+        <h4 font="noto">所有用戶一覽</h4>
+        <ul id="USER_LIST" class="list-unstyled border border-1 vh-80">
+          <!-- <li class="p-2">
+            <div class="d-flex justify-content-between align-items-center border border-1 rounded-2 p-2">
+              <p font="noto" class="lh-base ms-1 mb-0">user name</p>
+              <button class="btn btn-primary" onclick="addUser()">邀請</button>
+            </div>
+          </li> -->
+        </ul>
+      </div>
+    </div>
+    <div class="footer fixed-bottom d-flex flex-column w-100 p-3 vh-20">
+      <p class="fw-bold" font="noto">USER NAME:
+        <span id="USER_NAME" class="text-primary" id="basic-addon1" font="noto"></span>
+      </p>
+      <div class="input-group mb-3 w-100">
+        <input font="noto" id="message-input" type="text" class="form-control" placeholder="message..." aria-label="Username" aria-describedby="basic-addon1">
+        <button font="noto" class="btn btn-warning" type="button" id="button-addon2" onclick="sendMessage()">send</button>
+      </div>
+    </div>
+  </div>
+  <div class="position-absolute w-100 d-flex justify-content-center top-0">
+    <div class="" style="z-index: 11">
+      <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header">
+          <strong class="me-auto">提醒</strong>
+          <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body" id="ALERT_TOAST_BODY">
+          
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="./utils/utils.js"></script>
+  <script src="./utils/socket.js"></script>
+  <script src="./resources/socket.io.js"></script>
+  <script src="./resources/index.js"></script>
+</body>
+</html>

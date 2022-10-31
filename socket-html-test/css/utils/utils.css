@@ -1,0 +1,10 @@
+[font~=noto] {
+  font-family: 'Noto Sans TC','Roboto', sans-serif;
+}
+
+.vh-80 {
+  height: 80vh;
+}
+.vh-20 {
+  height: 20vh;
+}
