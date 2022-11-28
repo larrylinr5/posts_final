@@ -8,12 +8,8 @@ const mailer = (res, next, user, randomNum) => {
     port: 465,
     secure: true,
     auth: {
-      type: 'OAuth2',
       user: process.env.MAILER_USER,
-      clientId: process.env.MAILER_CLIENTID,
-      clientSecret: process.env.MAILER_CLIENT_SECRET,
-      refreshToken: process.env.MAILER_REFRESH_TOKEN,
-      accessToken: process.env.MAILER_ACCESS_TOKEN
+      pass: process.env.MAILER_SECRET
     },
     tls: {
       rejectUnauthorized: false
