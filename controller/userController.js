@@ -114,7 +114,7 @@ const users = {
   verification: handleErrorAsync(async (req, res, next) => {
     const { verificationCode, verificationId } = req.body;
 
-    if (!inputVerification && !targetVerificationId) return next(appError(400, "40001", "欄位未填寫"));
+    if (!verificationCode && !targetVerificationId) return next(appError(400, "40001", "欄位未填寫"));
     
     const result = await Verification.findOne({ _id: verificationId,  verification: verificationCode});
 
