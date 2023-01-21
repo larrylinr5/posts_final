@@ -24,7 +24,7 @@ const mailer = async (res, next, user, verification) => {
     <p> ${user.nickName}，您好: <br />
       要重新設定您的密碼，請點選連結並輸入以下驗證碼<br />
       驗證成功後，即可設定您的新密碼<br />
-      <a href="http://localhost:3000/?#/login?mode=verification&verificationId=${verification.verificationId.toString()}">變更密碼</a><br />
+      <a href="${process.env.FRONTEND_REDIRECT_URL}/?#/login?mode=verification&verificationId=${verification.verificationId.toString()}">變更密碼</a><br />
       驗證碼: <span style="color:red">${verification.verificationCode}</span><br />
       如果你並未要求重設密碼，你可以略過這則訊息。
     </p>
