@@ -9,17 +9,17 @@ const { isAuth } = require("../middleware/auth");
 const { upload } = require("../utils/upload");
 
 /* 忘記密碼 */
-router.post('/forgetPassword', (req, res, next) => 
+router.post("/forgetPassword", (req, res, next) => 
   userController.forgetPassword(req, res, next)
 );
 
 /* 驗證碼 */
-router.post('/verification/:userId', checkUserId, (req, res, next) => 
+router.post("/verification", (req, res, next) => 
   userController.verification(req, res, next)
 );
 
 /* 變更密碼 */
-router.patch('/changePassword', isAuth, (req, res, next) => 
+router.patch("/changePassword", isAuth, (req, res, next) => 
   userController.changePassword(req, res, next)
 );
 

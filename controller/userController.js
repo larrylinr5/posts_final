@@ -99,29 +99,32 @@ const users = {
     
     await Verification.findOneAndDelete({ user: user._id });
 
-    const { verification } = await Verification.create({
+    const createdResult = await Verification.create({
       userId: user._id,
       verification: (Math.floor(Math.random() * 90000) + 10000).toString()
     });
 
+    const verification = {
+      verificationCode: createdResult.verification,
+      verificationId: createdResult._id
+    };
+
     mailer(res, next, user, verification);
   }),
   verification: handleErrorAsync(async (req, res, next) => {
-    const { userId } = req.params;
-    const inputVerification = req.body.verification;
+    const { verificationCode, verificationId } = req.body;
 
-    if (!inputVerification) return next(appError(400, "40001", "欄位未填寫"));
+    if (!verificationCode && !targetVerificationId) return next(appError(400, "40001", "欄位未填寫"));
     
-    const { verification } = await Verification.findOne({ user: userId });
+    const result = await Verification.findOne({ _id: verificationId,  verification: verificationCode});
 
-    if (inputVerification !== verification) {
+    if (!result) {
       return next(appError(400, "40101", "驗證碼輸入錯誤，請重新輸入"));
     }
-
-    const token = await generateJwtToken(userId);
+    const token = await generateJwtToken(result.userId.toString());
     const data = {
       token,
-      id: userId
+      id: result.userId.toString()
     };
     res.status(201).json(getHttpResponse({
       data
