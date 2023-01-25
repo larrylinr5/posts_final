@@ -91,7 +91,8 @@
           const url = `/payment/getOrderInfo/${this.orderId}`
 
           const res = await axios.get(url)
-          this.order = res.data
+          this.order = res.data.data
+          console.log(res);
         },
         methods:{
           

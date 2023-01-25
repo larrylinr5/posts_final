@@ -15,7 +15,7 @@
         <div>postId
           <input type="text" v-model="order.postId">
         </div>
-        <div>Amt
+        <div>amount
           <input type="number" v-model.number="order.amt">
         </div>
         <div>ItemDesc
@@ -27,7 +27,7 @@
     <script type="module">
       import { createApp } from 'https://cdnjs.cloudflare.com/ajax/libs/vue/3.2.37/vue.esm-browser.min.js'
       const host = 'http://localhost:3005/'
-
+      
       const app = {
         data() {
           return {
@@ -35,13 +35,13 @@
               userId:'62e6a46f898cefe51c4e189f',
               postId: '62e6a497898cefe51c4e18aa',
               amt: '1',
-              ItemDesc: '商品名稱',
+              ItemDesc: '贊助貼文',
             },
           }
         },
         methods: {
           createOrder() {
-            const token = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyZTY2MmY4OWZiNTc4ZjcyMmFlNDQzNSIsImlhdCI6MTY1OTI2NTc4NCwiZXhwIjoxNjU5ODcwNTg0fQ.x74Xbsg-RHfUO5NLT-oZFrnOKv3A7By7OYwExeUhnWk`;
+            const token = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzNWE1ZTBmNDNkYjJlZmQwNzlkMGJlYiIsImlhdCI6MTY3NDYzMzMxOCwiZXhwIjoxNjc1MjM4MTE4fQ.jDWIAaaIahrgab4wwSsWFSwwBrYGB3poAIcR-i-pltQ`;
             
             const url = '/payment/createOrder'
             axios
@@ -50,7 +50,10 @@
             })
               .then((result) => {
                 console.log(result)
-                window.location.href = `/payment/check/?order=${result.data.TimeStamp}`
+                if(result.data.status!=="success"){
+                  throw Error("請求不成功")
+                }
+                window.location.href = `/payment/check/?order=${result.data.data.tradeInfo.TimeStamp}`
               })
               .catch((err) => {})
           },
