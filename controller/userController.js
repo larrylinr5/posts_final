@@ -5,6 +5,7 @@ const bcrypt = require("bcryptjs");
 const validator = require("validator");
 const { generateJwtToken } = require("../middleware/auth");
 const User = require("../models/userModel");
+const Payment = require("../models/paymentModel");
 const Verification = require('../models/verificationModel');
 const Validator = require("../utils/validator");
 const mailer = require('../utils/nodemailer');
@@ -199,9 +200,27 @@ const users = {
   getMyProfile: handleErrorAsync(async (req, res) => {
     const { user } = req;
     const profile = await User.findById(user._id).select("-logicDeleteFlag");
-    res.status(200).json(getHttpResponse({
-      data: profile
-    }));
+    const donated = await Payment.aggregate([
+      { $match: { 
+        donateTo: profile._id,
+        logicDeleteFlag: false,
+        isPaid: true,
+      }},
+      { $group: { _id: null, amount: { $sum: "$Amt" } } }
+    ]);
+
+    res.status(200).json(
+      getHttpResponse({
+        data: {
+          _id: profile._id,
+          nickName: profile.nickName,
+          gender: profile.gender,
+          createdAt: profile.createdAt,
+          updatedAt: profile.updatedAt,
+          donatedAmount: donated.length > 0 ? donated[0].amount : 0,
+        },
+      })
+    );
   }),
   getOtherProfile: handleErrorAsync(async (req, res, next) => {
     const { userId } = req.params;
