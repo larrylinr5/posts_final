@@ -7,8 +7,8 @@ const {create_mpg_aes_encrypt, create_mpg_sha_encrypt, create_mpg_aes_decrypt, g
 
 const pay = {
   postCreateOrder: handleErrorAsync(async (req, res, next) => {
-    console.log("----",req.body);
-    const { amt, postId , userId} = req.body;
+    const { amt, postId } = req.body;
+
     // 驗證
     if (typeof postId !== "string" && postId.length <= 0) {
       return next(appError(400, "40001", "postId 不正確"));
@@ -22,7 +22,7 @@ const pay = {
     // const userId = req.user;
     //取得user資料
     const user = await User.findOne({
-      _id: userId,
+      _id: req.user._id,
       logicDeleteFlag: false,
     }).select("+email");
     if (!user) {
@@ -57,12 +57,12 @@ const pay = {
       ItemDesc: tradeInfo.ItemDesc
     });
 
-    console.log("create",result);
     if(!result){
       return next(appError(400, "40005", "建立失敗"));
     }
-
-    return res.json(tradeInfo);
+    return res.status(200).json(getHttpResponse({
+      data: { tradeInfo }
+    }));
   }),
   getOrderInfo: handleErrorAsync(async (req, res, next)=>{
     const { orderId } = req.params;
@@ -95,21 +95,20 @@ const pay = {
 
     // 用來產出字串
     const paramString = genDataChain(tradeInfo);
-    console.log("paramString:", paramString);
   
     // 加密第一段字串，此段主要是提供交易內容給予藍新金流
     const aesEncrypt = create_mpg_aes_encrypt(tradeInfo);
-    console.log("aesEncrypt:", aesEncrypt);
   
     // 使用 HASH 再次 SHA 加密字串，作為驗證使用
     const shaEncrypt = create_mpg_sha_encrypt(aesEncrypt);
-    console.log("shaEncrypt:", shaEncrypt);
-  
-    res.json({
-      order: tradeInfo,
-      aesEncrypt,
-      shaEncrypt,
-    });
+
+    return res.status(200).json(getHttpResponse({
+      data: { 
+        order: tradeInfo,
+        aesEncrypt,
+        shaEncrypt
+      }
+    }));
   }),
   postReturn: handleErrorAsync(async (req, res, next) => {
     res.end();
