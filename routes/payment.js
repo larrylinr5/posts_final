@@ -21,7 +21,7 @@ router.post("/notify", (req, res, next) => {
   paymentController.postNotify(req, res, next);
 });
 router.post("/return", (req, res, next) => {
-  res.render("https://www.universewalls.com/?isPaid=true");
+  res.redirect("https://www.universewalls.com/?isPaid=true");
   // paymentController.postReturn(req, res, next);
 });
 
