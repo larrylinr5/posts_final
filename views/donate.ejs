@@ -41,8 +41,9 @@
         },
         methods: {
           createOrder() {
+            this.order.amt = +this.order.amt // 轉換成number
+
             const token = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzNWE1ZTBmNDNkYjJlZmQwNzlkMGJlYiIsImlhdCI6MTY3NDYzMzMxOCwiZXhwIjoxNjc1MjM4MTE4fQ.jDWIAaaIahrgab4wwSsWFSwwBrYGB3poAIcR-i-pltQ`;
-            
             const url = '/payment/createOrder'
             axios
               .post(url, this.order,{

@@ -8,7 +8,11 @@ const {create_mpg_aes_encrypt, create_mpg_sha_encrypt, create_mpg_aes_decrypt, g
 const pay = {
   postCreateOrder: handleErrorAsync(async (req, res, next) => {
     const { amt, postId } = req.body;
-
+    //驗證金額格式
+    const amtErrorMsg = amtValidation(amt);
+    if(amtErrorMsg.length > 0){
+      return next(appError(400, "40001", amtErrorMsg));
+    }
     // 驗證
     if (typeof postId !== "string" && postId.length <= 0) {
       return next(appError(400, "40001", "postId 不正確"));
@@ -19,7 +23,6 @@ const pay = {
     if(amt <= 0) {
       return next(appError(400, "40002", "金額不能小於等於零"));
     }
-    // const userId = req.user;
     //取得user資料
     const user = await User.findOne({
       _id: req.user._id,
@@ -152,7 +155,18 @@ const pay = {
     }
     
     return res.end();
-})
+  })
 };
 
 module.exports = pay;
+
+function amtValidation(value){
+  if(typeof value!=="number"){
+    return "金額必須是正整數";
+  }else if(/^0$/.test(value)){
+    return "金額不可輸入為零";
+  }else if(/^[1-9][0-9]*$/.test(value) || /^[0-9]*$/.test(value) ){
+    return "";
+  }
+  return "金額必須是正整數";
+}
