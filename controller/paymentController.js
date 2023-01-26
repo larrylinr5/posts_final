@@ -21,7 +21,7 @@ const pay = {
       return next(appError(400, "40001", "amt 必須要是數字"));
     }
     if(amt <= 0) {
-      return next(appError(400, "40002", "金額不能小於等於零"));
+      return next(appError(400, "40001", "金額不能小於等於零"));
     }
     //取得user資料
     const user = await User.findOne({
