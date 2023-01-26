@@ -14,7 +14,7 @@ router.get("/donate", (req, res, next) =>
 router.get("/check", (req, res, next) => 
   res.render("check", { title: "Express" })
 );
-router.get("/getOrderInfo/:orderId", (req, res, next) => {
+router.get("/getOrderInfo/:orderId", isAuth, (req, res, next) => {
   paymentController.getOrderInfo(req, res, next);
 });
 router.post("/notify", (req, res, next) => {
