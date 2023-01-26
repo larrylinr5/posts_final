@@ -215,14 +215,8 @@
               "$ref": "#/definitions/changePasswordResponse"
             }
           },
-          "401": {
-            "description": "Email 格式錯誤",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          },
-          "402": {
-            "description": "此 Email 尚未註冊",
+          "400": {
+            "description": "密碼至少 8 個字元以上，並英數混合",
             "schema": {
               "$ref": "#/definitions/Error"
             }
