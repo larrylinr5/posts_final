@@ -214,6 +214,7 @@ const users = {
         data: {
           _id: profile._id,
           nickName: profile.nickName,
+          avatar: profile.avatar,
           gender: profile.gender,
           createdAt: profile.createdAt,
           updatedAt: profile.updatedAt,
@@ -242,6 +243,7 @@ const users = {
         data: {
           _id: profile._id,
           nickName: profile.nickName,
+          avatar: profile.avatar,
           gender: profile.gender,
           createdAt: profile.createdAt,
           updatedAt: profile.updatedAt,
