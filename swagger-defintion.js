@@ -33,6 +33,11 @@ const User = { // Schema 定義為 editor
   updatedAt: "2022-05-31T14:21:36.129Z"
 };
 
+const profile = { // Schema 定義為 editor
+  ...User,
+  donatedAmount: 0
+};
+
 const post = {
   _id: "123456789",
   user,
@@ -126,6 +131,7 @@ const File = {
 };
 
 module.exports = {
+  profile,
   User,
   Post,
   Posts,

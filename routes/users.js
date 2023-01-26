@@ -83,7 +83,7 @@ router.get("/profile", isAuth, (req, res, next) =>
   /**
     #swagger.responses[200] = {
       description: '取得會員的個人資料成功',
-      schema: { $ref: '#/definitions/User' }
+      schema: { $ref: '#/definitions/profile' }
     }
     #swagger.responses[404] = {
       description: '無此路由',
@@ -109,7 +109,7 @@ router.get("/profile/:userId", isAuth, (req, res, next) =>
   /**
     #swagger.responses[200] = {
       description: '取得特定會員的個人資料成功',
-      schema: { $ref: '#/definitions/User' }
+      schema: { $ref: '#/definitions/profile' }
     }
     #swagger.responses[404] = {
       description: '無此路由',

@@ -56,6 +56,30 @@
   "consumes": [],
   "produces": [],
   "paths": {
+    "/users/forgetPassword": {
+      "post": {
+        "tags": [],
+        "description": "",
+        "parameters": [],
+        "responses": {}
+      }
+    },
+    "/users/verification": {
+      "post": {
+        "tags": [],
+        "description": "",
+        "parameters": [],
+        "responses": {}
+      }
+    },
+    "/users/changePassword": {
+      "patch": {
+        "tags": [],
+        "description": "",
+        "parameters": [],
+        "responses": {}
+      }
+    },
     "/users/follows/{userId}": {
       "get": {
         "tags": [
@@ -226,7 +250,7 @@
           "200": {
             "description": "取得會員的個人資料成功",
             "schema": {
-              "$ref": "#/definitions/User"
+              "$ref": "#/definitions/profile"
             }
           },
           "404": {
@@ -268,7 +292,7 @@
           "200": {
             "description": "取得特定會員的個人資料成功",
             "schema": {
-              "$ref": "#/definitions/User"
+              "$ref": "#/definitions/profile"
             }
           },
           "404": {
@@ -1408,6 +1432,61 @@
         ]
       }
     },
+    "/payment/createOrder": {
+      "post": {
+        "tags": [],
+        "description": "",
+        "parameters": [],
+        "responses": {}
+      }
+    },
+    "/payment/donate": {
+      "get": {
+        "tags": [],
+        "description": "",
+        "parameters": [],
+        "responses": {}
+      }
+    },
+    "/payment/check": {
+      "get": {
+        "tags": [],
+        "description": "",
+        "parameters": [],
+        "responses": {}
+      }
+    },
+    "/payment/getOrderInfo/{orderId}": {
+      "get": {
+        "tags": [],
+        "description": "",
+        "parameters": [
+          {
+            "name": "orderId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/payment/notify": {
+      "post": {
+        "tags": [],
+        "description": "",
+        "parameters": [],
+        "responses": {}
+      }
+    },
+    "/payment/return": {
+      "post": {
+        "tags": [],
+        "description": "",
+        "parameters": [],
+        "responses": {}
+      }
+    },
     "/*": {
       "get": {
         "tags": [
@@ -1428,6 +1507,39 @@
     }
   },
   "definitions": {
+    "profile": {
+      "type": "object",
+      "properties": {
+        "_id": {
+          "type": "string",
+          "example": "123456789"
+        },
+        "nickName": {
+          "type": "string",
+          "example": "會員暱稱"
+        },
+        "avatar": {
+          "type": "string",
+          "example": "https://i.imgur.com/xxx.png"
+        },
+        "gender": {
+          "type": "number",
+          "example": 1
+        },
+        "createdAt": {
+          "type": "string",
+          "example": "2022-05-31T14:21:36.129Z"
+        },
+        "updatedAt": {
+          "type": "string",
+          "example": "2022-05-31T14:21:36.129Z"
+        },
+        "donatedAmount": {
+          "type": "number",
+          "example": 0
+        }
+      }
+    },
     "User": {
       "type": "object",
       "properties": {
