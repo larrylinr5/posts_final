@@ -228,9 +228,27 @@ const users = {
       return next(appError(400, "格式錯誤", "欄位未填寫正確"));
     }
     const profile = await User.findById(userId).select("-logicDeleteFlag");
-    res.status(200).json(getHttpResponse({
-      data: profile
-    }));
+    const donated = await Payment.aggregate([
+      { $match: { 
+        donateTo: profile._id,
+        logicDeleteFlag: false,
+        isPaid: true,
+      }},
+      { $group: { _id: null, amount: { $sum: "$Amt" } } }
+    ]);
+    console.log("donated", donated);
+    res.status(200).json(
+      getHttpResponse({
+        data: {
+          _id: profile._id,
+          nickName: profile.nickName,
+          gender: profile.gender,
+          createdAt: profile.createdAt,
+          updatedAt: profile.updatedAt,
+          donatedAmount: donated.length > 0 ? donated[0].amount : 0,
+        },
+      })
+    );
   }),
   updateProfile: handleErrorAsync(async (req, res, next) => {
     const {
