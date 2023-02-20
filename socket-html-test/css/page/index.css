@@ -1,0 +1,25 @@
+@import url("../utils/index.css");
+
+.footer {
+  background: rgba(108, 98, 98, 0.526);
+}
+
+.chat-item {
+  padding: 8px 16px;
+}
+
+.chat-item-container {
+  padding: 8px 16px;
+  background-color: burlywood;
+  border-radius: 16px;
+
+}
+
+.chat-item-another {
+  padding: 8px 16px;
+  text-align: end;
+}
+
+.chat-item-another .chat-item-container {
+  background-color: antiquewhite;
+}
