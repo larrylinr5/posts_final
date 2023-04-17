@@ -17,7 +17,8 @@ const usersSchema = new mongoose.Schema(
     },
     avatar: {
       type: String,
-      trim: true
+      trim: true,
+      default: ""
     },
     email: {
       type: String,
