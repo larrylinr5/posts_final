@@ -33,11 +33,15 @@ module.exports = class Socket {
 
       socket.on("addUserInRoom", async ({roomId, userId})=>{
         console.log("addUserInRoom");
+        console.log("room",roomId);
+        console.log("userId",userId);
         conversations.addParticipant({roomId, userId});
       });
 
       socket.on("getMessages", async ({ roomId }) => {
+        console.log("getMessages", roomId);
         const messages = await chatMessages.getChatMessage({ roomId });
+        console.log("messages", messages);
         // this.io.in(data.roomId).emit("getMessagesResponse", messages);
         socket.emit("getMessagesResponse", messages);
       });
@@ -65,6 +69,7 @@ module.exports = class Socket {
 
       socket.on("joinRoom", async data => {
         console.log("joinRoom");
+        console.log("data", data.roomId);
         const conversation = await conversations.findConversation({
           roomId: data.roomId,
           token: socket.handshake.query?.token,
@@ -72,7 +77,7 @@ module.exports = class Socket {
         console.log("conversation",conversation);
         currentRoomId = conversation._id.toString();
         socket.join(currentRoomId);
-        
+        this.io.to(`${socket.id}`).emit("joinRoomSuccess", conversation);
         console.log("rooms", socket.rooms);
       });
 

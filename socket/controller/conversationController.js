@@ -36,7 +36,7 @@ const conversations = {
   },
 
   async findParticipants({ roomId }){
-    console.log("roomId----",roomId);
+    console.log("roomId----", roomId);
     const conversation = await Conversation.findOne({
       _id: roomId,
       logicDeleteFlag: false

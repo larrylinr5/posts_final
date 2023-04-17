@@ -66,9 +66,12 @@ function showAlert(messageHtml) {
 }
 
 function initSocketMethod() {
-  // socket.on("connect", () => {
-  //   console.log("connected", socket.connected); // true
-  // });
+  socket.on("connect", () => {
+    console.log("connected", socket.connected); // true
+    if(!socket.connected){
+      socket.close();
+    }
+  });
   socket.on("getChatroomListRequest", data=>{
     socket.emit("getChatroomList", {});
   });
