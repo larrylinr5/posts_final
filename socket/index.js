@@ -1,9 +1,8 @@
 const { Server } = require("socket.io");
 const { isAuthValid } = require("./middleware/auth");
-const users = require("./controller/userController");
 const conversations = require("./controller/conversationController");
 const chatMessages = require("./controller/chatMessageController");
-
+const SocketUser = require("./user");
 module.exports = class Socket {
   constructor(server) {
     this.io = require("socket.io")(server, {
@@ -11,7 +10,6 @@ module.exports = class Socket {
         origin: "*",
       },
     });
-    this.users = [];
     this.io.use(async (socket, next) => {
       if (await isAuthValid(socket.handshake.query?.token)) {
         console.log(true);
@@ -29,12 +27,24 @@ module.exports = class Socket {
   connect() {
     this.io.on("connection", socket => {
       console.log("----connection-----");
+      const socketUser = new SocketUser(socket);
       var currentRoomId;
+      socket.on("setOnlineStatus", async ({})=>{
+        console.log("setOnlineStatus");
+        const user = await socketUser.setUserStatusOnline();
+        socket.broadcast.emit("updateUserStatusResponse", user);
+      });
+
+      socket.on("setOfflineStatus", async ({})=>{
+        console.log("setOfflineStatus");
+        const user = await socketUser.setUserStatusOffline();
+        socket.broadcast.emit("updateUserStatusResponse", user);
+      });
 
       socket.on("addUserInRoom", async ({roomId, userId})=>{
         console.log("addUserInRoom");
-        console.log("room",roomId);
-        console.log("userId",userId);
+        console.log("room", roomId);
+        console.log("userId", userId);
         conversations.addParticipant({roomId, userId});
       });
 
@@ -48,13 +58,13 @@ module.exports = class Socket {
 
       socket.on("getUserList", async ()=>{
         console.log("getUserList");
-        const userList = await users.findAllUser(socket.handshake.query?.token);
+        const userList = await socketUser.getUserList();
         socket.emit("getUserListResponse", userList);
       });
 
       socket.on("getUserInfo", async ({ token }) => {
-        const userInfo = await users.getUserInfo(socket.handshake.query?.token);
         console.log("getUserInfo");
+        const userInfo = await socketUser.getUserInfo();
         // this.io.to(`${socket.id}`).emit('getUserInfoResponse', userInfo);
         socket.emit("getUserInfoResponse", userInfo);
       });
@@ -91,8 +101,8 @@ module.exports = class Socket {
 
       socket.on("getChatroomList", async data => {
         console.log("server side getChatroomList", data);
-        const userInfo = await users.getUserInfo(socket.handshake.query?.token);
         console.log("userInfo", socket.id);
+        const userInfo = await socketUser.getUserInfo();
         this.io.to(`${socket.id}`).emit("getChatroomListResponse", userInfo);
       });
 
@@ -116,11 +126,15 @@ module.exports = class Socket {
       socket.on("disconnect", async () => {
         console.log("disconnect", socket.handshake.query?.token);
         console.log("disconnect", currentRoomId);
-        const userInfo = await users.getUserInfo(socket.handshake.query?.token);
-        await users.updateUserStatus({token: socket.handshake.query?.token, status: "offline"});
+        
+        // 更新其他客戶端在該用戶下線後的該用戶狀態
+        const user = await socketUser.setUserStatusOffline();
+        socket.broadcast.emit("updateUserStatusResponse", user);
+
+        // 該用戶所在房間設為下線
         socket.broadcast.to(currentRoomId).emit("leaveRoomMessage", {
-          userName: userInfo.nickName,
-          message: `${userInfo.nickName} 下線`,
+          userName: user.nickName,
+          message: `${user.nickName} 下線`,
         });
       });
     });
