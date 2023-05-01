@@ -18,6 +18,19 @@ const users = {
   //     return false;
   //   }
   // }
+  async setUserStatus({token, status}){
+    const userId = await decodedUserId(token);
+    const user = await User.findOneAndUpdate({
+      _id: userId,
+      logicDeleteFlag: false,
+    }, {
+      userStatus: status
+    }, { new: true });
+    if (user) {
+      return user;
+    }
+    return Error("User 不存在");
+  },
 
   async getUserInfo(token) {
     const userId = await decodedUserId(token);
@@ -43,16 +56,6 @@ const users = {
       return user;
     }
     return Error("User 不存在");
-  },
-
-  async updateUserStatus({token, status}){
-    const userId = await decodedUserId(token);
-    const users = await User.findOneAndUpdate({
-      _id: userId,
-      logicDeleteFlag: false,
-    },{
-      userStatus: status
-    });
   },
 
   async findAllUser(token) {
