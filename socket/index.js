@@ -3,6 +3,7 @@ const { isAuthValid } = require("./middleware/auth");
 const conversations = require("./controller/conversationController");
 const chatMessages = require("./controller/chatMessageController");
 const SocketUser = require("./user");
+const SocketResponse = require("./response/response");
 module.exports = class Socket {
   constructor(server) {
     this.io = require("socket.io")(server, {
@@ -77,6 +78,20 @@ module.exports = class Socket {
         this.io.to(`${socket.id}`).emit("getChatroomListRequest", {});
       });
 
+      socket.on("leaveChatroom", async ({ roomId }) => {
+        console.log("leaveChatroom", roomId);
+        const updatedConversation = await conversations.leaveConversation({
+          roomId,
+          token: socket.handshake.query?.token,
+        });
+        const updatedUser = await socketUser.deleteUserConversation({
+          roomId,
+          token: socket.handshake.query?.token,
+        });
+        console.log("updatedConversation", updatedConversation);
+        this.io.to(`${socket.id}`).emit("leaveChatroomResponse", {});
+      });
+
       socket.on("joinRoom", async data => {
         console.log("joinRoom");
         console.log("data", data.roomId);
@@ -84,7 +99,7 @@ module.exports = class Socket {
           roomId: data.roomId,
           token: socket.handshake.query?.token,
         });
-        console.log("conversation",conversation);
+        console.log("conversation", conversation);
         currentRoomId = conversation._id.toString();
         socket.join(currentRoomId);
         this.io.to(`${socket.id}`).emit("joinRoomSuccess", conversation);

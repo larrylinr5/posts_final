@@ -22,6 +22,24 @@ const conversations = {
     }
   },
 
+  async leaveConversation({ roomId, token }) {
+    console.log("leaveConversation", roomId);
+    const userId = await decodedUserId(token);
+    const updatedConversation = await Conversation.findOneAndUpdate(
+      {
+        _id: roomId
+      },
+      {
+        $pull: { participants: userId }
+      },
+      {
+        new: true
+      }
+    );
+    return updatedConversation;
+    
+  },
+
   async findConversation({ roomId, token }){
     const userId = await decodedUserId(token);
     const conversation = await Conversation.findOne({
@@ -44,7 +62,7 @@ const conversations = {
       path: "participants",
       select: "nickName avatar userStatus",
     });
-    console.log("123",conversation);
+    console.log("123", conversation);
     if(conversation){
       return conversation;
     }

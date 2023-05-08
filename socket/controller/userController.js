@@ -18,6 +18,23 @@ const users = {
   //     return false;
   //   }
   // }
+  async deleteUserConversation({ roomId, token }) {
+    console.log("leaveConversation", roomId);
+    const userId = await decodedUserId(token);
+    const updateUser = await User.findOneAndUpdate(
+      {
+        _id: userId
+      },
+      {
+        $pull: { conversations: roomId }
+      },
+      {
+        new: true
+      }
+    );
+    return updateUser;
+  }
+
   async setUserStatus({token, status}){
     const userId = await decodedUserId(token);
     const user = await User.findOneAndUpdate({
