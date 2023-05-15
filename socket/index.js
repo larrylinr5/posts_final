@@ -69,19 +69,14 @@ module.exports = class Socket {
         });
       }));
 
-      socket.on("joinRoom", async data => {
-        console.log("joinRoom");
-        console.log("data", data.roomId);
-        const conversation = await conversations.findConversation({
-          roomId: data.roomId,
+      socket.on("joinRoom", handleSocketErrorAsync(socket, ( ...args) => {
+        const [ socketInstance, data] = args;
+        const { roomId } = data;
+        return conversations.joinRoomHandler(this.io, socket, {
+          roomId,
           token: socket.handshake.query?.token,
         });
-        console.log("conversation", conversation);
-        currentRoomId = conversation._id.toString();
-        socket.join(currentRoomId);
-        this.io.to(`${socket.id}`).emit("joinRoomSuccess", conversation);
-        console.log("rooms", socket.rooms);
-      });
+      }));
 
       socket.on("sendJoinRoomMessage", data => {
         console.log("sendJoinRoomMessage", data);
