@@ -37,13 +37,13 @@ module.exports = class Socket {
       socket.on("setOfflineStatus", handleSocketErrorAsync(socket, (...args) => users.setOnlineStatusHandler(socket, socketUser, ...args)));
 
       socket.on("addUserInRoom", handleSocketErrorAsync(socket, ( ...args) => {
-        const [socketInstance, data] = args;
+        const [ socketInstance, data] = args;
         const { roomId, userId } = data;
         return conversations.addUserInRoomHandler(socket, {roomId, userId});
       }));
 
       socket.on("getMessages", handleSocketErrorAsync(socket, ( ...args) => {
-        const [socketInstance, data] = args;
+        const [ socketInstance, data] = args;
         const { roomId, userId } = data;
         return chatMessages.getMessagesHandler(socket, {roomId, userId});
       }));
@@ -52,13 +52,14 @@ module.exports = class Socket {
 
       socket.on("getUserInfo", handleSocketErrorAsync(socket, (...args) => users.getUserInfoHandler(socket, socketUser, ...args)));
 
-      socket.on("createChatroom", async ({ displayName }) => {
-        await conversations.createConversation({
+      socket.on("createChatroom", handleSocketErrorAsync(socket, ( ...args) => {
+        const [ socketInstance, data] = args;
+        const { displayName } = data;
+        return conversations.createConversationHandler(this.io, socket, {
           displayName,
           token: socket.handshake.query?.token,
         });
-        this.io.to(`${socket.id}`).emit("getChatroomListRequest", {});
-      });
+      }));
 
       socket.on("leaveChatroom", async ({ roomId }) => {
         console.log("leaveChatroom", roomId);

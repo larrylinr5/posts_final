@@ -3,6 +3,34 @@ const User = require("../../models/userModel");
 const { decodedUserId } = require("../middleware/auth");
 const SocketResponse = require("../response/response");
 const conversations = {
+  createConversationHandler: async (io, socket, { displayName, token }) => {
+    const userId = await decodedUserId(token);
+    const conversation = await Conversation.create({
+      displayName: displayName,
+      participants: [userId],
+    });
+    const query = { _id: userId, logicDeleteFlag: false };
+    const updateDocument = {
+      $addToSet: { conversations: conversation._id },
+      upsert: true,
+      returnOriginal: false,
+      runValidators: true,
+    };
+    
+    const updatedUser = await User.updateOne(query, updateDocument);
+    if (updatedUser?.acknowledged === true && updatedUser?.modifiedCount === 0) {
+      throw Error("已添加過 conversation");
+    }
+
+    // 操作成功，向客户端发送成功的消息
+    const response = new SocketResponse({
+      statusCode: "success",
+      message: "",
+      data: {},
+      error: null
+    });
+    io.to(`${socket.id}`).emit("getChatroomListRequest", response);
+  },
 
   addUserInRoomHandler: async (socket, {roomId, userId}) => {
     console.log("addUserInRoomHandler", roomId, userId);
@@ -45,27 +73,6 @@ const conversations = {
       error: null
     });
     socket.emit("addUserInRoomResponse", response);
-  },
-
-
-  async createConversation({ displayName, token }) {
-    const userId = await decodedUserId(token);
-    const conversation = await Conversation.create({
-      displayName: displayName,
-      participants: [userId],
-    });
-    const query = { _id: userId, logicDeleteFlag: false };
-    const updateDocument = {
-      $addToSet: { conversations: conversation._id },
-      upsert: true,
-      returnOriginal: false,
-      runValidators: true,
-    };
-    
-    const updatedUser = await User.updateOne(query, updateDocument);
-    if (updatedUser?.acknowledged === true && updatedUser?.modifiedCount === 0) {
-      throw Error("已添加過 conversation");
-    }
   },
 
   async leaveConversation({ roomId, token }) {
