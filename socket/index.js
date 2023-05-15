@@ -32,9 +32,9 @@ module.exports = class Socket {
       console.log("----connection-----");
       const socketUser = new SocketUser(socket);
       var currentRoomId;
-      socket.on("setOnlineStatus", handleSocketErrorAsync((...args) => users.setOnlineStatusHandler(socket, socketUser, ...args)));
+      socket.on("setOnlineStatus", handleSocketErrorAsync(socket,(...args) => users.setOnlineStatusHandler(socket, socketUser, ...args)));
 
-      socket.on("setOfflineStatus", handleSocketErrorAsync((...args) => users.setOnlineStatusHandler(socket, socketUser, ...args)));
+      socket.on("setOfflineStatus", handleSocketErrorAsync(socket,(...args) => users.setOnlineStatusHandler(socket, socketUser, ...args)));
 
       socket.on("addUserInRoom", async ({roomId, userId})=>{
         console.log("addUserInRoom");

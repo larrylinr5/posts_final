@@ -1,11 +1,12 @@
 const SocketResponse = require("../response/response");
 
-const handleSocketErrorAsync = (func) => {
+const handleSocketErrorAsync = (socket, func) => {
   // const _socket = socket;
-  return async (socket, ...args) => {
+  return async (...args) => {
     try {
       await func(socket, ...args);
     } catch (error) {
+      console.log("error", error);
       const response = new SocketResponse({
         statusCode: "error",
         message: "",
