@@ -1,7 +1,53 @@
 const Conversation = require("../../models/conversationModel");
 const User = require("../../models/userModel");
 const { decodedUserId } = require("../middleware/auth");
+const SocketResponse = require("../response/response");
 const conversations = {
+
+  addUserInRoomHandler: async (socket, {roomId, userId}) => {
+    console.log("addUserInRoomHandler", roomId, userId);
+    if(!roomId){
+      throw Error("找不到 roomId");
+    }
+    if(!userId){
+      throw Error("找不到 userId");
+    }
+    const conversationQuery = { _id: roomId, logicDeleteFlag: false };
+    const conversationUpdateDocument = {
+      $addToSet: { participants: userId },
+      upsert: true,
+      returnOriginal: false,
+      runValidators: true,
+    };
+    const updatedConversation = await Conversation.updateOne(conversationQuery, conversationUpdateDocument);
+    if (updatedConversation?.acknowledged === true && updatedConversation?.modifiedCount === 0) {
+      throw Error("已添加到conversation collection");
+    }
+    console.log("roomId", roomId);
+    const userQuery = { _id: userId, logicDeleteFlag: false };
+    const userUpdateDocument = {
+      $addToSet: { conversations: roomId },
+      upsert: true,
+      returnOriginal: false,
+      runValidators: true,
+    };
+    
+    const updatedUser = await User.updateOne(userQuery, userUpdateDocument);
+    if (updatedUser?.acknowledged === true && updatedUser?.modifiedCount === 0) {
+      throw Error("已添加過 user collection");
+    }
+
+    // 操作成功，向客户端发送成功的消息
+    const response = new SocketResponse({
+      statusCode: "success",
+      message: "成功添加用户到房间",
+      data: null,
+      error: null
+    });
+    socket.emit("addUserInRoomResponse", response);
+  },
+
+
   async createConversation({ displayName, token }) {
     const userId = await decodedUserId(token);
     const conversation = await Conversation.create({
@@ -68,33 +114,6 @@ const conversations = {
     }
     throw Error("沒找到 conversation");
   },
-
-  async addParticipant({ roomId, userId }){
-    const conversationQuery = { _id: roomId, logicDeleteFlag: false };
-    const conversationUpdateDocument = {
-      $addToSet: { participants: userId },
-      upsert: true,
-      returnOriginal: false,
-      runValidators: true,
-    };
-    const updatedConversation = await Conversation.updateOne(conversationQuery,conversationUpdateDocument);
-    if (updatedConversation?.acknowledged === true && updatedConversation?.modifiedCount === 0) {
-      throw Error("已添加到conversation collection");
-    }
-console.log("roomId",roomId);
-    const userQuery = { _id: userId, logicDeleteFlag: false };
-    const userUpdateDocument = {
-      $addToSet: { conversations: roomId },
-      upsert: true,
-      returnOriginal: false,
-      runValidators: true,
-    };
-    
-    const updatedUser = await User.updateOne(userQuery, userUpdateDocument);
-    if (updatedUser?.acknowledged === true && updatedUser?.modifiedCount === 0) {
-      throw Error("已添加過 user collection");
-    }
-  }
 };
 
 module.exports = conversations;

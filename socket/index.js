@@ -36,12 +36,11 @@ module.exports = class Socket {
 
       socket.on("setOfflineStatus", handleSocketErrorAsync(socket,(...args) => users.setOnlineStatusHandler(socket, socketUser, ...args)));
 
-      socket.on("addUserInRoom", async ({roomId, userId})=>{
-        console.log("addUserInRoom");
-        console.log("room", roomId);
-        console.log("userId", userId);
-        conversations.addParticipant({roomId, userId});
-      });
+      socket.on("addUserInRoom", handleSocketErrorAsync(socket, ( ...args) => {
+        const [socketInstance, data] = args;
+        const { roomId, userId } = data;
+        return conversations.addUserInRoomHandler(socket, {roomId, userId});
+      }));
 
       socket.on("getMessages", async ({ roomId }) => {
         console.log("getMessages", roomId);
