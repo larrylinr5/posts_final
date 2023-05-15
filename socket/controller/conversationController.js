@@ -2,7 +2,41 @@ const Conversation = require("../../models/conversationModel");
 const User = require("../../models/userModel");
 const { decodedUserId } = require("../middleware/auth");
 const SocketResponse = require("../response/response");
+const users = require("./userController");
+
 const conversations = {
+  leaveConversationHandler: async (io, socket, { roomId, token }) => {
+    console.log("leaveConversation");
+    if(!roomId){
+      throw Error("找不到 roomId");
+    }
+    const userId = await decodedUserId(token);
+    const updatedConversation = await Conversation.findOneAndUpdate(
+      {
+        _id: roomId
+      },
+      {
+        $pull: { participants: userId }
+      },
+      {
+        new: true
+      }
+    );
+
+    const updatedUser = await users.deleteUserConversation({
+      roomId,
+      token: socket.handshake.query?.token,
+    });
+
+    // 操作成功，向客户端发送成功的消息
+    const response = new SocketResponse({
+      statusCode: "success",
+      message: "",
+      data: updatedUser,
+      error: null
+    });
+    io.to(`${socket.id}`).emit("leaveChatroomResponse", response);
+  },
   createConversationHandler: async (io, socket, { displayName, token }) => {
     const userId = await decodedUserId(token);
     const conversation = await Conversation.create({
@@ -75,23 +109,23 @@ const conversations = {
     socket.emit("addUserInRoomResponse", response);
   },
 
-  async leaveConversation({ roomId, token }) {
-    console.log("leaveConversation", roomId);
-    const userId = await decodedUserId(token);
-    const updatedConversation = await Conversation.findOneAndUpdate(
-      {
-        _id: roomId
-      },
-      {
-        $pull: { participants: userId }
-      },
-      {
-        new: true
-      }
-    );
-    return updatedConversation;
+  // async leaveConversation({ roomId, token }) {
+  //   console.log("leaveConversation", roomId);
+  //   const userId = await decodedUserId(token);
+  //   const updatedConversation = await Conversation.findOneAndUpdate(
+  //     {
+  //       _id: roomId
+  //     },
+  //     {
+  //       $pull: { participants: userId }
+  //     },
+  //     {
+  //       new: true
+  //     }
+  //   );
+  //   return updatedConversation;
     
-  },
+  // },
 
   async findConversation({ roomId, token }){
     const userId = await decodedUserId(token);

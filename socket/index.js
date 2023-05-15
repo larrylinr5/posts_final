@@ -60,20 +60,14 @@ module.exports = class Socket {
           token: socket.handshake.query?.token,
         });
       }));
-
-      socket.on("leaveChatroom", async ({ roomId }) => {
-        console.log("leaveChatroom", roomId);
-        const updatedConversation = await conversations.leaveConversation({
+      socket.on("leaveChatroom", handleSocketErrorAsync(socket, ( ...args) => {
+        const [ socketInstance, data] = args;
+        const { roomId } = data;
+        return conversations.leaveConversationHandler(this.io, socket, {
           roomId,
           token: socket.handshake.query?.token,
         });
-        const updatedUser = await socketUser.deleteUserConversation({
-          roomId,
-          token: socket.handshake.query?.token,
-        });
-        console.log("updatedConversation", updatedConversation);
-        this.io.to(`${socket.id}`).emit("leaveChatroomResponse", {});
-      });
+      }));
 
       socket.on("joinRoom", async data => {
         console.log("joinRoom");
