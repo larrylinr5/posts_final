@@ -20,6 +20,17 @@ const users = {
   //   }
   // }
   // 重構的部分
+  getUserListHandler: async (socket, socketUser) => {
+    console.log("getUserList");
+    const userList = await socketUser.getUserList();
+    const response = new SocketResponse({
+      statusCode: "success",
+      message: "",
+      data: userList,
+      error: null
+    });
+    socket.emit("getUserListResponse", response);
+  },
   setOnlineStatusHandler: async (socket, socketUser) => {
     console.log("setOnlineStatusHandler");
     // console.log("data", data);

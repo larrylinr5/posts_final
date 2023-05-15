@@ -32,9 +32,9 @@ module.exports = class Socket {
       console.log("----connection-----");
       const socketUser = new SocketUser(socket);
       var currentRoomId;
-      socket.on("setOnlineStatus", handleSocketErrorAsync(socket,(...args) => users.setOnlineStatusHandler(socket, socketUser, ...args)));
+      socket.on("setOnlineStatus", handleSocketErrorAsync(socket, (...args) => users.setOnlineStatusHandler(socket, socketUser, ...args)));
 
-      socket.on("setOfflineStatus", handleSocketErrorAsync(socket,(...args) => users.setOnlineStatusHandler(socket, socketUser, ...args)));
+      socket.on("setOfflineStatus", handleSocketErrorAsync(socket, (...args) => users.setOnlineStatusHandler(socket, socketUser, ...args)));
 
       socket.on("addUserInRoom", handleSocketErrorAsync(socket, ( ...args) => {
         const [socketInstance, data] = args;
@@ -47,11 +47,7 @@ module.exports = class Socket {
         return chatMessages.getMessagesHandler(socket, {roomId, userId});
       }));
 
-      socket.on("getUserList", async ()=>{
-        console.log("getUserList");
-        const userList = await socketUser.getUserList();
-        socket.emit("getUserListResponse", userList);
-      });
+      socket.on("getUserList", handleSocketErrorAsync(socket, (...args) => users.getUserListHandler(socket, socketUser, ...args)));
 
       socket.on("getUserInfo", async ({ token }) => {
         console.log("getUserInfo");
