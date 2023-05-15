@@ -1,5 +1,6 @@
 const User = require("../../models/userModel");
 const { decodedUserId } = require("../middleware/auth");
+
 const users = {
   // async isUserExist(token){
   //   try {
@@ -18,6 +19,19 @@ const users = {
   //     return false;
   //   }
   // }
+  // 重構的部分
+  setOnlineStatusHandler: async (socket, socketUser) => {
+    console.log("setOnlineStatusHandler");
+    // console.log("data", data);
+    const user = await socketUser.setUserStatusOnline();
+    socket.broadcast.emit("updateUserStatusResponse", user);
+  },
+
+  setOfflineStatusHandler: async (socket, socketUser) => {
+    console.log("setOnlineStatusHandler");
+    const user = await socketUser.setUserStatusOffline();
+    socket.broadcast.emit("updateUserStatusResponse", user);
+  },
   async deleteUserConversation({ roomId, token }) {
     console.log("leaveConversation", roomId);
     const userId = await decodedUserId(token);
@@ -33,7 +47,7 @@ const users = {
       }
     );
     return updateUser;
-  }
+  },
 
   async setUserStatus({token, status}){
     const userId = await decodedUserId(token);

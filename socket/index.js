@@ -4,6 +4,8 @@ const conversations = require("./controller/conversationController");
 const chatMessages = require("./controller/chatMessageController");
 const SocketUser = require("./user");
 const SocketResponse = require("./response/response");
+const { handleSocketErrorAsync } = require("./utils/errorHandler");
+const users = require("./controller/userController");
 module.exports = class Socket {
   constructor(server) {
     this.io = require("socket.io")(server, {
@@ -30,17 +32,9 @@ module.exports = class Socket {
       console.log("----connection-----");
       const socketUser = new SocketUser(socket);
       var currentRoomId;
-      socket.on("setOnlineStatus", async ({})=>{
-        console.log("setOnlineStatus");
-        const user = await socketUser.setUserStatusOnline();
-        socket.broadcast.emit("updateUserStatusResponse", user);
-      });
+      socket.on("setOnlineStatus", handleSocketErrorAsync((...args) => users.setOnlineStatusHandler(socket, socketUser, ...args)));
 
-      socket.on("setOfflineStatus", async ({})=>{
-        console.log("setOfflineStatus");
-        const user = await socketUser.setUserStatusOffline();
-        socket.broadcast.emit("updateUserStatusResponse", user);
-      });
+      socket.on("setOfflineStatus", handleSocketErrorAsync((...args) => users.setOnlineStatusHandler(socket, socketUser, ...args)));
 
       socket.on("addUserInRoom", async ({roomId, userId})=>{
         console.log("addUserInRoom");
