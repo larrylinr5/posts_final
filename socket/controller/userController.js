@@ -20,6 +20,17 @@ const users = {
   //   }
   // }
   // 重構的部分
+  getUserInfoHandler: async (socket, socketUser) => {
+    console.log("getUserInfo");
+    const userInfo = await socketUser.getUserInfo();
+    const response = new SocketResponse({
+      statusCode: "success",
+      message: "",
+      data: userInfo,
+      error: null
+    });
+    socket.emit("getUserInfoResponse", response);
+  },
   getUserListHandler: async (socket, socketUser) => {
     console.log("getUserList");
     const userList = await socketUser.getUserList();

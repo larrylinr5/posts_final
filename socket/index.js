@@ -41,6 +41,7 @@ module.exports = class Socket {
         const { roomId, userId } = data;
         return conversations.addUserInRoomHandler(socket, {roomId, userId});
       }));
+
       socket.on("getMessages", handleSocketErrorAsync(socket, ( ...args) => {
         const [socketInstance, data] = args;
         const { roomId, userId } = data;
@@ -49,12 +50,7 @@ module.exports = class Socket {
 
       socket.on("getUserList", handleSocketErrorAsync(socket, (...args) => users.getUserListHandler(socket, socketUser, ...args)));
 
-      socket.on("getUserInfo", async ({ token }) => {
-        console.log("getUserInfo");
-        const userInfo = await socketUser.getUserInfo();
-        // this.io.to(`${socket.id}`).emit('getUserInfoResponse', userInfo);
-        socket.emit("getUserInfoResponse", userInfo);
-      });
+      socket.on("getUserInfo", handleSocketErrorAsync(socket, (...args) => users.getUserInfoHandler(socket, socketUser, ...args)));
 
       socket.on("createChatroom", async ({ displayName }) => {
         await conversations.createConversation({
