@@ -50,7 +50,7 @@ module.exports = class SocketResponse {
     statusCode, message, data, error
   }) {
     this.status = new SocketResponseStatus(statusCode).getStatus();
-    this.message = new SocketResponseMessage(statusCode, message, error);
+    this.message = new SocketResponseMessage(statusCode, message, error).message;
     this.data = data;
   }
 };
