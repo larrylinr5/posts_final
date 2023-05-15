@@ -134,7 +134,14 @@ module.exports = class Socket {
         
         // 更新其他客戶端在該用戶下線後的該用戶狀態
         const user = await socketUser.setUserStatusOffline();
-        socket.broadcast.emit("updateUserStatusResponse", user);
+
+        const response = new SocketResponse({
+          statusCode: "success",
+          message: "",
+          data: user,
+          error: null
+        });
+        socket.broadcast.emit("updateUserStatusResponse", response);
 
         // 該用戶所在房間設為下線
         socket.broadcast.to(currentRoomId).emit("leaveRoomMessage", {

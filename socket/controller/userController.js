@@ -1,6 +1,6 @@
 const User = require("../../models/userModel");
 const { decodedUserId } = require("../middleware/auth");
-
+const SocketResponse = require("../response/response");
 const users = {
   // async isUserExist(token){
   //   try {
@@ -24,13 +24,29 @@ const users = {
     console.log("setOnlineStatusHandler");
     // console.log("data", data);
     const user = await socketUser.setUserStatusOnline();
-    socket.broadcast.emit("updateUserStatusResponse", user);
+    // 操作成功，向客户端发送成功的消息
+    const response = new SocketResponse({
+      statusCode: "success",
+      message: "",
+      data: user,
+      error: null
+    });
+    socket.broadcast.emit("updateUserStatusResponse", response);
   },
 
   setOfflineStatusHandler: async (socket, socketUser) => {
     console.log("setOnlineStatusHandler");
     const user = await socketUser.setUserStatusOffline();
-    socket.broadcast.emit("updateUserStatusResponse", user);
+    // socket.broadcast.emit("updateUserStatusResponse", user);
+
+    // 操作成功，向客户端发送成功的消息
+    const response = new SocketResponse({
+      statusCode: "success",
+      message: "",
+      data: user,
+      error: null
+    });
+    socket.broadcast.emit("updateUserStatusResponse", response);
   },
   async deleteUserConversation({ roomId, token }) {
     console.log("leaveConversation", roomId);
