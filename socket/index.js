@@ -41,14 +41,11 @@ module.exports = class Socket {
         const { roomId, userId } = data;
         return conversations.addUserInRoomHandler(socket, {roomId, userId});
       }));
-
-      socket.on("getMessages", async ({ roomId }) => {
-        console.log("getMessages", roomId);
-        const messages = await chatMessages.getChatMessage({ roomId });
-        console.log("messages", messages);
-        // this.io.in(data.roomId).emit("getMessagesResponse", messages);
-        socket.emit("getMessagesResponse", messages);
-      });
+      socket.on("getMessages", handleSocketErrorAsync(socket, ( ...args) => {
+        const [socketInstance, data] = args;
+        const { roomId, userId } = data;
+        return chatMessages.getMessagesHandler(socket, {roomId, userId});
+      }));
 
       socket.on("getUserList", async ()=>{
         console.log("getUserList");
