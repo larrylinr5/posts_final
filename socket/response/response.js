@@ -5,9 +5,25 @@ const statusCodeMap = new Map([
   ["error", "error"]
 ]);
 
+
+class SocketResponseStatus {
+  constructor(statusCode) {
+    this.status = this.setStatus(statusCode);
+  }
+
+  setStatus(statusCode){
+    const status = statusCodeMap.get(statusCode);
+    return status ? status : null;
+  }
+
+  getStatus(){
+    return this.status;
+  }
+}
+
 class SocketResponseMessage {
   constructor(statusCode, message, error) {
-    this.status = this.SocketResponseStatus(statusCode).getStatus();
+    this.status = new SocketResponseStatus(statusCode).getStatus();
     this.message = this.setMessage(message, error);
   }
 
@@ -28,20 +44,6 @@ class SocketResponseMessage {
   }
 }
 
-class SocketResponseStatus {
-  constructor(statusCode) {
-    this.status = this.setStatus(statusCode);
-  }
-
-  setStatus(statusCode){
-    const status = statusCodeMap.get(statusCode);
-    return status ? status : null;
-  }
-
-  getStatus(){
-    return this.status;
-  }
-}
 
 module.exports = class SocketResponse {
   constructor({
