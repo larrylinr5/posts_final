@@ -5,6 +5,19 @@ const SocketResponse = require("../response/response");
 const users = require("./userController");
 
 const conversations = {
+  getParticipantListHandler: async (socket, { roomId }) => {
+    const conversation = await conversations.findParticipants({
+      roomId: roomId,
+    });
+    // 操作成功，向客户端发送成功的消息
+    const response = new SocketResponse({
+      statusCode: "success",
+      message: "",
+      data: conversation,
+      error: null
+    });
+    socket.emit("getParticipantListResponse", response);
+  },
   joinRoomHandler: async (io, socket, { roomId, token }) => {
     console.log("joinRoom");
     if(!roomId){

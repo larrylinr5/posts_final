@@ -78,37 +78,35 @@ module.exports = class Socket {
         });
       }));
 
-      socket.on("sendJoinRoomMessage", data => {
+      socket.on("sendJoinRoomMessage", handleSocketErrorAsync(socket, ( ...args) => {
+        const [ data] = args;
+        const { roomId } = data;
         console.log("sendJoinRoomMessage", data);
-        socket.broadcast.to(data.roomId).emit("joinRoomMessage", {
-          userName: data.userName,
-          message: `${data.userName} 使用者進入聊天室`,
+        const response = new SocketResponse({
+          statusCode: "success",
+          message: "",
+          data: {
+            userName: data.userName,
+            message: `${data.userName} 使用者進入聊天室`,
+          },
+          error: null
         });
-      });
+        socket.broadcast.to(roomId).emit("joinRoomMessage", response);
+      }));
 
-      socket.on("getChatroomList", async data => {
-        console.log("server side getChatroomList", data);
-        console.log("userInfo", socket.id);
-        const userInfo = await socketUser.getUserInfo();
-        this.io.to(`${socket.id}`).emit("getChatroomListResponse", userInfo);
-      });
+      socket.on("getChatroomList", handleSocketErrorAsync(socket, ( ...args) => users.getChatroomListHandler(this.io, socket, socketUser, ...args)));
 
-      socket.on("chat", async data => {
-        console.log("get message", data);
-        // 更新資料庫跟顯示的時間差會不會有bug
-        const chatMessage = await chatMessages.setChatMessages(data);
-        console.log("message --", chatMessage);
-        // this.io.in(data.roomId).emit("showMessage", chatMessage);
-        this.io.sockets.in(data.roomId).emit('showMessage', chatMessage);
-        // socket.emit("showMessage", chatMessage);
-      });
+      socket.on("chat", handleSocketErrorAsync(socket, (...args) => {
+        const [ socketInstance, data] = args;
+        const { roomId, userId, text, image } = data;
+        chatMessages.chatHandler(this.io, { roomId, userId, text, image });
+      }));
 
-      socket.on("getParticipantList", async (data) => {
-        const conversation = await conversations.findParticipants({
-          roomId: data.roomId,
-        });
-        socket.emit("getParticipantListResponse", conversation);
-      });
+      socket.on("getParticipantList", handleSocketErrorAsync(socket, (...args) =>  (...args) => {
+        const [ socketInstance, data] = args;
+        const { roomId } = data;
+        conversations.getParticipantListHandler(socket, { roomId });
+      }));
 
       socket.on("disconnect", async () => {
         console.log("disconnect", socket.handshake.query?.token);
@@ -117,19 +115,25 @@ module.exports = class Socket {
         // 更新其他客戶端在該用戶下線後的該用戶狀態
         const user = await socketUser.setUserStatusOffline();
 
-        const response = new SocketResponse({
+        const updateUserStatusResponse = new SocketResponse({
           statusCode: "success",
           message: "",
           data: user,
           error: null
         });
-        socket.broadcast.emit("updateUserStatusResponse", response);
+        socket.broadcast.emit("updateUserStatusResponse", updateUserStatusResponse);
 
-        // 該用戶所在房間設為下線
-        socket.broadcast.to(currentRoomId).emit("leaveRoomMessage", {
-          userName: user.nickName,
-          message: `${user.nickName} 下線`,
+        const leaveRoomMessageResponse = new SocketResponse({
+          statusCode: "success",
+          message: "",
+          data: {
+            userName: user.nickName,
+            message: `${user.nickName} 下線`,
+          },
+          error: null
         });
+        // 該用戶所在房間設為下線
+        socket.broadcast.to(currentRoomId).emit("leaveRoomMessage", leaveRoomMessageResponse);
       });
     });
   }

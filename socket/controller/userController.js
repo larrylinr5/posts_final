@@ -19,6 +19,17 @@ const users = {
   //     return false;
   //   }
   // }
+  getChatroomListHandler: async (io, socket, socketUser) => {
+    console.log("getChatroomListHandler");
+    const userInfo = await socketUser.getUserInfo();
+    const response = new SocketResponse({
+      statusCode: "success",
+      message: "",
+      data: userInfo,
+      error: null
+    });
+    io.to(`${socket.id}`).emit("getChatroomListResponse", response);
+  },
   // 重構的部分
   getUserInfoHandler: async (socket, socketUser) => {
     console.log("getUserInfo");

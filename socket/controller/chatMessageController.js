@@ -3,13 +3,23 @@ const User = require("../../models/userModel");
 const { decodedUserId } = require("../middleware/auth");
 const SocketResponse = require("../response/response");
 const chatMessages = {
-  getMessagesHandler: async (socket, {roomId, userId}) => {
-    console.log("getMessages", roomId, userId);
+  chatHandler: async (io, data) => {
+    console.log("chat", data);
+    // 更新資料庫跟顯示的時間差會不會有bug
+    const chatMessage = await chatMessages.setChatMessages(data);
+    // 操作成功，向客户端发送成功的消息
+    const response = new SocketResponse({
+      statusCode: "success",
+      message: "",
+      data: chatMessage,
+      error: null
+    });
+    io.sockets.in(data.roomId).emit("chatResponse", response);
+  },
+  getMessagesHandler: async (socket, {roomId}) => {
+    console.log("getMessages", roomId);
     if(!roomId){
       throw Error("找不到 roomId");
-    }
-    if(!userId){
-      throw Error("找不到 userId");
     }
     const messages = await ChatMessages.find({
       conversation: roomId,
