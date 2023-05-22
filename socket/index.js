@@ -102,7 +102,7 @@ module.exports = class Socket {
         chatMessages.chatHandler(this.io, { roomId, userId, text, image });
       }));
 
-      socket.on("getParticipantList", handleSocketErrorAsync(socket, (...args) =>  (...args) => {
+      socket.on("getParticipantList", handleSocketErrorAsync(socket, (...args) => {
         const [ socketInstance, data] = args;
         const { roomId } = data;
         conversations.getParticipantListHandler(socket, { roomId });

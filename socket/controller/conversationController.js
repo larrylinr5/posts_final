@@ -20,20 +20,10 @@ const conversations = {
   },
   joinRoomHandler: async (io, socket, { roomId, token }) => {
     console.log("joinRoom");
-    if(!roomId){
-      throw Error("找不到 roomId");
-    }
-
-    const userId = await decodedUserId(token);
-    const conversation = await Conversation.findOne({
-      _id: roomId,
-      participants: { $in: [userId]},
-      logicDeleteFlag: false
+    const conversation = await conversations.findConversation({
+      roomId: roomId,
+      token: token,
     });
-    if(!conversation){
-      throw Error("沒找到 conversation");
-    }
-
     currentRoomId = conversation._id.toString();
     socket.join(currentRoomId);
     // 操作成功，向客户端发送成功的消息
