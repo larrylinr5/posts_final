@@ -137,7 +137,9 @@ const users = {
     }
     return Error("User 不存在");
   },
-
+  /**
+    * @param {string} token - The user status.
+    */
   async findAllUser(token) {
     const userId = await decodedUserId(token);
     const users = await User.find({
