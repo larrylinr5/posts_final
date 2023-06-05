@@ -24,7 +24,7 @@ const conversations = {
       roomId: roomId,
       token: token,
     });
-    currentRoomId = conversation._id.toString();
+    const currentRoomId = conversation._id.toString();
     socket.join(currentRoomId);
     // 操作成功，向客户端发送成功的消息
     const response = new SocketResponse({
