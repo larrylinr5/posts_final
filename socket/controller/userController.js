@@ -1,3 +1,4 @@
+const ConversationUnread = require("../../models/conversationUnreadModel");
 const User = require("../../models/userModel");
 const { decodedUserId } = require("../middleware/auth");
 const SocketResponse = require("../response/response");
@@ -114,7 +115,7 @@ const users = {
 
   async getUserInfo(token) {
     const userId = await decodedUserId(token);
-    const user = await User.findOne({
+    let user = await User.findOne({
       _id: userId,
       logicDeleteFlag: false,
     }).populate({
@@ -131,7 +132,21 @@ const users = {
         },
       },
     });
-    // console.log(user);
+
+    // 為每個對話查詢對應的未讀計數
+    if (user) {
+      user = user.toObject();
+      for (let i = 0; i < user.conversations.length; i++) {
+        const conversationUnread = await ConversationUnread.findOne({
+          conversation: user.conversations[i]._id,
+          user: userId,
+          logicDeleteFlag: { $eq: false },
+        });
+
+        user.conversations[i].unreadCount = conversationUnread ? conversationUnread.unreadCount : 0;
+      }
+    }
+
     if (user) {
       return user;
     }
