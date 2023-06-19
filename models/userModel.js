@@ -45,6 +45,7 @@ const usersSchema = new mongoose.Schema(
     },
     conversations: {
       type: [{
+        // @ts-ignore
         type: mongoose.Schema.ObjectId,
         ref: "Conversation",
       }],

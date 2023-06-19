@@ -4,17 +4,15 @@ const mongoose = require("mongoose");
 const conversationUnreadSchema = new mongoose.Schema(
   {
     conversation: {
-      type: {
-        type: mongoose.Schema.ObjectId,
-        ref: "Conversation",
-      },
+      // @ts-ignore
+      type: mongoose.Schema.ObjectId,
+      ref: "Conversation",
       required: true,
     },
     user: {
-      type: {
-        type: mongoose.Schema.ObjectId,
-        ref: "User",
-      },
+      // @ts-ignore
+      type: mongoose.Schema.ObjectId,
+      ref: "User",
       required: true,
     },
     unreadCount: {

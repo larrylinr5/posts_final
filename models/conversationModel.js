@@ -14,6 +14,15 @@ const conversationSchema = new mongoose.Schema(
       }],
       required: [true, "請添加成員ID"],
     },
+    conversationUnreadList: [
+      {
+        type: [{
+          // @ts-ignore
+          type: mongoose.Schema.ObjectId,
+          ref: "ConversationUnread",
+        }],
+      }
+    ],
     createdAt: {
       type: Date,
       default: Date.now,
