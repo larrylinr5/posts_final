@@ -1,3 +1,4 @@
+// @ts-nocheck
 const { Server } = require("socket.io");
 const { isAuthValid } = require("./middleware/auth");
 const conversations = require("./controller/conversationController");
@@ -6,6 +7,7 @@ const SocketUser = require("./user");
 const SocketResponse = require("./response/response");
 const { handleSocketErrorAsync } = require("./utils/errorHandler");
 const users = require("./controller/userController");
+const conversationUnread = require("./controller/conversationUnreadController");
 module.exports = class Socket {
   constructor(server) {
     this.io = require("socket.io")(server, {
@@ -32,9 +34,9 @@ module.exports = class Socket {
       console.log("----connection-----");
       const socketUser = new SocketUser(socket);
       var currentRoomId;
-      socket.on("setOnlineStatus", handleSocketErrorAsync(socket, (...args) => users.setOnlineStatusHandler(socket, socketUser, ...args)));
+      socket.on("setOnlineStatus", handleSocketErrorAsync(socket, (...args) => users.setOnlineStatusHandler(socket, socketUser)));
 
-      socket.on("setOfflineStatus", handleSocketErrorAsync(socket, (...args) => users.setOnlineStatusHandler(socket, socketUser, ...args)));
+      socket.on("setOfflineStatus", handleSocketErrorAsync(socket, (...args) => users.setOnlineStatusHandler(socket, socketUser)));
 
       socket.on("addUserInRoom", handleSocketErrorAsync(socket, ( ...args) => {
         const [ socketInstance, data] = args;
@@ -45,12 +47,12 @@ module.exports = class Socket {
       socket.on("getMessages", handleSocketErrorAsync(socket, ( ...args) => {
         const [ socketInstance, data] = args;
         const { roomId, userId } = data;
-        return chatMessages.getMessagesHandler(socket, {roomId, userId});
+        return chatMessages.getMessagesHandler(socket, {roomId});
       }));
 
-      socket.on("getUserList", handleSocketErrorAsync(socket, (...args) => users.getUserListHandler(socket, socketUser, ...args)));
+      socket.on("getUserList", handleSocketErrorAsync(socket, (...args) => users.getUserListHandler(socket, socketUser)));
 
-      socket.on("getUserInfo", handleSocketErrorAsync(socket, (...args) => users.getUserInfoHandler(socket, socketUser, ...args)));
+      socket.on("getUserInfo", handleSocketErrorAsync(socket, (...args) => users.getUserInfoHandler(socket, socketUser)));
 
       socket.on("createChatroom", handleSocketErrorAsync(socket, ( ...args) => {
         const [ socketInstance, data] = args;
@@ -94,7 +96,7 @@ module.exports = class Socket {
         socket.broadcast.to(roomId).emit("joinRoomMessage", response);
       }));
 
-      socket.on("getChatroomList", handleSocketErrorAsync(socket, ( ...args) => users.getChatroomListHandler(this.io, socket, socketUser, ...args)));
+      socket.on("getChatroomList", handleSocketErrorAsync(socket, ( ...args) => users.getChatroomListHandler(this.io, socket, socketUser)));
 
       socket.on("chat", handleSocketErrorAsync(socket, (...args) => {
         const [ socketInstance, data] = args;
@@ -106,6 +108,12 @@ module.exports = class Socket {
         const [ socketInstance, data] = args;
         const { roomId } = data;
         conversations.getParticipantListHandler(socket, { roomId });
+      }));
+
+      socket.on("resetUnreadCount", handleSocketErrorAsync(socket, (...args) => {
+        const [ socketInstance, data] = args;
+        const { roomId, userId } = data;
+        conversationUnread.resetUnreadCountHandler(socket, { roomId, userId });
       }));
 
       socket.on("disconnect", async () => {
