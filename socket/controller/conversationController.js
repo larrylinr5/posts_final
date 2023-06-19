@@ -1,4 +1,5 @@
 const Conversation = require("../../models/conversationModel");
+const ConversationUnread = require("../../models/conversationUnreadModel");
 const User = require("../../models/userModel");
 const { decodedUserId } = require("../middleware/auth");
 const SocketResponse = require("../response/response");
@@ -25,6 +26,7 @@ const conversations = {
       token: token,
     });
     const currentRoomId = conversation._id.toString();
+
     socket.join(currentRoomId);
     // 操作成功，向客户端发送成功的消息
     const response = new SocketResponse({
@@ -58,6 +60,17 @@ const conversations = {
       token: socket.handshake.query?.token,
     });
 
+    const updatedConversationUnread = await ConversationUnread.updateOne({
+      conversationId: roomId,
+      userId: socket.handshake.query?.userId
+    }, {
+      $set: { logicDeleteFlag: true }
+    });
+
+    if(!updatedConversationUnread){
+      throw Error("刪除資料失敗");
+    }
+
     // 操作成功，向客户端发送成功的消息
     const response = new SocketResponse({
       statusCode: "success",
@@ -69,10 +82,28 @@ const conversations = {
   },
   createConversationHandler: async (io, socket, { displayName, token }) => {
     const userId = await decodedUserId(token);
+
     const conversation = await Conversation.create({
       displayName: displayName,
       participants: [userId],
     });
+
+    let conversationUnreadQuery = {
+      conversation: conversation._id,
+      user: userId,
+    };  // 查詢條件
+    let update = { 
+      logicDeleteFlag: false
+    };  // 要更新或創建的資料
+    let options = { upsert: true, new: true, setDefaultsOnInsert: true };  // 選項
+    
+    // 進行查找並更新，如果沒有找到則創建
+    const unreadResult = await ConversationUnread.findOneAndUpdate(conversationUnreadQuery, update, options);
+
+    if (!unreadResult) {
+      throw Error("建立資料失敗");
+    }
+
     const query = { _id: userId, logicDeleteFlag: false };
     const updateDocument = {
       $addToSet: { conversations: conversation._id },
@@ -85,6 +116,7 @@ const conversations = {
     if (updatedUser?.acknowledged === true && updatedUser?.modifiedCount === 0) {
       throw Error("已添加過 conversation");
     }
+
 
     // 操作成功，向客户端发送成功的消息
     const response = new SocketResponse({
@@ -115,10 +147,28 @@ const conversations = {
     if (updatedConversation?.acknowledged === true && updatedConversation?.modifiedCount === 0) {
       throw Error("已添加到conversation collection");
     }
+
+    let query = {
+      conversation: roomId,
+      user: userId,
+    };  // 查詢條件
+    let update = { 
+      logicDeleteFlag: false
+    };  // 要更新或創建的資料
+    let options = { upsert: true, new: true, setDefaultsOnInsert: true };  // 選項
+    
+    // 進行查找並更新，如果沒有找到則創建
+    const unreadResult = await ConversationUnread.findOneAndUpdate(query, update, options);
+    console.log("unreadResult", unreadResult);
+    // console.log();
+    if(!unreadResult){
+      throw Error("找不到未讀資料");
+    }
+
     console.log("roomId", roomId);
     const userQuery = { _id: userId, logicDeleteFlag: false };
     const userUpdateDocument = {
-      $addToSet: { conversations: roomId },
+      $addToSet: { conversations: roomId, conversationUnread: unreadResult._id },
       upsert: true,
       returnOriginal: false,
       runValidators: true,
