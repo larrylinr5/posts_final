@@ -8,7 +8,6 @@ const transactionHandler = async (action) => {
   try {
     // 執行傳入的操作
     const result = await action(session);
-    console.log('操作成功，結果為：', result);
     // 如果操作成功，則提交事務
     await session.commitTransaction();
 
