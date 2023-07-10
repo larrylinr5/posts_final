@@ -3,11 +3,11 @@ const { Server } = require("socket.io");
 const { isAuthValid } = require("./middleware/auth");
 const conversations = require("./controller/conversationController");
 const chatMessages = require("./controller/chatMessageController");
-const SocketUser = require("./user");
 const SocketResponse = require("./response/response");
 const { handleSocketErrorAsync } = require("./utils/errorHandler");
 const users = require("./controller/userController");
 const conversationUnread = require("./controller/conversationUnreadController");
+const UserService = require("./services/userService");
 module.exports = class Socket {
   constructor(server) {
     this.io = require("socket.io")(server, {
@@ -32,11 +32,14 @@ module.exports = class Socket {
   connect() {
     this.io.on("connection", socket => {
       console.log("----connection-----");
-      const socketUser = new SocketUser(socket);
       var currentRoomId;
-      socket.on("setOnlineStatus", handleSocketErrorAsync(socket, (...args) => users.setOnlineStatusHandler(socket, socketUser)));
+      socket.on("setOnlineStatus", handleSocketErrorAsync(socket, (...args) => users.setOnlineStatusHandler(socket, {
+        token: socket.handshake.query?.token,
+      })));
 
-      socket.on("setOfflineStatus", handleSocketErrorAsync(socket, (...args) => users.setOnlineStatusHandler(socket, socketUser)));
+      socket.on("setOfflineStatus", handleSocketErrorAsync(socket, (...args) => users.setOnlineStatusHandler(socket, {
+        token: socket.handshake.query?.token,
+      })));
 
       socket.on("addUserInRoom", handleSocketErrorAsync(socket, ( ...args) => {
         const [ socketInstance, data] = args;
@@ -50,9 +53,13 @@ module.exports = class Socket {
         return chatMessages.getMessagesHandler(socket, {roomId});
       }));
 
-      socket.on("getUserList", handleSocketErrorAsync(socket, (...args) => users.getUserListHandler(socket, socketUser)));
+      socket.on("getUserList", handleSocketErrorAsync(socket, (...args) => users.getUserListHandler(socket, {
+        token: socket.handshake.query?.token,
+      })));
 
-      socket.on("getUserInfo", handleSocketErrorAsync(socket, (...args) => users.getUserInfoHandler(socket, socketUser)));
+      socket.on("getUserInfo", handleSocketErrorAsync(socket, (...args) => users.getUserInfoHandler(socket, {
+        token: socket.handshake.query?.token,
+      })));
 
       socket.on("createChatroom", handleSocketErrorAsync(socket, ( ...args) => {
         const [ socketInstance, data] = args;
@@ -81,9 +88,9 @@ module.exports = class Socket {
       }));
 
       socket.on("sendJoinRoomMessage", handleSocketErrorAsync(socket, ( ...args) => {
-        const [ data] = args;
+        const [ socketInstance, data] = args;
         const { roomId } = data;
-        console.log("sendJoinRoomMessage", data);
+        console.log("sendJoinRoomMessage", roomId);
         const response = new SocketResponse({
           statusCode: "success",
           message: "",
@@ -96,7 +103,7 @@ module.exports = class Socket {
         socket.broadcast.to(roomId).emit("joinRoomMessage", response);
       }));
 
-      socket.on("getChatroomList", handleSocketErrorAsync(socket, ( ...args) => users.getChatroomListHandler(this.io, socket, socketUser)));
+      socket.on("getChatroomList", handleSocketErrorAsync(socket, ( ...args) => users.getChatroomListHandler(this.io, socket, {token: socket.handshake.query?.token})));
 
       socket.on("chat", handleSocketErrorAsync(socket, (...args) => {
         const [ socketInstance, data] = args;
@@ -112,8 +119,8 @@ module.exports = class Socket {
 
       socket.on("resetUnreadCount", handleSocketErrorAsync(socket, (...args) => {
         const [ socketInstance, data] = args;
-        const { roomId, userId } = data;
-        conversationUnread.resetUnreadCountHandler(socket, { roomId, userId });
+        const { roomId } = data;
+        conversationUnread.resetUnreadCountHandler(this.io, socket, { roomId, token: socket.handshake.query?.token });
       }));
 
       socket.on("disconnect", async () => {
@@ -121,7 +128,9 @@ module.exports = class Socket {
         console.log("disconnect", currentRoomId);
         
         // 更新其他客戶端在該用戶下線後的該用戶狀態
-        const user = await socketUser.setUserStatusOffline();
+        const userService = new UserService();
+        const token= socket.handshake.query?.token;
+        const user = await userService.setUserStatusOffline(token);
 
         const updateUserStatusResponse = new SocketResponse({
           statusCode: "success",

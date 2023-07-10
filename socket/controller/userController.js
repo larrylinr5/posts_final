@@ -1,7 +1,10 @@
 const ConversationUnread = require("../../models/conversationUnreadModel");
 const User = require("../../models/userModel");
 const { decodedUserId } = require("../middleware/auth");
+const ConversationUnreadRepository = require("../repositories/conversationUnreadRepository");
+const UserRepository = require("../repositories/userRepository");
 const SocketResponse = require("../response/response");
+const UserService = require("../services/userService");
 const users = {
   // async isUserExist(token){
   //   try {
@@ -20,57 +23,62 @@ const users = {
   //     return false;
   //   }
   // }
-  getChatroomListHandler: async (io, socket, socketUser) => {
+  getChatroomListHandler: async (io, socket, { token }) => {
     console.log("getChatroomListHandler");
-    const userInfo = await socketUser.getUserInfo();
+    const userService = new UserService();
+    const userInfo = await userService.getChatroomList(token);
     const response = new SocketResponse({
       statusCode: "success",
       message: "",
       data: userInfo,
-      error: null
+      error: null,
     });
     io.to(`${socket.id}`).emit("getChatroomListResponse", response);
   },
   // 重構的部分
-  getUserInfoHandler: async (socket, socketUser) => {
+  getUserInfoHandler: async (socket, { token }) => {
     console.log("getUserInfo");
-    const userInfo = await socketUser.getUserInfo();
+    const userService = new UserService();
+    const userInfo = userService.getUserInfo(token);
     const response = new SocketResponse({
       statusCode: "success",
       message: "",
       data: userInfo,
-      error: null
+      error: null,
     });
     socket.emit("getUserInfoResponse", response);
   },
-  getUserListHandler: async (socket, socketUser) => {
+  getUserListHandler: async (socket, { token }) => {
     console.log("getUserList");
-    const userList = await socketUser.getUserList();
+    const userService = new UserService();
+    const userList = await userService.getUserList(token);
     const response = new SocketResponse({
       statusCode: "success",
       message: "",
       data: userList,
-      error: null
+      error: null,
     });
     socket.emit("getUserListResponse", response);
   },
-  setOnlineStatusHandler: async (socket, socketUser) => {
+  setOnlineStatusHandler: async (socket, { token }) => {
     console.log("setOnlineStatusHandler");
-    // console.log("data", data);
-    const user = await socketUser.setUserStatusOnline();
+    const userService = new UserService();
+    const user = await userService.setUserStatusOnline(token);
+    console.log("user", user);
     // 操作成功，向客户端发送成功的消息
     const response = new SocketResponse({
       statusCode: "success",
       message: "",
       data: user,
-      error: null
+      error: null,
     });
     socket.broadcast.emit("updateUserStatusResponse", response);
   },
 
-  setOfflineStatusHandler: async (socket, socketUser) => {
+  setOfflineStatusHandler: async (socket) => {
     console.log("setOnlineStatusHandler");
-    const user = await socketUser.setUserStatusOffline();
+    const userService = new UserService();
+    const user = userService.setUserStatusOffline();
     // socket.broadcast.emit("updateUserStatusResponse", user);
 
     // 操作成功，向客户端发送成功的消息
@@ -78,94 +86,17 @@ const users = {
       statusCode: "success",
       message: "",
       data: user,
-      error: null
+      error: null,
     });
     socket.broadcast.emit("updateUserStatusResponse", response);
   },
-  async deleteUserConversation({ roomId, token }) {
-    console.log("leaveConversation", roomId);
-    const userId = await decodedUserId(token);
-    const updateUser = await User.findOneAndUpdate(
-      {
-        _id: userId
-      },
-      {
-        $pull: { conversations: roomId }
-      },
-      {
-        new: true
-      }
-    );
-    return updateUser;
-  },
-
-  async setUserStatus({token, status}){
-    const userId = await decodedUserId(token);
-    const user = await User.findOneAndUpdate({
-      _id: userId,
-      logicDeleteFlag: false,
-    }, {
-      userStatus: status
-    }, { new: true });
-    if (user) {
-      return user;
-    }
-    return Error("User 不存在");
-  },
-
-  async getUserInfo(token) {
-    const userId = await decodedUserId(token);
-    let user = await User.findOne({
-      _id: userId,
-      logicDeleteFlag: false,
-    }).populate({
-      path: "conversations",
-      select: "displayName participants _id",
-      match: {
-        logicDeleteFlag: { $eq: false },
-      },
-      populate: {
-        path: "participants",
-        select: "nickName avatar userStatus",
-        match: {
-          logicDeleteFlag: { $eq: false },
-        },
-      },
-    });
-
-    // 為每個對話查詢對應的未讀計數
-    if (user) {
-      user = user.toObject();
-      for (let i = 0; i < user.conversations.length; i++) {
-        const conversationUnread = await ConversationUnread.findOne({
-          conversation: user.conversations[i]._id,
-          user: userId,
-          logicDeleteFlag: { $eq: false },
-        });
-
-        user.conversations[i].unreadCount = conversationUnread ? conversationUnread.unreadCount : 0;
-      }
-    }
-
-    if (user) {
-      return user;
-    }
-    return Error("User 不存在");
-  },
-  /**
-    * @param {string} token - The user status.
-    */
-  async findAllUser(token) {
-    const userId = await decodedUserId(token);
-    const users = await User.find({
-      _id: { $ne: userId },
-      logicDeleteFlag: false,
-    });
-    if(users.length === 0){
-      return Error("User 不存在");
-    }
-    return users;
-  },
+  // async deleteUserConversation({ roomId, token }) {
+  //   console.log("leaveConversation", roomId);
+  //   const userService = new UserService();
+  //   const userId = await decodedUserId(token);
+  //   const updatedUser = await userService.deleteUserConversation({ roomId, userId });
+  //   return updatedUser;
+  // },
 };
 
 module.exports = users;

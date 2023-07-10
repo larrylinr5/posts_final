@@ -39,4 +39,20 @@ module.exports = class ChatMessagesQueries {
     });
 
   }
+
+  /**
+   * 查詢訊息
+   * @param {string} roomId - 房間 ID
+   * @returns {Promise} - 回傳一個 Promise 物件
+  */
+  findMessages(roomId, opts){
+    // @ts-ignore
+    return ChatMessages.find({
+      conversation: roomId,
+      logicDeleteFlag: false,
+    }, null, opts).populate({
+      path: "sender",
+      select: "nickName avatar",
+    });
+  }
 };

@@ -1,24 +1,27 @@
 const ConversationUnread = require("../../models/conversationUnreadModel");
+const { decodedUserId } = require("../middleware/auth");
+const SocketResponse = require("../response/response");
+const ConversationUnreadService = require("../services/conversationUnreadService");
 
 const conversationUnread = {
-  resetUnreadCountHandler: async (socket, {roomId, userId}) => {
-    const updatedConversation = await ConversationUnread.findOneAndUpdate(
-      {
-        conversation: roomId,
-        participants: { $in: [userId]},
-        logicDeleteFlag: false
-      },
-      {
-        $set: {
-          unreadCount: 0
-        }
-      },
-      {
-        new: true
-      }
-    );
-    return updatedConversation;
-  }
+  resetUnreadCountHandler: async (io, socket, { roomId, token }) => {
+    const userId = await decodedUserId(token);
+    const conversationUnreadService = new ConversationUnreadService();
+    const updatedConversation = await conversationUnreadService.resetUnreadCount({
+      roomId: roomId,
+      userId: userId,
+    });
+    const response = new SocketResponse({
+      statusCode: "success",
+      message: "",
+      data: updatedConversation,
+      error: null,
+    });
+    console.log("response", response);
+    io.to(`${socket.id}`).emit("updateUnreadCount", response);
+  },
+
+  
 };
 
 module.exports = conversationUnread;

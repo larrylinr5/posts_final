@@ -1,10 +1,10 @@
 // @ts-nocheck
-const { transactionHandler } = require("../../utils/commitHandler");
+const { transactionHandler } = require("../utils/commitHandler");
 const ConversationUnreadQueries = require("../repositories/conversationUnreadRepository");
 const ChatMessagesQueries = require("../repositories/chatMessagesRepository");
 module.exports = class ChatMessageService {
   async setChatMessages({ roomId, userId, text, image = "" }) {
-    return await transactionHandler(async (session) => {
+    return transactionHandler(async (session) => {
       const chatMessagesQueries = new ChatMessagesQueries();
       const conversationUnreadQueries = new ConversationUnreadQueries();
       const opts = { session, upsert: true, returnOriginal: false };
@@ -27,5 +27,14 @@ module.exports = class ChatMessageService {
 
       return newMessage;
     });
+  }
+
+  getMessages(roomId){
+    return transactionHandler(async (session) => {
+      const chatMessagesQueries = new ChatMessagesQueries();
+      const opts = { session };
+      return chatMessagesQueries.findMessages(roomId, opts);
+    });
+    
   }
 };
