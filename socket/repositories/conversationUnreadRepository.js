@@ -109,7 +109,8 @@ module.exports = class ConversationUnreadRepository {
     const updatedConversation = await ConversationUnread.findOneAndUpdate(
       {
         conversation: roomId,
-        participants: { $in: [userId]},
+        user: userId,
+        // participants: { $in: [userId]},
         logicDeleteFlag: false
       },
       {
