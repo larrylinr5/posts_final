@@ -6,7 +6,7 @@ module.exports = class ConversationUnreadService {
     return transactionHandler(async (session) => {
       const conversationUnreadRepository = new ConversationUnreadRepository();
       const updatedConversation =
-        conversationUnreadRepository.findOneAndUpdateUnreadCount(
+        await conversationUnreadRepository.findOneAndUpdateUnreadCount(
           {
             roomId,
             userId,
