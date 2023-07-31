@@ -73,6 +73,8 @@ module.exports = class UserRepository {
     const users = await User.find({
       _id: { $ne: userId },
       logicDeleteFlag: false,
+    }).sort({
+      userStatus: -1,
     });
     if (users.length === 0) {
       return Error("User 不存在");
