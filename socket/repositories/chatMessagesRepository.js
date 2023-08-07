@@ -1,4 +1,3 @@
-// import ChatMessages from "../../models/chatMessagesModel";
 const ChatMessages = require("../../models/chatMessagesModel");
 module.exports = class ChatMessagesQueries {
   /**

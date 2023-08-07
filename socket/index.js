@@ -17,7 +17,6 @@ module.exports = class Socket {
     });
     this.io.use(async (socket, next) => {
       if (await isAuthValid(socket.handshake.query?.token)) {
-        console.log(true);
         next();
       } else {
         next(new Error("用戶驗證失敗"));
@@ -31,7 +30,7 @@ module.exports = class Socket {
 
   connect() {
     this.io.on("connection", socket => {
-      console.log("----connection-----");
+      // console.log("----connection-----");
       var currentRoomId;
       socket.on("setOnlineStatus", handleSocketErrorAsync(socket, (...args) => users.setOnlineStatusHandler(socket, {
         token: socket.handshake.query?.token,
@@ -90,7 +89,7 @@ module.exports = class Socket {
       socket.on("sendJoinRoomMessage", handleSocketErrorAsync(socket, ( ...args) => {
         const [ socketInstance, data] = args;
         const { roomId } = data;
-        console.log("sendJoinRoomMessage", roomId);
+        // console.log("sendJoinRoomMessage", roomId);
         const response = new SocketResponse({
           statusCode: "success",
           message: "",
@@ -124,9 +123,6 @@ module.exports = class Socket {
       }));
 
       socket.on("disconnect", async () => {
-        console.log("disconnect", socket.handshake.query?.token);
-        console.log("disconnect", currentRoomId);
-        
         // 更新其他客戶端在該用戶下線後的該用戶狀態
         const userService = new UserService();
         const token= socket.handshake.query?.token;

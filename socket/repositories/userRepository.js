@@ -1,4 +1,3 @@
-// import ChatMessages from "../../models/chatMessagesModel";
 const User = require("../../models/userModel");
 module.exports = class UserRepository {
   async deleteUserConversation({ roomId, userId }, opts) {
@@ -40,7 +39,6 @@ module.exports = class UserRepository {
     { roomId, userId, conversationUnreadId },
     opts
   ) {
-    console.log("roomId", roomId);
     const userQuery = { _id: userId, logicDeleteFlag: false };
     const userUpdateDocument = {
       $addToSet: {

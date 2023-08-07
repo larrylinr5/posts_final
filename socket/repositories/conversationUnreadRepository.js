@@ -1,4 +1,3 @@
-// import ChatMessages from "../../models/chatMessagesModel";
 const ConversationUnread = require("../../models/conversationUnreadModel");
 module.exports = class ConversationUnreadRepository {
   /**
@@ -92,8 +91,6 @@ module.exports = class ConversationUnreadRepository {
       update,
       options
     );
-    console.log("unreadResult", unreadResult);
-    // console.log();
     if (!unreadResult) {
       throw Error("找不到未讀資料");
     }
@@ -110,7 +107,6 @@ module.exports = class ConversationUnreadRepository {
       {
         conversation: roomId,
         user: userId,
-        // participants: { $in: [userId]},
         logicDeleteFlag: false
       },
       {
@@ -120,7 +116,6 @@ module.exports = class ConversationUnreadRepository {
       },
       options
     );
-    console.log("updatedConversation", updatedConversation);
     return updatedConversation;
   }
 

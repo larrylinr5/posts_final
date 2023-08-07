@@ -1,6 +1,3 @@
-const Conversation = require("../../models/conversationModel");
-const ConversationUnread = require("../../models/conversationUnreadModel");
-const { User } = require("../../swagger-defintion");
 const { decodedUserId } = require("../middleware/auth");
 const ConversationRepository = require("../repositories/conversationRepository");
 const ConversationUnreadRepository = require("../repositories/conversationUnreadRepository");

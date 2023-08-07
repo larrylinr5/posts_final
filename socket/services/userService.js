@@ -1,5 +1,4 @@
 // @ts-nocheck
-const { transactionHandler } = require("../utils/commitHandler");
 const ConversationUnreadRepository = require("../repositories/conversationUnreadRepository");
 const UserRepository = require("../repositories/userRepository");
 const { decodedUserId } = require("../middleware/auth");
@@ -12,24 +11,24 @@ module.exports = class UserService {
   }
 
   async getChatroomList(token) {
-    console.log("getChatroomListHandler");
+    // console.log("getChatroomListHandler");
     const userInfo = await this.getUserInfoWhereUnread(token);
     return userInfo;
   }
   async getUserInfo(token) {
-    console.log("getUserInfo");
+    // console.log("getUserInfo");
     const userInfo = await this.getUserInfoWhereUnread(token);
     return userInfo;
   }
   async getUserList(token) {
-    console.log("getUserList");
+    // console.log("getUserList");
     const userRepository = new UserRepository();
     const userId = await decodedUserId(token);
     const users = userRepository.findAllUser(userId);
     return users;
   }
   async setUserStatusOnline(token) {
-    console.log("setOnlineStatus");
+    // console.log("setOnlineStatus");
     const userRepository = new UserRepository();
     const userId = await decodedUserId(token);
     const user = await userRepository.updateUserStatus({
@@ -39,7 +38,7 @@ module.exports = class UserService {
     return user;
   }
   async setUserStatusOffline(token) {
-    console.log("setUserStatusOffline");
+    // console.log("setUserStatusOffline");
     const userRepository = new UserRepository();
     const userId = await decodedUserId(token);
     const user = await userRepository.updateUserStatus({

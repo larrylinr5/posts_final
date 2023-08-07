@@ -1,10 +1,6 @@
-const Conversation = require("../../models/conversationModel");
-const ConversationUnread = require("../../models/conversationUnreadModel");
-const User = require("../../models/userModel");
 const { decodedUserId } = require("../middleware/auth");
 const SocketResponse = require("../response/response");
 const ConversationService = require("../services/conversationService");
-const users = require("./userController");
 
 const conversations = {
   getParticipantListHandler: async (socket, { roomId }) => {
@@ -20,7 +16,7 @@ const conversations = {
     socket.emit("getParticipantListResponse", response);
   },
   joinRoomHandler: async (io, socket, { roomId, token }) => {
-    console.log("joinRoom");
+    // console.log("joinRoom");
     const conversationService = new ConversationService();
     const conversation = await conversationService.joinRoom({
       roomId: roomId,
@@ -40,7 +36,7 @@ const conversations = {
     io.to(`${socket.id}`).emit("joinRoomResponse", response);
   },
   leaveConversationHandler: async (io, socket, { roomId, token }) => {
-    console.log("leaveConversation");
+    // console.log("leaveConversation");
     const conversationService = new ConversationService();
 
     if (!roomId) {
@@ -75,7 +71,7 @@ const conversations = {
   },
 
   addUserInRoomHandler: async (socket, { roomId, userId }) => {
-    console.log("addUserInRoomHandler", roomId, userId);
+    // console.log("addUserInRoomHandler", roomId, userId);
     if (!roomId) {
       throw Error("找不到 roomId");
     }

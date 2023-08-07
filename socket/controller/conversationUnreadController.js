@@ -1,4 +1,3 @@
-const ConversationUnread = require("../../models/conversationUnreadModel");
 const { decodedUserId } = require("../middleware/auth");
 const SocketResponse = require("../response/response");
 const ConversationUnreadService = require("../services/conversationUnreadService");
@@ -17,7 +16,6 @@ const conversationUnread = {
       data: updatedConversation,
       error: null,
     });
-    console.log("response", response);
     io.to(`${socket.id}`).emit("updateUnreadCount", response);
   },
 

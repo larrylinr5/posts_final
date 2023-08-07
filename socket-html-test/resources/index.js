@@ -74,7 +74,6 @@ function appendMessage(chatMessage) {
 
 function appendUser(userList) {
   userList.forEach((user, index) => {
-    console.log("loop user list");
     const userElement = document.createElement("li");
     const pointColor =
       user.userStatus === "online" ? "point-danger" : "point-secondary";

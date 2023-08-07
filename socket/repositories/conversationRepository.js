@@ -1,5 +1,4 @@
 const Conversation = require("../../models/conversationModel");
-const { decodedUserId } = require("../middleware/auth");
 
 module.exports = class ConversationRepository {
   async findParticipants(roomId) {
