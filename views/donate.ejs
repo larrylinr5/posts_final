@@ -8,7 +8,9 @@
   <body>
     <div id="app">
       <form @submit.prevent="createOrder">
-        
+        <div>token
+          <input type="text" v-model="token">
+        </div>
         <div>userId
           <input type="text" v-model="order.userId">
         </div>
@@ -37,13 +39,14 @@
               amt: '1',
               ItemDesc: '贊助貼文',
             },
+            token:""
           }
         },
         methods: {
           createOrder() {
             this.order.amt = +this.order.amt // 轉換成number
 
-            const token = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzNWE1ZTBmNDNkYjJlZmQwNzlkMGJlYiIsImlhdCI6MTY3NDYzMzMxOCwiZXhwIjoxNjc1MjM4MTE4fQ.jDWIAaaIahrgab4wwSsWFSwwBrYGB3poAIcR-i-pltQ`;
+            const token = this.token;
             const url = '/payment/createOrder'
             axios
               .post(url, this.order,{
