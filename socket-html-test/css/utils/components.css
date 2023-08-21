@@ -1,0 +1,27 @@
+.point {
+  position: relative;
+}
+
+.point-danger::before {
+  content: "　";
+  background-color: red;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: -20px;
+  transform: translate(0, -50%);
+}
+
+.point-secondary::before {
+  content: "　";
+  background-color: slategrey;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: -20px;
+  transform: translate(0, -50%);
+}

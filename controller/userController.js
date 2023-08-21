@@ -237,7 +237,6 @@ const users = {
       }},
       { $group: { _id: null, amount: { $sum: "$Amt" } } }
     ]);
-    console.log("donated", donated);
     res.status(200).json(
       getHttpResponse({
         data: {

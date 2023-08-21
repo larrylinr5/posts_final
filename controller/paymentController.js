@@ -118,19 +118,19 @@ const pay = {
   }),
   // 取得藍新通知
   postNotify: handleErrorAsync(async (req, res, next) => {
-    console.log("req.body notify data", req.body);
+    // console.log("req.body notify data", req.body);
     const reqData = req.body;
   
     const thisShaEncrypt = create_mpg_sha_encrypt(reqData.TradeInfo);
     // 使用 HASH 再次 SHA 加密字串，確保比對一致（確保不正確的請求觸發交易成功）
     if (!thisShaEncrypt === reqData.TradeSha) {
-      console.log("付款失敗：TradeSha 不一致");
+      // console.log("付款失敗：TradeSha 不一致");
       return res.end();
     }
   
     // 解密交易內容
     const data = create_mpg_aes_decrypt(reqData.TradeInfo);
-    console.log("data:", data);
+    // console.log("data:", data);
   
     // 取得交易內容，並查詢本地端資料庫是否有相符的訂單
     // if (!orders[data?.Result?.MerchantOrderNo]) {
@@ -150,7 +150,7 @@ const pay = {
     }, { returnDocument: "after", runValidators: true });
 
     if(!result){
-      console.log("找不到訂單編號");
+      // console.log("找不到訂單編號");
       return res.end();
     }
     
