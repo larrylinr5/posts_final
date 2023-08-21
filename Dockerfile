@@ -19,9 +19,12 @@ WORKDIR /app
 
 ENV NODE_ENV production
 
-COPY . .
+COPY ./package.json .
 
 RUN npm install
+
+COPY . .
+
 FROM debian:bullseye
 
 LABEL fly_launch_runtime="nodejs"
