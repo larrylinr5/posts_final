@@ -1,11 +1,41 @@
 # Meta Wall
+
+
+![GitHub commit activity (branch)](https://img.shields.io/github/commit-activity/t/larrylinr5/posts_final?style=for-the-badge)
+![GitHub Repo stars](https://img.shields.io/github/stars/larrylinr5/posts_final?style=for-the-badge)
+![GitHub contributors](https://img.shields.io/github/contributors/larrylinr5/posts_final?style=for-the-badge)
+![GitHub forks](https://img.shields.io/github/forks/larrylinr5/posts_final?style=for-the-badge)
+
 ---
 ![Image](https://i.imgur.com/h7XdEPc.png)
-我們想打造一個貼近 IG or FB 的交流平台，
-並且鎖定只有成為會員才能享有我們所提供的服務
 
-- [Metawall網址](https://www.universewalls.com/)
-- [前端Repo](https://github.com/cotton123236/metawall-frontend)
+Metawall 是一個旨在將社交體驗推向更高層次的平台，將 Instagram 和 Facebook 的魅力融入其中，為您帶來前所未有的交流樂趣。
+
+### 連結 Link
+
+- [link to MetaWall](https://www.universewalls.com/)
+- [frontend repo](https://github.com/cotton123236/metawall-frontend)
+- [backend repo](https://github.com/cotton123236/metawall-frontend)
+
+### Built With
+
+#### core
+![Vue.js](https://img.shields.io/badge/Vue.js-35495E?style=for-the-badge&logo=vuedotjs&logoColor=4FC08D)
+![Express](https://img.shields.io/badge/express-35495E?style=for-the-badge&logo=express&logoColor=4FC08D) 
+![Socket.io](https://img.shields.io/badge/socket.io-35495E?style=for-the-badge&logo=socket.io&logoColor=4FC08D)
+![MongoDB](https://img.shields.io/badge/MongoDB-35495E?style=for-the-badge&logo=mongodb&logoColor=4FC08D)
+![AWS](https://img.shields.io/badge/AWS-35495E?style=for-the-badge&logo=amazonaws&logoColor=4FC08D) 
+
+#### plugins
+![Doppler](https://img.shields.io/badge/Doppler-35495E?style=for-the-badge&logo=doppler&logoColor=4FC08D)
+![Imgur](https://img.shields.io/badge/imgur-35495E?style=for-the-badge&logo=imgur&logoColor=4FC08D)
+![Passport](https://img.shields.io/badge/passport-35495E?style=for-the-badge&logo=passport&logoColor=4FC08D)
+![Google](https://img.shields.io/badge/google%20login-35495E?style=for-the-badge&logo=google&logoColor=4285F4) 
+![Discord](https://img.shields.io/badge/discord%20login-35495E?style=for-the-badge&logo=discord&logoColor=5865F2)
+![Facebook](https://img.shields.io/badge/facebook%20login-35495E?style=for-the-badge&logo=facebook&logoColor=1877F2) 
+![Line](https://img.shields.io/badge/line%20login-35495E?style=for-the-badge&logo=line&logoColor=00C300)
+
+
 
 ### 功能說明
 ![Image](https://i.imgur.com/r2gQWgD.png)
@@ -19,6 +49,29 @@
 
 ![Image](https://i.imgur.com/WW1YY2O.png)
 ##### 修改個人檔案
+
+
+![忘記密碼gif (1)](https://github.com/larrylinr5/posts_final/assets/61115012/e6deb755-3743-4ce6-b1fe-70938d82e9ee)
+
+##### 忘記密碼
+
+![2rThA9kOye](https://github.com/larrylinr5/posts_final/assets/61115012/e0e1e9c7-403b-4c47-8bd2-e717f702b53c)
+
+<small>Google, LINE, Discord, Facebook</small>
+##### 第三方登入
+
+![CMwqxJzdwE](https://github.com/larrylinr5/posts_final/assets/61115012/44b6aa75-3396-4bb9-bb73-1d1e246e62da)
+
+##### 藍新金流
+
+[![Watch the video](https://github.com/larrylinr5/posts_final/assets/61115012/794fb0b0-bf96-4e9a-89af-aa1e7a15cbb6)](https://youtu.be/OqpZwYZrEKg)
+一般聊天功能示範
+
+[![Watch the video](https://github.com/larrylinr5/posts_final/assets/61115012/794fb0b0-bf96-4e9a-89af-aa1e7a15cbb6)](https://youtu.be/upI4KOYch-M)
+上傳圖片功能
+
+##### Chat 
+##### 
 
 
 ## For Developer:
@@ -56,15 +109,23 @@ npm run format
 
 
 ### 專案結構
-- app.js
-- connections/db.js：連接資料庫
-- controllers/postsControllers.js、usersControllers.js、uploadsController.js：操作 HTTP 動詞
-- models/postsModel.js、usersModel.js、commentsModel.js：定義 Schema、建立模型
-- routes/posts.js、users.js、uploads.js：建立路由
-- service/errorHandler.js、process.js：自訂錯誤設計、統一處理 asyncError 服務
-- service/successHandler.js：接收成功訊息
-- service/auth.js：身份驗證
-- service/upload.js：上傳圖片驗證
+```
+├── connections           // 負責與資料庫連接
+├── controller            // 處理 HTTP 請求的控制器
+├── log                   // 存放日誌的資料夾
+├── middleware            // 中間件，用於處理請求和回應
+├── models                // 用於描述 mongoDB 的數據模型
+├── routes                // 定義 HTTP 路由
+├── socket                // 處理 socket.io 的相關功能
+│   ├── controller        // 處理 socket 的控制器
+│   ├── middleware        // 處理 socket 的中間件
+│   ├── repositories      // 處理 socket 的資料存儲
+│   ├── response          // 處理 socket 的回應格式
+│   ├── services          // 處理 socket 的服務邏輯
+│   └── utils             // 處理 socket 的工具函數
+└── utils                 // 存放共用的工具函數
+
+```
 
 ### AWS 架構圖
 ![image](https://i.imgur.com/XAShGBE.png)
@@ -72,3 +133,12 @@ npm run format
 - 前端：把Vue3的程式碼部署在AWS S3 靜態儲存庫
 - 後端：把Node.js API 部署在AWS EB 容器內，在環境執行起的時候，會自動起一個EC2 instance。
 - 資料庫：MongoDB Atlas
+
+
+### 貢獻 Contributors
+
+<a href="https://github.com/larrylinr5/posts_final/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=larrylinr5/posts_final" />
+</a>
+
+Made with [contrib.rocks](https://contrib.rocks).
