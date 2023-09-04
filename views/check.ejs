@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.0.0-alpha.1/axios.min.js"></script>
+  </head>
+  <body>
+    <style>
+      .payment-checker {
+        width: 300px;
+      }
+
+      .payment-checker-item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 4px;
+      }
+      .payment-checker-item-last {
+        display: flex;
+        justify-content: flex-end;
+      }
+    </style>
+    <div id="app">
+      
+      <!-- <form action="https://core.spgateway.com/MPG/mpg_gateway" method="post"> -->
+      <form action="https://ccore.newebpay.com/MPG/mpg_gateway" method="post">
+        <ul class="payment-checker">
+          <li class="payment-checker-item">
+            <label class="" for="">MerchantID:</label>
+            <input type="text" name="MerchantID" value="MS140625957" />
+          </li>
+          <li class="payment-checker-item">
+            <label for="">TradeSha:</label>
+            <input type="text" name="TradeSha" :value="order.shaEncrypt" />
+          </li>
+          <li class="payment-checker-item">
+            <label for="">TradeInfo:</label>
+            <input type="text" name="TradeInfo" :value="order.aesEncrypt" />
+          </li>
+          <li class="payment-checker-item">
+            <label for="">TimeStamp:</label>
+            <input
+              type="text"
+              name="TimeStamp"
+              :value="order.order.TimeStamp"
+            />
+          </li>
+          <li class="payment-checker-item">
+            <label for="">Version:</label>
+            <input type="text" name="Version" :value="1.5" />
+          </li>
+          <li class="payment-checker-item">
+            <label for="">MerchantOrderNo:</label>
+            <input
+              type="text"
+              name="MerchantOrderNo"
+              :value="order.order.MerchantOrderNo"
+            />
+          </li>
+          <li class="payment-checker-item">
+            <label for="">Amt:</label>
+            <input type="text" name="Amt" :value="order.order.Amt" />
+          </li>
+          <li class="payment-checker-item">
+            <label for="">Email:</label>
+            <input type="email" name="Email" :value="order.order.Email" />
+          </li>
+          <li class="payment-checker-item-last">
+            <button type="submit">送出</button>
+          </li>
+        </ul>
+      </form>
+    </div>
+    <script type="module">
+      import { createApp } from "https://cdnjs.cloudflare.com/ajax/libs/vue/3.2.37/vue.esm-browser.min.js";
+      const host = "http://localhost:3000/";
+
+      const app = {
+        data() {
+          return {
+            orderId: "",
+            order: {
+              order: {},
+            },
+          };
+        },
+        async mounted() {
+          const searchUrl = new URLSearchParams(window.location.search);
+          this.orderId = searchUrl.get("order");
+          console.log(searchUrl.get("order"));
+          const url = `/payment/getOrderInfo/${this.orderId}`;
+          const token = localStorage.getItem("token")
+          const config = {
+            headers: { Authorization: `Bearer ${token}` },
+          };
+          const res = await axios.get(url,config);
+          this.order = res.data.data;
+          console.log(res);
+        },
+        methods: {},
+      };
+
+      createApp(app).mount("#app");
+    </script>
+  </body>
+</html>

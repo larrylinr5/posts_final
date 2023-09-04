@@ -17,7 +17,8 @@ const usersSchema = new mongoose.Schema(
     },
     avatar: {
       type: String,
-      trim: true
+      trim: true,
+      default: ""
     },
     email: {
       type: String,
@@ -33,6 +34,21 @@ const usersSchema = new mongoose.Schema(
       minlength: 8,
       select: false,
       trim: true
+    },
+    userStatus: {
+      type: String,
+      default: "offline",
+      enum: [{
+        values: ["online", "offline"],
+        message: "不支援這個 {VALUE} 屬性"
+      }],
+    },
+    conversations: {
+      type: [{
+        // @ts-ignore
+        type: mongoose.Schema.ObjectId,
+        ref: "Conversation",
+      }],
     },
     createdAt: {
       type: Date,

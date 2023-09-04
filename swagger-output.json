@@ -4,7 +4,6 @@
     "title": "MetaWall",
     "description": "MetaWall API 文件"
   },
-  "host": "localhost:3005",
   "basePath": "/",
   "tags": [
     {
@@ -40,6 +39,10 @@
       "description": "上傳檔案相關"
     },
     {
+      "name": "Payment",
+      "description": "支付相關"
+    },
+    {
       "name": "NotFound",
       "description": "頁面路由相關"
     }
@@ -56,6 +59,182 @@
   "consumes": [],
   "produces": [],
   "paths": {
+    "/users/forgetPassword": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "忘記密碼",
+        "description": "",
+        "parameters": [
+          {
+            "name": "parameter_name",
+            "in": "body",
+            "description": "忘記密碼 request body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "example": "test@gmail.com"
+                }
+              },
+              "required": [
+                "email"
+              ]
+            },
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "schema": {
+              "$ref": "#/definitions/forgetPasswordResponse"
+            }
+          },
+          "401": {
+            "description": "Email 格式錯誤",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "402": {
+            "description": "此 Email 尚未註冊",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "404": {
+            "description": "無此路由",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "系統錯誤",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/users/verification": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "確認驗證碼",
+        "description": "",
+        "parameters": [
+          {
+            "name": "parameter_name",
+            "in": "body",
+            "description": "確認驗證碼 request body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "verification": {
+                  "type": "number",
+                  "example": 18351
+                }
+              },
+              "required": [
+                "verification"
+              ]
+            },
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "schema": {
+              "$ref": "#/definitions/forgetPasswordResponse"
+            }
+          },
+          "400": {
+            "description": "驗證碼輸入錯誤，請重新輸入",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "404": {
+            "description": "無此路由",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "系統錯誤",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/users/changePassword": {
+      "patch": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "忘記密碼-更改密碼",
+        "description": "",
+        "parameters": [
+          {
+            "name": "parameter_name",
+            "in": "body",
+            "description": "忘記密碼-更改密碼 request body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "password": {
+                  "type": "string",
+                  "example": "AA12345678"
+                },
+                "confirmPassword": {
+                  "type": "string",
+                  "example": "AA12345678"
+                }
+              },
+              "required": [
+                "password",
+                "confirmPassword"
+              ]
+            },
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "schema": {
+              "$ref": "#/definitions/changePasswordResponse"
+            }
+          },
+          "400": {
+            "description": "密碼至少 8 個字元以上，並英數混合",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "404": {
+            "description": "無此路由",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "系統錯誤",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
     "/users/follows/{userId}": {
       "get": {
         "tags": [
@@ -226,7 +405,7 @@
           "200": {
             "description": "取得會員的個人資料成功",
             "schema": {
-              "$ref": "#/definitions/User"
+              "$ref": "#/definitions/profile"
             }
           },
           "404": {
@@ -268,7 +447,7 @@
           "200": {
             "description": "取得特定會員的個人資料成功",
             "schema": {
-              "$ref": "#/definitions/User"
+              "$ref": "#/definitions/profile"
             }
           },
           "404": {
@@ -1408,6 +1587,167 @@
         ]
       }
     },
+    "/payment/createOrder": {
+      "post": {
+        "tags": [
+          "Payment"
+        ],
+        "summary": "建立訂單",
+        "description": "",
+        "parameters": [
+          {
+            "name": "parameter_name",
+            "in": "body",
+            "description": "建立訂單 request body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "userId": {
+                  "type": "string",
+                  "example": "635a5e0f43db2efd079d0beb"
+                },
+                "postId": {
+                  "type": "string",
+                  "example": "63cb6c8badab20127412cef8"
+                },
+                "amt": {
+                  "type": "number",
+                  "example": 1
+                },
+                "ItemDesc": {
+                  "type": "string",
+                  "example": "贊助貼文"
+                }
+              }
+            },
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "取得特定會員的個人資料成功",
+            "schema": {
+              "$ref": "#/definitions/createOrder"
+            }
+          },
+          "401": {
+            "description": "無此路由",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "405": {
+            "description": "建立失敗",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "系統錯誤",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/payment/donate": {
+      "get": {
+        "tags": [
+          "Payment"
+        ],
+        "summary": "測試用建立訂單畫面",
+        "description": "",
+        "parameters": [],
+        "responses": {}
+      }
+    },
+    "/payment/check": {
+      "get": {
+        "tags": [
+          "Payment"
+        ],
+        "summary": "測試用顯示訂單資訊畫面",
+        "description": "",
+        "parameters": [],
+        "responses": {}
+      }
+    },
+    "/payment/getOrderInfo/{orderId}": {
+      "get": {
+        "tags": [
+          "Payment"
+        ],
+        "summary": "取得訂單資訊",
+        "description": "",
+        "parameters": [
+          {
+            "name": "orderId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "取得訂單資訊",
+            "schema": {
+              "$ref": "#/definitions/getOrderInfo"
+            }
+          },
+          "401": {
+            "description": "無此路由",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "405": {
+            "description": "沒找到訂單",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "系統錯誤",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/payment/notify": {
+      "post": {
+        "tags": [
+          "Payment"
+        ],
+        "summary": "藍新金流回傳結果，用於保存數據",
+        "description": "",
+        "parameters": [],
+        "responses": {}
+      }
+    },
+    "/payment/return": {
+      "post": {
+        "tags": [
+          "Payment"
+        ],
+        "summary": "藍新金流回傳結果，用於重定向頁面",
+        "description": "",
+        "parameters": [],
+        "responses": {}
+      }
+    },
     "/*": {
       "get": {
         "tags": [
@@ -1428,6 +1768,39 @@
     }
   },
   "definitions": {
+    "profile": {
+      "type": "object",
+      "properties": {
+        "_id": {
+          "type": "string",
+          "example": "123456789"
+        },
+        "nickName": {
+          "type": "string",
+          "example": "會員暱稱"
+        },
+        "avatar": {
+          "type": "string",
+          "example": "https://i.imgur.com/xxx.png"
+        },
+        "gender": {
+          "type": "number",
+          "example": 1
+        },
+        "createdAt": {
+          "type": "string",
+          "example": "2022-05-31T14:21:36.129Z"
+        },
+        "updatedAt": {
+          "type": "string",
+          "example": "2022-05-31T14:21:36.129Z"
+        },
+        "donatedAmount": {
+          "type": "number",
+          "example": 0
+        }
+      }
+    },
     "User": {
       "type": "object",
       "properties": {
@@ -2223,6 +2596,114 @@
         "_id": {
           "type": "string",
           "example": "123456789"
+        }
+      }
+    },
+    "createOrder": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "example": "success"
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "tradeInfo": {
+              "type": "object",
+              "properties": {
+                "Email": {
+                  "type": "string",
+                  "example": "cate50503@gmail.com"
+                },
+                "Amt": {
+                  "type": "number",
+                  "example": 1
+                },
+                "ItemDesc": {
+                  "type": "string",
+                  "example": "向charlie贊助"
+                },
+                "TimeStamp": {
+                  "type": "string",
+                  "example": "1674736227290"
+                },
+                "MerchantOrderNo": {
+                  "type": "string",
+                  "example": "1674736227290"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "getOrderInfo": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "example": "success"
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "order": {
+              "type": "object",
+              "properties": {
+                "Email": {
+                  "type": "string",
+                  "example": "cate50503@gmail.com"
+                },
+                "Amt": {
+                  "type": "number",
+                  "example": 1
+                },
+                "TimeStamp": {
+                  "type": "string",
+                  "example": "1674736227290"
+                },
+                "MerchantOrderNo": {
+                  "type": "string",
+                  "example": "1674736227290"
+                }
+              }
+            },
+            "aesEncrypt": {
+              "type": "string",
+              "example": "e49d2e80b4ce75165b4161318b7d1170c0d6cdd851f876d10b7097f75c8a5796ef039e914d11aec0c3081e1c739ed8bdb095a4fc03f5299510ae9f29e527252107ef76e8670da1da03b7c4433f0d1a02a1e50beb829de601aabe6bfd37dc6706a453f5ca598d88a3794ad0a33bd4d705f3c930395added5a49b971938e684f1038e2143624d4268452fcda9e05608b17ea42b7bd7627a62c3dda4f7c89b6a7cc"
+            },
+            "shaEncrypt": {
+              "type": "string",
+              "example": "7D8DE6CCF75FE8D2C6C6E3ED351DCBE29B9B71A1E05D1F25C42F68528FA9F022"
+            }
+          }
+        }
+      }
+    },
+    "forgetPasswordResponse": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "example": "success"
+        },
+        "message": {
+          "type": "string",
+          "example": "請至 Email 查收信件"
+        }
+      }
+    },
+    "changePasswordResponse": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "example": "success"
+        },
+        "message": {
+          "type": "string",
+          "example": "更新密碼成功"
         }
       }
     }

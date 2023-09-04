@@ -1,6 +1,7 @@
 const userRouter = require("./users");
 const postRouter = require("./posts");
 const authRouter = require("./auth");
+const paymentRouter = require("./payment");
 const generalRouter = require("./general"); // includes 404 missing routes
 const { isAuth } = require("../middleware/auth");
 const getHttpResponse = require("../utils/successHandler");
@@ -13,6 +14,7 @@ module.exports = (app) => {
   app.use("/users", userRouter),
   app.use("/posts", postRouter),
   app.use("/auth", authRouter),
+  app.use("/payment", paymentRouter),
   app.use("/check", isAuth, ({res}) => {
     res.status(200).json(getHttpResponse({
       message: "驗證成功"

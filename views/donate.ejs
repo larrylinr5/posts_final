@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.0.0-alpha.1/axios.min.js"></script>
+  </head>
+  <body>
+    <div id="app">
+      <form @submit.prevent="createOrder">
+        <div>token
+          <input type="text" v-model="token">
+        </div>
+        <div>userId
+          <input type="text" v-model="order.userId">
+        </div>
+        <div>postId
+          <input type="text" v-model="order.postId">
+        </div>
+        <div>amount
+          <input type="number" v-model.number="order.amt">
+        </div>
+        <div>ItemDesc
+          <input type="text" v-model="order.ItemDesc">
+        </div>
+        <button type="submit">click</button>
+      </form>
+    </div>
+    <script type="module">
+      import { createApp } from 'https://cdnjs.cloudflare.com/ajax/libs/vue/3.2.37/vue.esm-browser.min.js'
+      const host = 'http://localhost:3005/'
+      
+      const app = {
+        data() {
+          return {
+            order: {
+              userId:'62e6a46f898cefe51c4e189f',
+              postId: '62e6a497898cefe51c4e18aa',
+              amt: '1',
+              ItemDesc: '贊助貼文',
+            },
+            token:""
+          }
+        },
+        methods: {
+          createOrder() {
+            this.order.amt = +this.order.amt // 轉換成number
+
+            const token = this.token;
+            const url = '/payment/createOrder'
+            axios
+              .post(url, this.order,{
+              headers: { Authorization: `Bearer ${token}` }
+            })
+              .then((result) => {
+                console.log(result)
+                if(result.data.status!=="success"){
+                  throw Error("請求不成功")
+                }
+                window.location.href = `/payment/check/?order=${result.data.data.tradeInfo.TimeStamp}`
+              })
+              .catch((err) => {})
+          },
+        },
+      }
+
+      createApp(app).mount('#app')
+    </script>
+  </body>
+</html>

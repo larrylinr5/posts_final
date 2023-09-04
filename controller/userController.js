@@ -5,6 +5,7 @@ const bcrypt = require("bcryptjs");
 const validator = require("validator");
 const { generateJwtToken } = require("../middleware/auth");
 const User = require("../models/userModel");
+const Payment = require("../models/paymentModel");
 const Verification = require('../models/verificationModel');
 const Validator = require("../utils/validator");
 const mailer = require('../utils/nodemailer');
@@ -99,29 +100,32 @@ const users = {
     
     await Verification.findOneAndDelete({ user: user._id });
 
-    const { verification } = await Verification.create({
+    const createdResult = await Verification.create({
       userId: user._id,
       verification: (Math.floor(Math.random() * 90000) + 10000).toString()
     });
 
+    const verification = {
+      verificationCode: createdResult.verification,
+      verificationId: createdResult._id
+    };
+
     mailer(res, next, user, verification);
   }),
   verification: handleErrorAsync(async (req, res, next) => {
-    const { userId } = req.params;
-    const inputVerification = req.body.verification;
+    const { verificationCode, verificationId } = req.body;
 
-    if (!inputVerification) return next(appError(400, "40001", "欄位未填寫"));
+    if (!verificationCode && !targetVerificationId) return next(appError(400, "40001", "欄位未填寫"));
     
-    const { verification } = await Verification.findOne({ user: userId });
+    const result = await Verification.findOne({ _id: verificationId,  verification: verificationCode});
 
-    if (inputVerification !== verification) {
+    if (!result) {
       return next(appError(400, "40101", "驗證碼輸入錯誤，請重新輸入"));
     }
-
-    const token = await generateJwtToken(userId);
+    const token = await generateJwtToken(result.userId.toString());
     const data = {
       token,
-      id: userId
+      id: result.userId.toString()
     };
     res.status(201).json(getHttpResponse({
       data
@@ -196,9 +200,28 @@ const users = {
   getMyProfile: handleErrorAsync(async (req, res) => {
     const { user } = req;
     const profile = await User.findById(user._id).select("-logicDeleteFlag");
-    res.status(200).json(getHttpResponse({
-      data: profile
-    }));
+    const donated = await Payment.aggregate([
+      { $match: { 
+        donateTo: profile._id,
+        logicDeleteFlag: false,
+        isPaid: true,
+      }},
+      { $group: { _id: null, amount: { $sum: "$Amt" } } }
+    ]);
+
+    res.status(200).json(
+      getHttpResponse({
+        data: {
+          _id: profile._id,
+          nickName: profile.nickName,
+          avatar: profile.avatar,
+          gender: profile.gender,
+          createdAt: profile.createdAt,
+          updatedAt: profile.updatedAt,
+          donatedAmount: donated.length > 0 ? donated[0].amount : 0,
+        },
+      })
+    );
   }),
   getOtherProfile: handleErrorAsync(async (req, res, next) => {
     const { userId } = req.params;
@@ -206,9 +229,27 @@ const users = {
       return next(appError(400, "格式錯誤", "欄位未填寫正確"));
     }
     const profile = await User.findById(userId).select("-logicDeleteFlag");
-    res.status(200).json(getHttpResponse({
-      data: profile
-    }));
+    const donated = await Payment.aggregate([
+      { $match: { 
+        donateTo: profile._id,
+        logicDeleteFlag: false,
+        isPaid: true,
+      }},
+      { $group: { _id: null, amount: { $sum: "$Amt" } } }
+    ]);
+    res.status(200).json(
+      getHttpResponse({
+        data: {
+          _id: profile._id,
+          nickName: profile.nickName,
+          avatar: profile.avatar,
+          gender: profile.gender,
+          createdAt: profile.createdAt,
+          updatedAt: profile.updatedAt,
+          donatedAmount: donated.length > 0 ? donated[0].amount : 0,
+        },
+      })
+    );
   }),
   updateProfile: handleErrorAsync(async (req, res, next) => {
     const {

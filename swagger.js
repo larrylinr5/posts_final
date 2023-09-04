@@ -7,7 +7,6 @@ const doc = {
     title: "MetaWall", // swagger 文件名稱
     description: "MetaWall API 文件" // 描述文件
   },
-  host: "localhost:3005", // 生成文件的路徑
   schemes: "http", // 文件所支援的模式
   tags: [
     { name: "Auth", description: "驗證相關" },
@@ -18,6 +17,7 @@ const doc = {
     { name: "Likes", description: "按讚相關" },
     { name: "Comments", description: "留言相關" },
     { name: "Files", description: "上傳檔案相關" },
+    { name: "Payment", description: "支付相關" },
     { name: "NotFound", description: "頁面路由相關" }
   ],
   definitions,

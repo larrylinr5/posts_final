@@ -9,17 +9,131 @@ const { isAuth } = require("../middleware/auth");
 const { upload } = require("../utils/upload");
 
 /* 忘記密碼 */
-router.post('/forgetPassword', (req, res, next) => 
+router.post("/forgetPassword", (req, res, next) => 
+/**
+    * #swagger.tags = ['Users']
+    * #swagger.summary = '忘記密碼'
+    */
+/**
+    #swagger.parameters['parameter_name'] = {
+      in: 'body',
+      description: '忘記密碼 request body',
+      schema: {
+        $email: 'test@gmail.com',
+      }
+    }
+    */
+  /**
+    #swagger.responses[201] = {
+      description: '',
+      schema: { $ref: '#/definitions/forgetPasswordResponse' }
+    }
+    #swagger.responses[401] = {
+      description: '欄位未填寫',
+      schema: { $ref: '#/definitions/Error' }
+    }
+    #swagger.responses[401] = {
+      description: 'Email 格式錯誤',
+      schema: { $ref: '#/definitions/Error' }
+    }
+    #swagger.responses[402] = {
+      description: '此 Email 尚未註冊',
+      schema: { $ref: '#/definitions/Error' }
+    }
+    #swagger.responses[404] = {
+      description: '無此路由',
+      schema: { $ref: '#/definitions/Error' }
+    }
+    #swagger.responses[500] = {
+      description: '系統錯誤',
+      schema: { $ref: '#/definitions/Error' }
+    }
+  */
   userController.forgetPassword(req, res, next)
 );
 
 /* 驗證碼 */
-router.post('/verification/:userId', checkUserId, (req, res, next) => 
+router.post("/verification", (req, res, next) => 
+/**
+    * #swagger.tags = ['Users']
+    * #swagger.summary = '確認驗證碼'
+    */
+/**
+    #swagger.parameters['parameter_name'] = {
+      in: 'body',
+      description: '確認驗證碼 request body',
+      schema: {
+        $verification: 18351,
+      }
+    }
+    */
+  /**
+    #swagger.responses[201] = {
+      description: '',
+      schema: { $ref: '#/definitions/forgetPasswordResponse' }
+    }
+    #swagger.responses[400] = {
+      description: '欄位未填寫',
+      schema: { $ref: '#/definitions/Error' }
+    }
+    #swagger.responses[400] = {
+      description: '驗證碼輸入錯誤，請重新輸入',
+      schema: { $ref: '#/definitions/Error' }
+    }
+    #swagger.responses[404] = {
+      description: '無此路由',
+      schema: { $ref: '#/definitions/Error' }
+    }
+    #swagger.responses[500] = {
+      description: '系統錯誤',
+      schema: { $ref: '#/definitions/Error' }
+    }
+  */
   userController.verification(req, res, next)
 );
 
 /* 變更密碼 */
-router.patch('/changePassword', isAuth, (req, res, next) => 
+router.patch("/changePassword", isAuth, (req, res, next) => 
+/**
+    * #swagger.tags = ['Users']
+    * #swagger.summary = '忘記密碼-更改密碼'
+    */
+/**
+    #swagger.parameters['parameter_name'] = {
+      in: 'body',
+      description: '忘記密碼-更改密碼 request body',
+      schema: {
+          $password: "AA12345678",
+          $confirmPassword: "AA12345678"
+      }
+    }
+    */
+  /**
+    #swagger.responses[201] = {
+      description: '',
+      schema: { $ref: '#/definitions/changePasswordResponse' }
+    }
+    #swagger.responses[400] = {
+      description: '欄位未填寫',
+      schema: { $ref: '#/definitions/Error' }
+    }
+    #swagger.responses[400] = {
+      description: '密碼不一致',
+      schema: { $ref: '#/definitions/Error' }
+    }
+    #swagger.responses[400] = {
+      description: '密碼至少 8 個字元以上，並英數混合',
+      schema: { $ref: '#/definitions/Error' }
+    }
+    #swagger.responses[404] = {
+      description: '無此路由',
+      schema: { $ref: '#/definitions/Error' }
+    }
+    #swagger.responses[500] = {
+      description: '系統錯誤',
+      schema: { $ref: '#/definitions/Error' }
+    }
+  */
   userController.changePassword(req, res, next)
 );
 
@@ -83,7 +197,7 @@ router.get("/profile", isAuth, (req, res, next) =>
   /**
     #swagger.responses[200] = {
       description: '取得會員的個人資料成功',
-      schema: { $ref: '#/definitions/User' }
+      schema: { $ref: '#/definitions/profile' }
     }
     #swagger.responses[404] = {
       description: '無此路由',
@@ -109,7 +223,7 @@ router.get("/profile/:userId", isAuth, (req, res, next) =>
   /**
     #swagger.responses[200] = {
       description: '取得特定會員的個人資料成功',
-      schema: { $ref: '#/definitions/User' }
+      schema: { $ref: '#/definitions/profile' }
     }
     #swagger.responses[404] = {
       description: '無此路由',
