@@ -15,7 +15,8 @@ Metawall 是一個旨在將社交體驗推向更高層次的平台，將 Instagr
 
 - [link to MetaWall](https://www.universewalls.com/)
 - [frontend repo](https://github.com/cotton123236/metawall-frontend)
-- [backend repo](https://github.com/cotton123236/metawall-frontend)
+- [backend repo]([https://github.com/larrylinr5/posts_final)
+
 
 ### Built With
 
